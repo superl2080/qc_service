@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 
 mongoose.connect(process.env.MONGO_URL, {useMongoClient: true});
-module.exports.router =  const router = express.Router();
+const router = module.exports.router = express.Router();
 
 
 router.get('/', function(req, res, next) {
