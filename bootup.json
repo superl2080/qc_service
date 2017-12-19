@@ -4,7 +4,7 @@
             "name": "service",
             "script": "./bin/www",
             "instances": "max",
-            "exec_mode": "cluster" 
+            "exec_mode": "cluster",
             "env": {
                 "PORT": 3010,
                 "MONGO_URL": "mongodb://localhost/qingcheng",
