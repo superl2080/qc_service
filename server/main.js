@@ -1,11 +1,12 @@
 
-import express from 'express';
-import mongoose from 'mongoose';
+const express = require('express');
+const mongoose = require('mongoose');
+
 
 mongoose.connect(process.env.MONGO_URL, {useMongoClient: true});
-export const mainRouter = express.Router();
+module.exports.router =  const router = express.Router();
 
 
-mainRouter.get('/', function(req, res, next) {
+router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
