@@ -1,14 +1,11 @@
 
 const request = require('request');
 const crypto = require('crypto');
-const xml2js = require('xml2js');
 
 const WECHAT_OPEN_APP_ID = process.env.WECHAT_OPEN_APP_ID;
 const WECHAT_OPEN_APP_SECRET = process.env.WECHAT_OPEN_APP_SECRET;
 const WECHAT_OPEN_ENCODE_KEY = process.env.WECHAT_OPEN_ENCODE_KEY;
 
-const xml2jsBuilder = new xml2js.Builder();
-const xml2jsParser = new xml2js.Parser();
 const AES_KEY = new Buffer(WECHAT_OPEN_ENCODE_KEY + '=', 'base64');
 const IV = AES_KEY.slice(0, 16);
 

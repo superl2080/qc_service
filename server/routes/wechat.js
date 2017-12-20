@@ -1,5 +1,8 @@
 
 const async = require('async');
+const xml2js = require('xml2js');
+const xml2jsBuilder = new xml2js.Builder();
+const xml2jsParser = new xml2js.Parser();
 const wechatHelper = require('../../imports/util/wechatHelper');
 const systemModel = require('../../imports/models/system');
 
