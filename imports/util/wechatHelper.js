@@ -1,5 +1,4 @@
 
-const request = require('request');
 const crypto = require('crypto');
 
 const WECHAT_OPEN_APP_ID = process.env.WECHAT_OPEN_APP_ID;
