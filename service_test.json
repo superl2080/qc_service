@@ -8,8 +8,9 @@
             "env": {
                 "PORT": 3110,
                 "MONGO_URL": "mongodb://localhost/qingcheng_test",
-                "WECHAT_OPEN_APP_ID": 'wx26950c03b65b93ed',
-                "WECHAT_OPEN_APP_SECRET": '2d02bf96c35695b001db3c053c2b0abf',
+                "WECHAT_OPEN_APP_ID": "wx26950c03b65b93ed",
+                "WECHAT_OPEN_APP_SECRET": "2d02bf96c35695b001db3c053c2b0abf",
+                "WECHAT_OPEN_ENCODE_KEY": "2c3a4d54806a9f9442c6f5ebf10a1e53wx1676ae64c",
                 "NODE_ENV": "test"
             }
         }

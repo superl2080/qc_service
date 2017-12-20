@@ -1,12 +1,15 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const middleware = require('./middleware');
+const routeWechat = require('./routes/wechat');
 
 
 mongoose.connect(process.env.MONGO_URL, {useMongoClient: true});
-const router = module.exports.router = express.Router();
+const router = exports.router = express.Router();
 
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+router.use(middleware.router);
+
+router.post('/wechat/open/notice', routeWechat.openNotice);
+router.post('/wechat/open/ad/:appid', routeWechat.openAd);
