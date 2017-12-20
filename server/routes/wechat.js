@@ -1,6 +1,6 @@
 
 const async = require('async');
-const wechatHelper = require('imports/util/wechatHelper');
+const wechatHelper = require('../../imports/util/wechatHelper');
 
 
 const openNotice = exports.openNotice = (req, res) => {

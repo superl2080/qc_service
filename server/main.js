@@ -9,7 +9,6 @@ mongoose.connect(process.env.MONGO_URL, {useMongoClient: true});
 const router = exports.router = express.Router();
 
 
-router.use(middleware.router);
+router.use('/', middleware.router);
 
 router.post('/wechat/open/notice', routeWechat.openNotice);
-router.post('/wechat/open/ad/:appid', routeWechat.openAd);

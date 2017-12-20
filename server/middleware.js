@@ -6,12 +6,8 @@ const mongoose = require('mongoose');
 const router = module.exports.router = express.Router();
 
 
-router.get('/', function(req, res, next) {
+router.use('/', function(req, res, next) {
     console.log('[GET] ' + req.hostname + req.originalUrl);
-	next();
+    next();
 });
 
-router.post('/', function(req, res, next) {
-    console.log('[POST] ' + req.hostname + req.originalUrl);
-	next();
-});
