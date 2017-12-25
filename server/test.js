@@ -1,14 +1,48 @@
 
 const express = require('express');
-const wechatHelper = require('../imports/util/wechatHelper');
+require('../imports/models/operator');
+require('../imports/models/operatorConfig');
 
 
 const router = module.exports.router = express.Router();
+const operatorModel = mongoose.model('operator');
+const operatorConfigModel = mongoose.model('operatorConfig');
 
 
-router.get('/decrypt', function(req, res, next) {
-    console.log('[HTTP] ' + req.hostname + req.originalUrl);
-    wechatHelper.Decrypt('olBaEYrkYYjL56ai1Yf3EghucJuomtjv5CoAGsKjuRv4gpnZic7kCdYaXxej7DxxQ143VaKnKe2+Rg15VN3iRjxnlPNnFKXEhfCQrQYMnIBKmLTBO0NYF0qQ8wtlGxkRY/y9ls8pKURNDZErJVenwUnZHShzgHMX2pBDMrzFHIVQUFAG3OAktAXvJJn2JUi/wcy/VTk4lxS3CxREa16nGKhh7idNRY4pcqqbo7bENGEqZrCMi6Dy53PHinfWOVp9JkGpodMmSffegFv+fzrxRNXX+e9ONpe0PQBaUuTus5aGQdKldL3+QJpL1fOTJeWbdx03FcLJiHHpAzVSp35yKs+3mJc0s2HJb+PtMQfEXdMqiVLJrRvn4WzpEeSMmRXOi7MBHFsoeQiCrJ/IhwvjiQ+kie8KL4iLmv783D8Sk6r8KzAk55YDlBczI3b0/iGJjbjXE3d68e2kt0a4865i+w==');
-    next();
+router.get('/db/operator/init', function(req, res, next) {
+
+    operatorModel.findOne({ email: 'super' })
+    .exec(function (err, operator) {
+        if( !operator ) {
+            operatorModel.create({
+                email: 'super',
+                name: 'Super'
+                password: 'superliu',
+                character: 'MANAGER',
+            }, (err, callback) => {
+                res.send('create a super');
+            });
+        } else {
+            res.send('already have operator');
+        }
+    });
+});
+
+router.get('/db/operatorConfig/init', function(req, res, next) {
+
+    operatorConfigModel.findOne({ })
+    .exec(function (err, operatorConfig) {
+        if( !operatorConfig ) {
+            operatorConfigModel.create({
+                wechatOpen: {
+                    component_verify_ticket: ''
+                }
+            }, (err, callback) => {
+                res.send('create SUCCESS');
+            });
+        } else {
+            res.send('already have operatorConfig');
+        }
+    });
 });
 

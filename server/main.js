@@ -11,8 +11,9 @@ const router = exports.router = express.Router();
 
 
 router.use('/', middleware.router);
+
 if( process.env.NODE_ENV == 'test' ) {
-	router.use('/test', test.router);
+    router.use('/test', test.router);
 }
 
 router.post('/wechat/open/notice', routeWechat.openNotice);

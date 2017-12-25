@@ -26,20 +26,20 @@ app.use('/', serverMain.router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-	const err = new Error('Not Found');
-	err.status = 404;
-	next(err);
+    const err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-	// set locals, not providing error in production
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'production' ? {} : err;
+    // set locals, not providing error in production
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'production' ? {} : err;
 
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;
