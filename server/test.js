@@ -16,7 +16,7 @@ router.get('/db/operator/init', function(req, res, next) {
         if( !operator ) {
             operatorModel.create({
                 email: 'super',
-                name: 'Super'
+                name: 'Super',
                 password: 'superliu',
                 character: 'MANAGER',
             }, (err, callback) => {
