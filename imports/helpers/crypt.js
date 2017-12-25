@@ -19,7 +19,7 @@ const PasswordCrypt = exports.PasswordCrypt = (password) => {
 }
 
 const PasswordCompare = exports.PasswordCompare = (param) => {
-    return bcrypt.compareSync(param.passwordAuth, param.passwordCrypt;
+    return bcrypt.compareSync(param.passwordAuth, param.passwordCrypt);
 }
 
 const RandomBytes = exports.RandomBytes = (byte) => {
