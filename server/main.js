@@ -2,8 +2,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const middleware = require('./middleware');
-const test = require('./test');
-const routeWechat = require('./routes/wechat');
+const testRouterHelper = require('../imports/helpers/testRouter');
+const wechatOpenRouter = require('./routes/wechatOpen');
 
 
 mongoose.connect(process.env.MONGO_URL, {useMongoClient: true});
@@ -12,8 +12,6 @@ const router = exports.router = express.Router();
 
 router.use('/', middleware.router);
 
-if( process.env.NODE_ENV == 'test' ) {
-    router.use('/test', test.router);
-}
-
-router.post('/wechat/open/notice', routeWechat.openNotice);
+router.post('/wechat/open/notice', wechatOpenRouter.authNotice);
+router.post('/wechat/open/adNotice/:appid', wechatOpenRouter.adNotice);
+router.get('/wechat/open/adAuth', wechatOpenRouter.adAuth);
