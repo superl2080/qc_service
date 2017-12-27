@@ -2,7 +2,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const middleware = require('./middleware');
-const testRouterHelper = require('../imports/helpers/testRouter');
 const wechatOpenRouter = require('./routes/wechatOpen');
 
 
