@@ -3,15 +3,19 @@ const async = require('async');
 const wechatHelper = require('../../imports/helpers/wechat');
 const cryptHelper = require('../../imports/helpers/crypt');
 
+const WECHAT_OPEN_APP_ID = process.env.WECHAT_OPEN_APP_ID;
 
-const authNotice = exports.authNotice = (req, res) => {
+
+const authNotice = exports.authNotice = (req, res, next) => {
+
 
     async.auto({
         pre: (callback) => {
             console.log('[CALL] authNotice, pre');
             callback(null, {
                 req: req,
-                res: res
+                res: res,
+                next: next
             });
         },
 
@@ -26,31 +30,68 @@ const authNotice = exports.authNotice = (req, res) => {
             cryptHelper.ParseJsonFromXml(decryptData, callback);
         }],
 
-        checkTicket: ['decrypt', (result, callback) => {
-            console.log('[CALL] authNotice, checkTicket');
-            if( result.decrypt.xml.InfoType[0] == 'component_verify_ticket' ) {
+        checkInfo: ['decrypt', (result, callback) => {
+            switch( result.decrypt.xml.InfoType[0] ){
+            case 'component_verify_ticket':
+                console.log('[CALL] authNotice, checkTicket');
                 wechatHelper.UpdateTicket(result.decrypt.xml.ComponentVerifyTicket[0], callback);
+                break;
+            case 'authorized':
+            case 'updateauthorized':
+                console.log('[CALL] authNotice, authorized/updateauthorized');
+                wechatHelper.UpdateWechatMpAuthInfo({
+                    appid: result.decrypt.xml.AuthorizerAppid[0],
+                    auth_Code: result.decrypt.xml.AuthorizationCode[0],
+                    pre_auth_code: result.decrypt.xml.PreAuthCode[0]
+                }, callback);
+                break;
+            case 'unauthorized':
+                console.log('[CALL] authNotice, unauthorized');
+                wechatHelper.CancelWechatMpAuthInfo({
+                    appid: result.decrypt.xml.AuthorizerAppid[0]
+                }, callback);
+                break;
+            default:
+                callback(null);
             }
         }]
 
     }, (err, results) => {
-        if( err ) {
-            console.log('[ERROR] authNotice, err:');
-            console.log(err);
-        }
         console.log('[CALLBACK] authNotice');
-        res.send('success');
+        results.pre.res.send('success');
+        if( err ) {
+            results.pre.next(err);
+        }
     });
 };
 
+
+const adNotice = exports.adNotice = (req, res, next) => {
+
+    async.auto({
+        pre: (callback) => {
+            console.log('[CALL] adNotice, pre');
+            callback(null, {
+                req: req,
+                res: res,
+                next: next
+            });
+        },
+
+        parseXml: ['pre', (result, callback) => {
+            console.log('[CALL] adNotice, parseXml');
+            cryptHelper.ParseJsonFromXml(result.pre.req.body, callback);
+        }],
+
+        decrypt: ['parseXml', (result, callback) => {
+            console.log('[CALL] adNotice, decrypt');
+            const decryptData = wechatHelper.Decrypt(result.parseXml.xml.Encrypt[0]);
+            cryptHelper.ParseJsonFromXml(decryptData, callback);
+        }],
+
+        checkTicket: ['decrypt', (result, callback) => {
+            console.log('[CALL] adNotice, checkTicket');
 /*
-const adNotice = exports.adNotice = (req, res) => {
-
-    wechat.parseXml(req.rawBody, function (err, result) {
-
-        var decryptData = wechat.decrypt(result.xml.Encrypt[0]);
-        wechat.parseXml(decryptData, function (err, result2) {
-
             if( result2.xml.MsgType == 'event'
                 && (result2.xml.Event[0] == 'subscribe' || result2.xml.Event[0] == 'SCAN')
                 && result2.xml.EventKey[0] ) {
@@ -76,7 +117,15 @@ const adNotice = exports.adNotice = (req, res) => {
                                         adOrder.insert(option, function (err, aderInfo) {});
                                         deviceOrder.finishAd(option, function (err, deviceOrderInfo) {
                                             option.deviceOrderInfo = deviceOrderInfo;
-                                            TakeDeviceItem(option, function (err) {});
+                                            if(params.deviceOrderInfo &&
+                                                params.deviceOrderInfo.state == 'SUCCESS') {
+                                                TakeDeviceItem(option, function (err) {});
+                                                if(takeRes == 'SUCCESS') {
+                                                    deviceOrder.finishTake(params, function (err, deviceOrderInfo) {
+                                                        callback(err);
+                                                    });
+                                                }
+                                            }
                                         });
                                     }
                                 });
@@ -84,251 +133,38 @@ const adNotice = exports.adNotice = (req, res) => {
                         });
                     }
                 });
-            }
+            }*/
+        }]
 
-        });
+    }, (err, results) => {
+        console.log('[CALLBACK] adNotice');
+        results.pre.res.send('');
+        if( err ) {
+            results.pre.next(err);
+        }
     });
-    res.send('');
 };
 
-const adAuth = exports.adAuth = (req, res) => {
-view.on('get', { action: 'create' }, function (next) {
- -      console.log('[GET] routes/views/createAd action: create');
- -      system.findOne(function (err, systemInfo) {
- -          var uri = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=' + wechat.APP_ID;
- -          uri += '&pre_auth_code=' + systemInfo.pre_auth_code;
- -          uri += '&redirect_uri=http%3A%2F%2F' + req.headers.host + '%2FcreateAd%3faction%3dsuccess%26aderId%3d' + req.query.aderId + '%26count%3d' + req.query.count;
- -          res.redirect(uri);
- -      });
- -  });
+const adAuth = exports.adAuth = (req, res, next) => {
+    console.log('[CALL] adAuth');
 
- -  view.on('get', { action: 'success' }, function (next) {
- -      console.log('[GET] routes/views/createAd actions: success');
- -      if( req.query.auth_code ) {
- -          wechat.getQueryAuth(req.query.auth_code, function (err, result) {
- -              wechat.updatingPreAuthCode();
- -              if( !err ) {
- -                  ad.find({appid: result.authorizer_appid, state: 'OPEN'}, function (err2, adInfos) {
- -                      if(adInfos.length <= 0) {
- -                          var option = {
- -                              aderId: req.query.aderId,
- -                              count: req.query.count,
- -                              state: "OPEN",
- -                              isDefault: false,
- -                              appid: result.authorizer_appid,
- -                              access_token: result.authorizer_access_token,
- -                              refresh_token: result.authorizer_refresh_token
- -                          };
- -                          ad.insert(option, function(err3) {
- -                              locals.action = 'success';
- -                              next(err3);
- -                          });
- -                      } else {
- -                          locals.action = 'fail';
- -                          next();
- -                      }
- -                  });
- -              } else {
- -                  locals.action = 'fail';
- -                  next(err);
- -              }
- -          });
- -      } else {
- -          locals.action = 'fail';
- -          next();
- -      }
- -  });
- -  
+    wechatHelper.CreatePreAuthCode({ adId: req.query.adId }, (err, pre_auth_code) => {
+        console.log('[CALLBACK] adAuth');
+        if( err ) {
+            return next(err);
+        }
+        let redirect_uri = encodeURIComponent('http://' + req.headers.host + '/wechat/open/adAuthSuccess');
+        let uri = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=' + WECHAT_OPEN_APP_ID;
+        uri += '&pre_auth_code=' + pre_auth_code;
+        uri += '&redirect_uri=' + redirect_uri;
+        res.redirect(uri);
+    });
 
 };
 
+const adAuthSuccess = exports.adAuthSuccess = (req, res, next) => {
+    console.log('[CALL] adAuthSuccess');
 
-
-
-function TakeDeviceItem(params, callback) {
-    console.log('[CALL] routes/views/wechatAd/TakeDeviceItem');
-
-    if(params.deviceOrderInfo &&
-        params.deviceOrderInfo.state == 'SUCCESS') {
-        var option = {
-            url: 'http://106.14.195.50:80/api/TakeDeviceItem',
-            method: 'POST',
-            headers: {  
-                'content-type': 'application/json'
-            },
-            json: {
-                devNo: params.deviceOrderInfo.devNo,
-                deviceOrderId: params.deviceOrderInfo._id.toString()
-            }
-        };
-        console.log(option);
-        request.post(option, function(err, res, body) {
-            console.log('[CALLBACK] requestTakeItem, err:' + err + 'body:');
-            console.log(body);
-            var takeRes = 'FAIL';
-            if(!body ||
-                !body.data) {
-            } else {
-                takeRes = body.data.res;
-            }
-            if(takeRes == 'SUCCESS') {
-                deviceOrder.finishTake(params, function (err, deviceOrderInfo) {
-                    callback(err);
-                });
-            } else {
-                callback(null);
-            }
-        });
-    }
+    res.render('index', { title: '授权成功', message: '感谢使用青橙服务！' });
 }
 
-
-function updatingToken() {
-    console.log('[CALL] routes/models/wechat/updatingToken');
-
-    system.findOne(function (err, systemInfo) {
-        var option = {
-            url: 'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
-            method: 'POST',
-            headers: {  
-                'content-type': 'application/json'
-            },
-            json: {
-                component_appid: WECHAT_OPEN_APP_ID,
-                component_appsecret: WECHAT_OPEN_APP_SECRET, 
-                component_verify_ticket: systemInfo.component_verify_ticket
-            }
-        };
-
-        request.post(option, function(err2, ret, body) {
-            console.log('[CALL] routes/models/wechat/updatingToken post return:');
-            console.log(body);
-            if(!ret.statusCode ||
-                ret.statusCode != 200) {
-                
-            } else {
-                system.updateAccessToken(body.component_access_token, function (err3, systemInfo2) {
-                    
-                });
-            }
-        });
-    });
-}
-
-var updatingPreAuthCode = exports.updatingPreAuthCode = function () {
-    console.log('[CALL] routes/models/wechat/updatingPreAuthCode');
-
-    system.findOne(function (err, systemInfo) {
-        
-        var option = {
-            url: 'https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token='
-                + systemInfo.component_access_token,
-            method: 'POST',
-            headers: {  
-                'content-type': 'application/json'
-            },
-            json: {
-                component_appid: WECHAT_OPEN_APP_ID
-            }
-        };
-
-        request.post(option, function(err2, ret, body) {
-            console.log('[CALL] routes/models/wechat/updatingPreAuthCode post return:');
-            console.log(body);
-            if(!ret.statusCode ||
-                ret.statusCode != 200) {
-                
-            } else {
-                system.updatePreAuthCode(body.pre_auth_code, function (err3, systemInfo2) {
-                    
-                });
-            }
-        });
-    });
-}
-
-exports.getQueryAuth = function(authorization_code, callback) {
-    console.log('[CALL] routes/models/wechat/getQueryAuth');
-
-    system.findOne(function (err, systemInfo) {
-        var option = {
-            url: 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token='
-                + systemInfo.component_access_token,
-            method: 'POST',
-            headers: {  
-                'content-type': 'application/json'
-            },
-            json: {
-                component_appid: WECHAT_OPEN_APP_ID,
-                authorization_code: authorization_code
-            }
-        };
-
-        request.post(option, function(err2, ret, body) {
-            console.log('[CALL] routes/models/wechat/getQueryAuth post return:');
-            console.log(body);
-            if(!ret.statusCode ||
-                ret.statusCode != 200) {
-                
-            } else {
-                callback(null, body.authorization_info);
-            }
-        });
-    });
-}
-
-function updatingAdToken() {
-    console.log('[CALL] routes/models/wechat/updatingAdToken');
-
-    system.findOne(function (err, systemInfo) {
-        ad.find({state: 'OPEN'}, function (err2, adInfos) {
-            adInfos.forEach(function(adInfo){
-                var option = {
-                    url: 'https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token='
-                        + systemInfo.component_access_token,
-                    method: 'POST',
-                    headers: {  
-                        'content-type': 'application/json'
-                    },
-                    json: {
-                        component_appid: WECHAT_OPEN_APP_ID,
-                        authorizer_appid: adInfo.appid, 
-                        authorizer_refresh_token: adInfo.refresh_token
-                    }
-                };
-                (function (appid) {
-                    request.post(option, function(err, ret, body) {
-                        console.log('[CALL] routes/models/wechat/updatingAdToken post return:');
-                        console.log(body);
-                        if(!ret.statusCode ||
-                            ret.statusCode != 200) {
-                            
-                        } else {
-                            body.appid = appid;
-                            ad.updateToken(body, function (err, adInfo2) {
-                                
-                            });
-                        }
-                    });
-                }) (adInfo.appid);
-            });
-        });
-    });
-}
-
-
-updatingToken();
-setInterval(function () {
-    updatingToken();
-}, 90 * 60 * 1000);
-
-updatingPreAuthCode();
-setInterval(function () {
-    updatingPreAuthCode();
-}, 15  * 60 * 1000);
-
-updatingAdToken();
-setInterval(function () {
-    updatingAdToken();
-}, 90 * 60 * 1000);
-*/

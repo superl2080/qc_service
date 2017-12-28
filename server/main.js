@@ -11,6 +11,7 @@ const router = exports.router = express.Router();
 
 router.use('/', middleware.router);
 
-router.post('/wechat/open/notice', wechatOpenRouter.authNotice);
+router.post('/wechat/open/authNotice', wechatOpenRouter.authNotice);
 router.post('/wechat/open/adNotice/:appid', wechatOpenRouter.adNotice);
 router.get('/wechat/open/adAuth', wechatOpenRouter.adAuth);
+router.get('/wechat/open/adAuthSuccess', wechatOpenRouter.adAuthSuccess);
