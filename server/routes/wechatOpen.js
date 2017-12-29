@@ -40,8 +40,7 @@ const authNotice = exports.authNotice = (req, res, next) => {
             case 'updateauthorized':
                 console.log('[CALL] authNotice, authorized/updateauthorized');
                 wechatHelper.UpdateWechatMpAuthInfo({
-                    appid: result.decrypt.xml.AuthorizerAppid[0],
-                    auth_Code: result.decrypt.xml.AuthorizationCode[0],
+                    auth_code: result.decrypt.xml.AuthorizationCode[0],
                     pre_auth_code: result.decrypt.xml.PreAuthCode[0]
                 }, callback);
                 break;
@@ -153,9 +152,10 @@ const adAuth = exports.adAuth = (req, res, next) => {
         if( err ) {
             return next(err);
         }
-        let redirect_uri = encodeURIComponent('http://' + req.headers.host + '/wechat/open/adAuthSuccess');
+        let redirect_uri = encodeURIComponent('http://' + req.headers.host + '/wechat/open/adAuthSuccess?pre_auth_code=' + pre_auth_code);
         let uri = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=' + WECHAT_OPEN_APP_ID;
         uri += '&pre_auth_code=' + pre_auth_code;
+        uri += '&auth_type=1'
         uri += '&redirect_uri=' + redirect_uri;
         res.render('page-button', { title: '授权公众号吸粉', message: '点击确认，并使用公众号运营者微信进行扫码授权。青橙承诺，授权仅用于吸粉投放和粉丝关注判断。', button: uri });
     });
@@ -165,6 +165,15 @@ const adAuth = exports.adAuth = (req, res, next) => {
 const adAuthSuccess = exports.adAuthSuccess = (req, res, next) => {
     console.log('[CALL] adAuthSuccess');
 
-    res.render('page', { title: '授权公众号吸粉', message: '授权成功！感谢使用青橙服务。' });
+    wechatHelper.UpdateWechatMpAuthInfo({
+        auth_code: req.query.auth_code,
+        pre_auth_code: req.query.pre_auth_code
+    }, (err, results) => {
+        console.log('[CALLBACK] adAuthSuccess');
+        if( err ) {
+            next(err);
+        }
+        res.render('page', { title: '授权公众号吸粉', message: '授权成功！感谢使用青橙服务。' });
+    });
 }
 
