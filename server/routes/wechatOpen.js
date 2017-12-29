@@ -157,7 +157,7 @@ const adAuth = exports.adAuth = (req, res, next) => {
         let uri = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=' + WECHAT_OPEN_APP_ID;
         uri += '&pre_auth_code=' + pre_auth_code;
         uri += '&redirect_uri=' + redirect_uri;
-        res.redirect(uri);
+        res.render('page-button', { title: '授权公众号吸粉', message: '点击确认，并使用公众号运营者微信进行扫码授权。青橙承诺，授权仅用于吸粉投放和粉丝关注判断。', button: uri });
     });
 
 };
@@ -165,6 +165,6 @@ const adAuth = exports.adAuth = (req, res, next) => {
 const adAuthSuccess = exports.adAuthSuccess = (req, res, next) => {
     console.log('[CALL] adAuthSuccess');
 
-    res.render('index', { title: '授权成功', message: '感谢使用青橙服务！' });
+    res.render('page', { title: '授权公众号吸粉', message: '授权成功！感谢使用青橙服务。' });
 }
 
