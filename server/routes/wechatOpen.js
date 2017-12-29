@@ -148,7 +148,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
 const adAuth = exports.adAuth = (req, res, next) => {
     console.log('[CALL] adAuth');
 
-    wechatHelper.CreatePreAuthCode({ adId: req.query.adId }, (err, pre_auth_code) => {
+    wechatHelper.CreatePreAuthCode(req.query.adId, (err, pre_auth_code) => {
         console.log('[CALLBACK] adAuth');
         if( err ) {
             return next(err);
