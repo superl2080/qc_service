@@ -26,29 +26,29 @@ const authNotice = exports.authNotice = (req, res, next) => {
 
         Decrypt: ['ParseXml', (result, callback) => {
             console.log('[CALL] authNotice, Decrypt');
-            const decryptData = wechatHelper.Decrypt(result.ParseXml.xml.Encrypt[0]);
+            const decryptData = wechatHelper.Decrypt(result.ParseXml.xml.Encrypt);
             cryptHelper.ParseJsonFromXml(decryptData, callback);
         }],
 
         CheckInfo: ['Decrypt', (result, callback) => {
             console.log('[CALL] authNotice, CheckInfo');
-            switch( result.Decrypt.xml.InfoType[0] ){
+            switch( result.Decrypt.xml.InfoType ){
             case 'component_verify_ticket':
                 console.log('[CALL] authNotice, checkTicket');
-                wechatHelper.UpdateTicket(result.Decrypt.xml.ComponentVerifyTicket[0], callback);
+                wechatHelper.UpdateTicket(result.Decrypt.xml.ComponentVerifyTicket, callback);
                 break;
             case 'authorized':
             case 'updateauthorized':
                 console.log('[CALL] authNotice, authorized/updateauthorized');
                 wechatHelper.UpdateWechatMpAuthInfo({
-                    auth_code: result.Decrypt.xml.AuthorizationCode[0],
-                    pre_auth_code: result.Decrypt.xml.PreAuthCode[0]
+                    auth_code: result.Decrypt.xml.AuthorizationCode,
+                    pre_auth_code: result.Decrypt.xml.PreAuthCode
                 }, callback);
                 break;
             case 'unauthorized':
                 console.log('[CALL] authNotice, unauthorized');
                 wechatHelper.CancelWechatMpAuthInfo({
-                    appid: result.Decrypt.xml.AuthorizerAppid[0]
+                    appid: result.Decrypt.xml.AuthorizerAppid
                 }, callback);
                 break;
             default:
@@ -85,7 +85,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
 
         Decrypt: ['ParseXml', (result, callback) => {
             console.log('[CALL] adNotice, Decrypt');
-            const decryptData = wechatHelper.Decrypt(result.ParseXml.xml.Encrypt[0]);
+            const decryptData = wechatHelper.Decrypt(result.ParseXml.xml.Encrypt);
             cryptHelper.ParseJsonFromXml(decryptData, callback);
         }],
 
@@ -93,9 +93,9 @@ const adNotice = exports.adNotice = (req, res, next) => {
             console.log('[CALL] adNotice, CheckInfo');
 
             if( result.Decrypt.xml.MsgType == 'event'
-                && (result.Decrypt.xml.Event[0] == 'subscribe' || result.Decrypt.xml.Event[0] == 'SCAN')
-                && result.Decrypt.xml.EventKey[0] ) {
-                let userId = result.Decrypt.xml.EventKey[0];
+                && (result.Decrypt.xml.Event == 'subscribe' || result.Decrypt.xml.Event == 'SCAN')
+                && result.Decrypt.xml.EventKey ) {
+                let userId = result.Decrypt.xml.EventKey;
                 if( result.Decrypt.xml.Event == 'subscribe' ) {
                     userId = userId.slice(8);
                 }
@@ -103,7 +103,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                     userId: userId,
                     appid: result.Pre.req.params.appid,
                     openId: result.Decrypt.xml.FromUserName,
-                    event: result.Decrypt.xml.Event[0]
+                    event: result.Decrypt.xml.Event
                 }, (err, result) => {
                     if( !err ){
                         result.Pre.res.send('success');
@@ -116,10 +116,10 @@ const adNotice = exports.adNotice = (req, res, next) => {
                         && wechatOpen.auto_reply == result.Decrypt.xml.Content ) {
                         const msgEncryptXml = wechatHelper.EncryptMsg({
                             msg: {
-                                ToUserName: toolHelper.MakeCData(result.Decrypt.xml.FromUserName[0]),
-                                FromUserName: toolHelper.MakeCData(result.Decrypt.xml.ToUserName[0]),
+                                ToUserName: toolHelper.MakeCData(result.Decrypt.xml.FromUserName),
+                                FromUserName: toolHelper.MakeCData(result.Decrypt.xml.ToUserName),
                                 CreateTime: Math.round((new Date()).getTime() / 1000),
-                                MsgType: toolHelper.MakeCData(result.Decrypt.xml.MsgType[0]),
+                                MsgType: toolHelper.MakeCData(result.Decrypt.xml.MsgType),
                                 Content: toolHelper.MakeCData(process.env.SIT_URL + '/subscribe/' + result.Pre.req.params.appid)
                             },
                             token: process.env.WECHAT_OPEN_MESSAGE_TOKEN,
