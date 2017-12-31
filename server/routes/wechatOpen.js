@@ -3,7 +3,6 @@ const async = require('async');
 const systemConfigModel = require('../../imports/models/systemConfig');
 const wechatHelper = require('../../imports/helpers/wechat');
 const cryptHelper = require('../../imports/helpers/crypt');
-const toolHelper = require('../../imports/helpers/tool');
 
 
 const authNotice = exports.authNotice = (req, res, next) => {
