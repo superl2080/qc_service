@@ -103,7 +103,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                 }
                 wechatHelper.AdSubscribe({
                     userId: userId,
-                    appid: result.Pre.req.query.appid,
+                    appid: result.Pre.req.params.appid,
                     openId: result.Decrypt.xml.FromUserName,
                     event: result.Decrypt.xml.Event[0]
                 }, (err, result) => {
@@ -122,7 +122,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                                 FromUserName: result.Decrypt.xml.ToUserName,
                                 CreateTime: new Date(),
                                 MsgType: result.Decrypt.xml.MsgType,
-                                Content: process.env.SIT_URL + '/subscribe/' + result.Pre.req.query.appid
+                                Content: process.env.SIT_URL + '/subscribe/' + result.Pre.req.params.appid
                             },
                             token: process.env.WECHAT_OPEN_MESSAGE_TOKEN,
                             timestamp: result.Pre.req.query.timestamp,
