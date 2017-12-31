@@ -25,9 +25,9 @@ const update = exports.update = (req, res, next) => {
             console.log('[CALL] update, UpdatePoint');
             pointModel.UpdateZhijinji({
                 partnerId: result.GetDefaultPartner._id,
-                devNo: result.Pre.req.query.devNo,
-                type: result.Pre.req.query.type,
-                state: result.Pre.req.query.state
+                devNo: result.Pre.req.body.devNo,
+                type: result.Pre.req.body.type,
+                state: result.Pre.req.body.state
             }, callback);
         }]
 
