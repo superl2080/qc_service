@@ -5,8 +5,6 @@ const wechatHelper = require('../../imports/helpers/wechat');
 const cryptHelper = require('../../imports/helpers/crypt');
 const toolHelper = require('../../imports/helpers/tool');
 
-const WECHAT_OPEN_APP_ID = process.env.WECHAT_OPEN_APP_ID;
-
 
 const authNotice = exports.authNotice = (req, res, next) => {
 
@@ -157,7 +155,7 @@ const adAuth = exports.adAuth = (req, res, next) => {
             return next(err);
         }
         let redirect_uri = encodeURIComponent('http://' + req.headers.host + '/wechat/open/adAuthSuccess?pre_auth_code=' + pre_auth_code);
-        let uri = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=' + WECHAT_OPEN_APP_ID;
+        let uri = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=' + process.env.WECHAT_OPEN_APP_ID;
         uri += '&pre_auth_code=' + pre_auth_code;
         uri += '&auth_type=1'
         uri += '&redirect_uri=' + redirect_uri;
