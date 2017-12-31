@@ -12,7 +12,7 @@ const authNotice = exports.authNotice = (req, res, next) => {
     async.auto({
         ParseMsg: (callback) => {
             console.log('[CALL] authNotice, ParseMsg');
-            cryptHelper.ParseDecryptMsg(req.body, callback);
+            cryptHelper.ParseDecryptMsg({ msg: req.body }, callback);
         },
 
         CheckMsg: ['ParseMsg', (result, callback) => {
@@ -56,7 +56,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
     async.auto({
         ParseMsg: (callback) => {
             console.log('[CALL] authNotice, ParseMsg');
-            cryptHelper.ParseDecryptMsg(req.body, callback);
+            cryptHelper.ParseDecryptMsg({ msg: req.body }, callback);
         },
 
         CheckMsg: ['ParseMsg', (result, callback) => {
