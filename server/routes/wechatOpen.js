@@ -115,7 +115,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                     if( !err
                         && wechatOpen.auto_reply == result.Decrypt.xml.Content ) {
                         const msgEncryptXml = wechatHelper.EncryptMsg({
-                            xml: {
+                            msg: {
                                 xml: {
                                     ToUserName: result.Decrypt.xml.FromUserName,
                                     FromUserName: result.Decrypt.xml.ToUserName,
