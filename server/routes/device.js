@@ -18,10 +18,10 @@ const update = exports.update = (req, res, next) => {
 
         GetDefaultPartner: ['Pre', (result, callback) => {
             console.log('[CALL] update, GetDefaultPartner');
-            partnerModel.GetDefaultPartner(result.Pre.param, callback);
+            partnerModel.GetDefaultPartner(null, callback);
         }],
 
-        UpdatePoint: ['Pre', (result, callback) => {
+        UpdatePoint: ['GetDefaultPartner', (result, callback) => {
             console.log('[CALL] update, UpdatePoint');
             pointModel.UpdateZhijinji({
                 partnerId: result.GetDefaultPartner._id,
