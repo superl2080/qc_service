@@ -116,11 +116,11 @@ const adNotice = exports.adNotice = (req, res, next) => {
                         && wechatOpen.auto_reply == result.Decrypt.xml.Content ) {
                         const msgEncryptXml = wechatHelper.EncryptMsg({
                             msg: {
-                                ToUserName: toolHelper.MakeCData(result.Decrypt.xml.FromUserName),
-                                FromUserName: toolHelper.MakeCData(result.Decrypt.xml.ToUserName),
+                                ToUserName: result.Decrypt.xml.FromUserName,
+                                FromUserName: result.Decrypt.xml.ToUserName,
                                 CreateTime: Math.round((new Date()).getTime() / 1000),
-                                MsgType: toolHelper.MakeCData(result.Decrypt.xml.MsgType),
-                                Content: toolHelper.MakeCData(process.env.SIT_URL + '/subscribe/' + result.Pre.req.params.appid)
+                                MsgType: result.Decrypt.xml.MsgType,
+                                Content: process.env.SIT_URL + '/subscribe/' + result.Pre.req.params.appid
                             },
                             token: process.env.WECHAT_OPEN_MESSAGE_TOKEN,
                             timestamp: result.Pre.req.query.timestamp,
