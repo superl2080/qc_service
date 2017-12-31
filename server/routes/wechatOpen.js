@@ -57,11 +57,11 @@ const authNotice = exports.authNotice = (req, res, next) => {
             }
         }]
 
-    }, (err, results) => {
+    }, (err, result) => {
         console.log('[CALLBACK] authNotice');
-        results.Pre.res.send('success');
+        result.Pre.res.send('success');
         if( err ) {
-            results.Pre.next(err);
+            result.Pre.next(err);
         }
     });
 };
@@ -138,11 +138,11 @@ const adNotice = exports.adNotice = (req, res, next) => {
             }
         }]
 
-    }, (err, results) => {
+    }, (err, result) => {
         console.log('[CALLBACK] adNotice');
         if( err ) {
-            results.pre.res.send('success');
-            results.pre.next(err);
+            result.pre.res.send('success');
+            result.pre.next(err);
         }
     });
 };

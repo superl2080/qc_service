@@ -24,14 +24,14 @@ const update = exports.update = (req, res, next) => {
         UpdatePoint: ['Pre', (result, callback) => {
             console.log('[CALL] update, UpdatePoint');
             pointModel.UpdateZhijinji({
-                partnerId: results.GetDefaultPartner._id,
-                devNo: results.Pre.req.query.devNo,
-                type: results.Pre.req.query.type,
-                state: results.Pre.req.query.state
+                partnerId: result.GetDefaultPartner._id,
+                devNo: result.Pre.req.query.devNo,
+                type: result.Pre.req.query.type,
+                state: result.Pre.req.query.state
             }, callback);
         }]
 
-    }, (err, results) => {
+    }, (err, result) => {
         console.log('[CALLBACK] update');
         let json = {
             code: 0,
@@ -45,7 +45,7 @@ const update = exports.update = (req, res, next) => {
             json.data.res = 'FAIL';
             json.message = err.message;
         }
-        results.Pre.res.send(json);
+        result.Pre.res.send(json);
     });
 };
 
