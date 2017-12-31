@@ -108,7 +108,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                     event: result.Decrypt.xml.Event[0]
                 }, (err, result) => {
                     if( !err ){
-                        results.pre.res.send('success');
+                        result.Pre.res.send('success');
                     }
                     callback(err);
                 });
@@ -128,7 +128,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                             timestamp: result.Pre.req.query.timestamp,
                             nonce: result.Pre.req.query.nonce
                         });
-                        results.pre.res.send(msgEncryptXml);
+                        result.Pre.res.send(msgEncryptXml);
                         callback(null);
                     } else {
                         callback(new Error('adNotice: do not handle message'));
@@ -142,8 +142,8 @@ const adNotice = exports.adNotice = (req, res, next) => {
     }, (err, result) => {
         console.log('[CALLBACK] adNotice');
         if( err ) {
-            result.pre.res.send('success');
-            result.pre.next(err);
+            result.Pre.res.send('success');
+            result.Pre.next(err);
         }
     });
 };
@@ -172,7 +172,7 @@ const adAuthSuccess = exports.adAuthSuccess = (req, res, next) => {
     wechatHelper.UpdateWechatMpAuthInfo({
         auth_code: req.query.auth_code,
         pre_auth_code: req.query.pre_auth_code
-    }, (err, results) => {
+    }, (err, result) => {
         console.log('[CALLBACK] adAuthSuccess');
         if( err ) {
             next(err);
