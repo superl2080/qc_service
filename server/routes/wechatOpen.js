@@ -10,45 +10,30 @@ const authNotice = exports.authNotice = (req, res, next) => {
 
 
     async.auto({
-        Pre: (callback) => {
-            console.log('[CALL] authNotice, Pre');
-            callback(null, {
-                req: req,
-                res: res,
-                next: next
-            });
+        ParseMsg: (callback) => {
+            console.log('[CALL] authNotice, ParseMsg');
+            cryptHelper.ParseDecryptMsg(req.body, callback);
         },
 
-        ParseXml: ['Pre', (result, callback) => {
-            console.log('[CALL] authNotice, ParseXml');
-            cryptHelper.ParseJsonFromXml(result.Pre.req.body, callback);
-        }],
-
-        Decrypt: ['ParseXml', (result, callback) => {
-            console.log('[CALL] authNotice, Decrypt');
-            const decryptData = wechatHelper.Decrypt(result.ParseXml.xml.Encrypt);
-            cryptHelper.ParseJsonFromXml(decryptData, callback);
-        }],
-
-        CheckInfo: ['Decrypt', (result, callback) => {
-            console.log('[CALL] authNotice, CheckInfo');
-            switch( result.Decrypt.xml.InfoType ){
+        CheckMsg: ['ParseMsg', (result, callback) => {
+            console.log('[CALL] authNotice, CheckMsg');
+            switch( result.ParseMsg.InfoType ){
             case 'component_verify_ticket':
                 console.log('[CALL] authNotice, checkTicket');
-                wechatHelper.UpdateTicket(result.Decrypt.xml.ComponentVerifyTicket, callback);
+                wechatHelper.UpdateTicket(result.ParseMsg.ComponentVerifyTicket, callback);
                 break;
             case 'authorized':
             case 'updateauthorized':
                 console.log('[CALL] authNotice, authorized/updateauthorized');
                 wechatHelper.UpdateWechatMpAuthInfo({
-                    auth_code: result.Decrypt.xml.AuthorizationCode,
-                    pre_auth_code: result.Decrypt.xml.PreAuthCode
+                    auth_code: result.ParseMsg.AuthorizationCode,
+                    pre_auth_code: result.ParseMsg.PreAuthCode
                 }, callback);
                 break;
             case 'unauthorized':
                 console.log('[CALL] authNotice, unauthorized');
                 wechatHelper.CancelWechatMpAuthInfo({
-                    appid: result.Decrypt.xml.AuthorizerAppid
+                    appid: result.ParseMsg.AuthorizerAppid
                 }, callback);
                 break;
             default:
@@ -58,9 +43,9 @@ const authNotice = exports.authNotice = (req, res, next) => {
 
     }, (err, result) => {
         console.log('[CALLBACK] authNotice');
-        result.Pre.res.send('success');
+        res.send('success');
         if( err ) {
-            result.Pre.next(err);
+            next(err);
         }
     });
 };
@@ -69,79 +54,66 @@ const authNotice = exports.authNotice = (req, res, next) => {
 const adNotice = exports.adNotice = (req, res, next) => {
 
     async.auto({
-        Pre: (callback) => {
-            console.log('[CALL] adNotice, Pre');
-            callback(null, {
-                req: req,
-                res: res,
-                next: next
-            });
+        ParseMsg: (callback) => {
+            console.log('[CALL] authNotice, ParseMsg');
+            cryptHelper.ParseDecryptMsg(req.body, callback);
         },
 
-        ParseXml: ['Pre', (result, callback) => {
-            console.log('[CALL] adNotice, ParseXml');
-            cryptHelper.ParseJsonFromXml(result.Pre.req.body, callback);
-        }],
+        CheckMsg: ['ParseMsg', (result, callback) => {
+            console.log('[CALL] adNotice, CheckMsg');
 
-        Decrypt: ['ParseXml', (result, callback) => {
-            console.log('[CALL] adNotice, Decrypt');
-            const decryptData = wechatHelper.Decrypt(result.ParseXml.xml.Encrypt);
-            cryptHelper.ParseJsonFromXml(decryptData, callback);
-        }],
-
-        CheckInfo: ['Decrypt', (result, callback) => {
-            console.log('[CALL] adNotice, CheckInfo');
-
-            if( result.Decrypt.xml.MsgType == 'event'
-                && (result.Decrypt.xml.Event == 'subscribe' || result.Decrypt.xml.Event == 'SCAN')
-                && result.Decrypt.xml.EventKey ) {
-                let userId = result.Decrypt.xml.EventKey;
-                if( result.Decrypt.xml.Event == 'subscribe' ) {
+            if( result.ParseMsg.MsgType == 'event'
+                && (result.ParseMsg.Event == 'subscribe' || result.ParseMsg.Event == 'SCAN')
+                && result.ParseMsg.EventKey ) {
+                let userId = result.ParseMsg.EventKey;
+                if( result.ParseMsg.Event == 'subscribe' ) {
                     userId = userId.slice(8);
                 }
                 wechatHelper.AdSubscribe({
                     userId: userId,
-                    appid: result.Pre.req.params.appid,
-                    openId: result.Decrypt.xml.FromUserName,
-                    event: result.Decrypt.xml.Event
+                    appid: req.params.appid,
+                    openId: result.ParseMsg.FromUserName,
+                    event: result.ParseMsg.Event
                 }, (err, result) => {
                     if( !err ){
-                        result.Pre.res.send('success');
+                        res.send('success');
                     }
                     callback(err);
                 });
-            } else if( result.Decrypt.xml.MsgType == 'text' ){
+            } else if( result.ParseMsg.MsgType == 'text' ){
                 systemConfigModel.GetWechatOpen(null, (err, wechatOpen) => {
                     if( !err
-                        && wechatOpen.auto_reply == result.Decrypt.xml.Content ) {
-                        const msgEncryptXml = wechatHelper.EncryptMsg({
+                        && wechatOpen.auto_reply == result.ParseMsg.Content ) {
+                        const msgEncryptXml = cryptHelper.CreateEncryptMsg({
                             msg: {
-                                ToUserName: result.Decrypt.xml.FromUserName,
-                                FromUserName: result.Decrypt.xml.ToUserName,
+                                ToUserName: result.ParseMsg.FromUserName,
+                                FromUserName: result.ParseMsg.ToUserName,
                                 CreateTime: Math.round((new Date()).getTime() / 1000),
-                                MsgType: result.Decrypt.xml.MsgType,
-                                Content: process.env.SIT_URL + '/subscribe/' + result.Pre.req.params.appid
+                                MsgType: result.ParseMsg.MsgType,
+                                Content: process.env.SIT_URL + '/subscribe/' + req.params.appid
                             },
                             token: process.env.WECHAT_OPEN_MESSAGE_TOKEN,
-                            timestamp: result.Pre.req.query.timestamp,
-                            nonce: result.Pre.req.query.nonce
+                            timestamp: req.query.timestamp,
+                            nonce: req.query.nonce
                         });
-                        result.Pre.res.send(msgEncryptXml);
+                        res.send(msgEncryptXml);
                         callback(null);
                     } else {
-                        callback(new Error('adNotice: do not handle message'));
+                        res.send('success');
+                        callback(null);
                     }
                 });
             } else {
-                callback(new Error('adNotice: do not handle message'));
+                res.send('success');
+                callback(null);
             }
         }]
 
     }, (err, result) => {
         console.log('[CALLBACK] adNotice');
         if( err ) {
-            result.Pre.res.send('success');
-            result.Pre.next(err);
+            res.send('success');
+            next(err);
         }
     });
 };
