@@ -89,7 +89,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                                 FromUserName: result.ParseMsg.ToUserName,
                                 CreateTime: Math.round((new Date()).getTime() / 1000),
                                 MsgType: result.ParseMsg.MsgType,
-                                Content: process.env.SIT_URL + '/subscribe/' + req.params.appid
+                                Content: '[青橙]点击完成领取: ' + process.env.SIT_URL + '/subscribe/' + req.params.appid
                             },
                             token: process.env.WECHAT_OPEN_MESSAGE_TOKEN,
                             timestamp: req.query.timestamp,
