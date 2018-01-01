@@ -19,7 +19,7 @@ const authNotice = exports.authNotice = (req, res, next) => {
             switch( result.ParseMsg.InfoType ){
             case 'component_verify_ticket':
                 console.log('[CALL] authNotice, checkTicket');
-                wechatHelper.UpdateTicket(result.ParseMsg.ComponentVerifyTicket, callback);
+                systemConfigModel.UpdateWechatOpenTicket(result.ParseMsg.ComponentVerifyTicket, callback);
                 break;
             case 'authorized':
             case 'updateauthorized':
