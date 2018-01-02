@@ -3,6 +3,7 @@ const async = require('async');
 const systemConfigModel = require('../../imports/models/systemConfig');
 const wechatHelper = require('../../imports/helpers/wechat');
 const cryptHelper = require('../../imports/helpers/crypt');
+const wechatApi = require('../../imports/api/wechat');
 
 
 const authNotice = exports.authNotice = (req, res, next) => {
@@ -125,12 +126,11 @@ const adAuth = exports.adAuth = (req, res, next) => {
         if( err ) {
             return next(err);
         }
-        let redirect_uri = encodeURIComponent('http://' + req.headers.host + '/wechat/open/adAuthSuccess?pre_auth_code=' + pre_auth_code);
-        let uri = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=' + process.env.WECHAT_OPEN_APP_ID;
-        uri += '&pre_auth_code=' + pre_auth_code;
-        uri += '&auth_type=1'
-        uri += '&redirect_uri=' + redirect_uri;
-        res.render('page-button', { title: '授权公众号吸粉', message: '点击确认，并使用公众号运营者微信进行扫码授权。青橙承诺，授权仅用于吸粉投放和粉丝关注判断。', button: uri });
+        const url = wechatApi.GetOpenAuthUrl({
+            pre_auth_code: pre_auth_code,
+            redirect_uri: 'http://' + req.headers.host + '/wechat/open/adAuthSuccess?pre_auth_code=' + pre_auth_code
+        });
+        res.render('page-button', { title: '授权公众号吸粉', message: '点击确认，并使用公众号运营者微信进行扫码授权。青橙承诺，授权仅用于吸粉投放和粉丝关注判断。', button: url });
     });
 
 };

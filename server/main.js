@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const middleware = require('./middleware');
 const wechatOpenRouter = require('./routes/wechatOpen');
+const wechatMpRouter = require('./routes/wechatMp');
 const deviceRouter = require('./routes/device');
 
 
@@ -19,3 +20,6 @@ router.post('/device/update', deviceRouter.update);
 
 router.get('/wechat/open/adAuth', wechatOpenRouter.adAuth);
 router.get('/wechat/open/adAuthSuccess', wechatOpenRouter.adAuthSuccess);
+
+router.get('/wechat/mp/oAuth', wechatMpRouter.oAuth);
+router.get('/wechat/mp/oAuthSuccess', wechatMpRouter.oAuthSuccess);
