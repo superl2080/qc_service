@@ -6,6 +6,8 @@
             "instances": "max",
             "exec_mode": "cluster",
             "env": {
+                "WECHAT_MP_APP_ID": "wx1676ae64c9ab902c",
+                "WECHAT_MP_APP_SECRET": "2c3a4d54806a9f9442c6f5ebf10a1e53",
                 "WECHAT_OPEN_APP_ID": "wx26950c03b65b93ed",
                 "WECHAT_OPEN_APP_SECRET": "2d02bf96c35695b001db3c053c2b0abf",
                 "WECHAT_OPEN_ENCODE_KEY": "2c3a4d54806a9f9442c6f5ebf10a1e53wx1676ae64c",
