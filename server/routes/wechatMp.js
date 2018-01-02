@@ -1,6 +1,7 @@
 
 const async = require('async');
 const wechatHelper = require('../../imports/helpers/wechat');
+const wechatApi = require('../../imports/api/wechat');
 
 
 const oAuth = exports.oAuth = (req, res, next) => {
