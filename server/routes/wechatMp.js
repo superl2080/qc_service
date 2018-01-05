@@ -1,14 +1,14 @@
 
 const async = require('async');
 const wechatHelper = require('../../imports/helpers/wechat');
+const cryptHelper = require('../../imports/helpers/crypt');
 const wechatApi = require('../../imports/api/wechat');
 
 
 const oAuth = exports.oAuth = (req, res, next) => {
     console.log('[CALL] oAuth');
 
-    let redirect_uri = 'http://' + req.headers.host + '/wechat/mp/oAuthSuccess?redirect_uri=' + req.query.redirect_uri;
-    redirect_uri += '&state=' + req.query.state;
+    let redirect_uri = 'http://' + req.headers.host + '/wechat/mp/oAuthSuccess?redirect_uri=' + cryptHelper.EncryptString(req.query.redirect_uri);
     const url = wechatApi.GetMpOAuthUrl({ redirect_uri: redirect_uri });
 
     res.redirect(url);
@@ -33,7 +33,7 @@ const oAuthSuccess = exports.oAuthSuccess = (req, res, next) => {
 
     }, (err, result) => {
         console.log('[CALLBACK] oAuthSuccess');
-        res.redirect(req.query.redirect_uri + '&openId=' + result.MpOAuthGetOpenId.openid);
+        res.redirect(cryptHelper.DecryptString(req.query.redirect_uri) + '&openId=' + result.MpOAuthGetOpenId.openid);
         if( err ) {
             next(err);
         }

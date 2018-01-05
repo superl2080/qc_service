@@ -1,5 +1,6 @@
 
 const async = require('async');
+const adModel = require('../../imports/models/ad');
 const systemConfigModel = require('../../imports/models/systemConfig');
 const wechatHelper = require('../../imports/helpers/wechat');
 const cryptHelper = require('../../imports/helpers/crypt');
@@ -32,9 +33,7 @@ const authNotice = exports.authNotice = (req, res, next) => {
                 break;
             case 'unauthorized':
                 console.log('[CALL] authNotice, unauthorized');
-                wechatHelper.CancelWechatMpAuthInfo({
-                    appid: result.ParseMsg.AuthorizerAppid
-                }, callback);
+                adModel.CancelAdWechatMpAuthInfo(result.ParseMsg.AuthorizerAppid, callback);
                 break;
             default:
                 callback(null);
@@ -121,7 +120,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
 const adAuth = exports.adAuth = (req, res, next) => {
     console.log('[CALL] adAuth');
 
-    wechatHelper.CreatePreAuthCode(req.query.adId, (err, pre_auth_code) => {
+    wechatHelper.CreatePreAuthCode({ adId: req.query.adId }, (err, pre_auth_code) => {
         console.log('[CALLBACK] adAuth');
         if( err ) {
             return next(err);
