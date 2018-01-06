@@ -48,6 +48,12 @@ const GetPointById = exports.GetPointById = (param, callback) => {
     pointModel.findById(param.pointId, callback);
 }
 
+const GetDeployPoints = exports.GetDeployPoints = (param, callback) => {
+    pointModel.find({
+        state: { $in: ['DEPLOY', 'TEST'] }
+    }, callback);
+}
+
 const UpdateZhijinji = exports.UpdateZhijinji = (param, callback) => {
     if( !param
         || !param.devNo
