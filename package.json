@@ -9,6 +9,7 @@
     "async": "~2.6.0",
     "body-parser": "~1.18.2",
     "bcrypt": "~1.0.3",
+    "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
