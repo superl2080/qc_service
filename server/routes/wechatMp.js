@@ -33,7 +33,11 @@ const oAuthSuccess = exports.oAuthSuccess = (req, res, next) => {
 
     }, (err, result) => {
         console.log('[CALLBACK] oAuthSuccess');
-        res.redirect(cryptHelper.DecryptString(req.query.redirect_uri) + '&openId=' + result.MpOAuthGetOpenId.openid);
+        let paramOpenId = '?openId=' + result.MpOAuthGetOpenId.openid;
+        if( req.query.redirect_uri.indexOf('?') >= 0 ) {
+            paramOpenId = '&openId=' + result.MpOAuthGetOpenId.openid;
+        }
+        res.redirect(cryptHelper.DecryptString(req.query.redirect_uri) + paramOpenId);
         if( err ) {
             next(err);
         }
