@@ -80,7 +80,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                 }, (err, result) => {
                     wechatHelper.UpdateUserInfo({
                         userId: userId,
-                        ad: result.GetAdById
+                        ad: result.GetAdById,
                         openId: openId
                     }, (e, r) => {
                         if( !err ){
