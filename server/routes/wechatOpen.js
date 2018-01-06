@@ -3,8 +3,11 @@ const async = require('async');
 const adModel = require('../../imports/models/ad');
 const systemConfigModel = require('../../imports/models/systemConfig');
 const wechatHelper = require('../../imports/helpers/wechat');
+const orderHelper = require('../../imports/helpers/order');
 const cryptHelper = require('../../imports/helpers/crypt');
 const wechatApi = require('../../imports/api/wechat');
+
+const WECHAT_MP_APP_ID = process.env.WECHAT_MP_APP_ID || '';
 
 
 const authNotice = exports.authNotice = (req, res, next) => {
@@ -65,19 +68,26 @@ const adNotice = exports.adNotice = (req, res, next) => {
                 && (result.ParseMsg.Event == 'subscribe' || result.ParseMsg.Event == 'SCAN')
                 && result.ParseMsg.EventKey ) {
                 let userId = result.ParseMsg.EventKey;
+                let openId = result.ParseMsg.FromUserName;
                 if( result.ParseMsg.Event == 'subscribe' ) {
                     userId = userId.slice(8);
                 }
-                wechatHelper.AdSubscribe({
+                orderHelper.AdSubscribe({
                     userId: userId,
                     appid: req.params.appid,
-                    openId: result.ParseMsg.FromUserName,
+                    openId: openId,
                     event: result.ParseMsg.Event
                 }, (err, result) => {
-                    if( !err ){
-                        res.send('success');
-                    }
-                    callback(err);
+                    wechatHelper.UpdateUserInfo({
+                        userId: userId,
+                        ad: result.GetAdById
+                        openId: openId
+                    }, (e, r) => {
+                        if( !err ){
+                            res.send('success');
+                        }
+                        callback(err);
+                    });
                 });
             } else if( result.ParseMsg.MsgType == 'text' ){
                 systemConfigModel.GetWechatOpen(null, (err, wechatOpen) => {
