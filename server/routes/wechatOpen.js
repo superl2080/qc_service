@@ -3,6 +3,7 @@ const async = require('async');
 const adModel = require('../../imports/models/ad');
 const systemConfigModel = require('../../imports/models/systemConfig');
 const wechatHelper = require('../../imports/helpers/wechat');
+const toolHelper = require('../../imports/helpers/tool');
 const orderHelper = require('../../imports/helpers/order');
 const cryptHelper = require('../../imports/helpers/crypt');
 const wechatApi = require('../../imports/api/wechat');
@@ -97,7 +98,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                             msg: {
                                 ToUserName: result.ParseMsg.FromUserName,
                                 FromUserName: result.ParseMsg.ToUserName,
-                                CreateTime: Math.round((new Date()).getTime() / 1000),
+                                CreateTime: toolHelper.CreateTimeStamp((new Date()),
                                 MsgType: result.ParseMsg.MsgType,
                                 Content: '[青橙]点击完成领取: ' + process.env.SIT_URL + '/subscribe/' + req.params.appid
                             },
