@@ -43,14 +43,14 @@ const PayCreatePrepay = exports.PayCreatePrepay = (param, callback) => {
         total_fee: param.total_fee,
         appid: WECHAT_MP_APP_ID,
         mch_id: WECHAT_PAY_ID,
-        nonce_str: cryptHelper.RandomBytes(16),
+        nonce_str: cryptHelper.RandomBytes(16).toString('hex'),
         trade_type: 'JSAPI'
     };
     prepayJson.sign = cryptHelper.WechatPaySign(prepayJson);
 
     toolHelper.PostXml({
         url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
-        xml: cryptHelper.GetXmlFromJson(prepayJson)
+        xml: prepayJson
     }, function(err, result) {
         if( err 
             || result.return_code != 'SUCCESS'
@@ -60,7 +60,7 @@ const PayCreatePrepay = exports.PayCreatePrepay = (param, callback) => {
         } else {
             let prepayResult = {
                 appId: WECHAT_MP_APP_ID,
-                nonceStr: cryptHelper.RandomBytes(16),
+                nonceStr: cryptHelper.RandomBytes(16).toString('hex'),
                 package: 'prepay_id=' + result.prepay_id,
                 signType: 'MD5',
                 timeStamp: toolHelper.CreateTimeStamp(new Date())
