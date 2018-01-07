@@ -79,16 +79,20 @@ const adNotice = exports.adNotice = (req, res, next) => {
                     openId: openId,
                     event: result.ParseMsg.Event
                 }, (err, result) => {
-                    wechatHelper.UpdateUserInfo({
-                        userId: userId,
-                        ad: result.GetAdById,
-                        openId: openId
-                    }, (e, r) => {
-                        if( !err ){
-                            res.send('success');
-                        }
+                    if(!err) {
+                        wechatHelper.UpdateUserInfo({
+                            userId: userId,
+                            ad: result.GetAdById,
+                            openId: openId
+                        }, (e, r) => {
+                            if( !err ){
+                                res.send('success');
+                            }
+                            callback(err);
+                        });
+                    } else {
                         callback(err);
-                    });
+                    }
                 });
             } else if( result.ParseMsg.MsgType == 'text' ){
                 systemConfigModel.GetWechatOpen(null, (err, wechatOpen) => {
