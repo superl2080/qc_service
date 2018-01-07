@@ -2,6 +2,7 @@
 const async = require('async');
 const pointModel = require('../../imports/models/point');
 const partnerModel = require('../../imports/models/partner');
+const orderHelper = require('../../imports/helpers/order');
 
 
 const deviceUpdate = exports.deviceUpdate = (req, res, next) => {
