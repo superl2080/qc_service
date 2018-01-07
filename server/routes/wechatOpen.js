@@ -98,7 +98,7 @@ const adNotice = exports.adNotice = (req, res, next) => {
                             msg: {
                                 ToUserName: result.ParseMsg.FromUserName,
                                 FromUserName: result.ParseMsg.ToUserName,
-                                CreateTime: toolHelper.CreateTimeStamp((new Date()),
+                                CreateTime: toolHelper.CreateTimeStamp(new Date()),
                                 MsgType: result.ParseMsg.MsgType,
                                 Content: '[青橙]点击完成领取: ' + process.env.SIT_URL + '/subscribe/' + req.params.appid
                             },
