@@ -72,10 +72,7 @@ const GetDeployPoints = exports.GetDeployPoints = (param, callback) => {
 
 const UpdateZhijinji = exports.UpdateZhijinji = (param, callback) => {
     if( !param
-        || !param.devNo
-        || !param.type
-        || !param.state
-        || !param.partnerId ) {
+        || !param.devNo ) {
         return callback(new Error('UpdateZhijinji: param is error'));
     }
 
@@ -92,8 +89,8 @@ const UpdateZhijinji = exports.UpdateZhijinji = (param, callback) => {
                 }
             }, callback);
         } else {
-            point.deviceInfo.type = param.type;
-            point.deviceInfo.state = param.state;
+            if( param.type ) point.deviceInfo.type = param.type;
+            if( param.state ) point.deviceInfo.state = param.state;
             point.save(callback);
         }
     });
