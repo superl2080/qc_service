@@ -1,0 +1,246 @@
+'use strict';
+
+const models = require('../models');
+
+const SIT_URL = process.env.SIT_URL;
+
+
+module.exports = {
+
+    create: async param => {
+        console.log(__filename + '\n[CALL] create, param:');
+        console.log(param);
+
+        await models.dbs.order.cancel({ user: param.user });
+        const order = await models.dbs.order.create({
+            user: param.user,
+            point: param.point,
+        });
+        const ad = await models.dbs.ad.getDeliverAd({ user: param.user });
+
+        if( ad ){
+            let adInfo = {
+                adId: ad._id,
+                aderId: ad.aderId,
+            };
+
+            if( ad.type == 'WECHAT_MP_AUTH' ){
+                adInfo.appid = ad.wechatMpAuthInfo.appid;
+                adInfo.qrcode_url = ad.wechatMpAuthInfo.qrcode_url;
+
+            } else if( ad.type == 'WECHAT_MP_API' ){
+                const channelAd = await models.apis.channel.deliverAd({
+                    adChannelId: ad.wechatMpApiInfo.adChannelId,
+                    user: param.user,
+                    city: param.point.deployInfo.city,
+                });
+                adInfo.appid = channelAd.appid;
+                adInfo.qrcode_url = channelAd.qrcode_url;
+                if( channelAd.auth === true ) {
+                    const qrcode = await models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
+                    adInfo.qrcode_url = qrcode.url;
+                }
+            }
+
+            order = await models.dbs.order.update({
+                orderId: order._id,
+                adInfo: adInfo,
+            });
+        } else if( point.state == 'TEST' ){
+            const ad = await models.dbs.ad.getDefault();
+            let adInfo = {
+                adId: ad._id,
+                aderId: ad.aderId,
+                appid: ad.wechatMpAuthInfo.appid,
+                qrcode_url: ad.wechatMpAuthInfo.qrcode_url,
+            };
+            order = await models.dbs.order.update({
+                orderId: order._id,
+                adInfo: adInfo,
+            });
+        }
+
+        console.log('[CALLBACK] create, result:');
+        console.log(order);
+        return order;
+    },
+
+    adSubscribe: async param => {
+        console.log(__filename + '\n[CALL] adSubscribe, param:');
+        console.log(param);
+
+        const order = await models.dbs.order.getByUserAppid({
+            userId: param.user._id,
+            appid: param.ad.wechatMpAuthInfo.appid,
+        });
+        if( order ) {
+            await models.dbs.order.update({
+                orderId: order._id,
+                state: 'SUCCESS',
+                payInfo: {
+                    endDate: new Date(),
+                    payout: param.ad.deliverInfo.payout,
+                    type: 'AD',
+                    openid: param.openid,
+                },
+            });
+            await models.order.finishOrder({
+                user: param.user,
+                order: order,
+                payout: param.ad.deliverInfo.payout,
+            });
+        }
+
+        console.log('[CALLBACK] adSubscribe, result:');
+        console.log(order);
+        return order;
+    },
+
+    finishPay: async param => {
+        console.log(__filename + '\n[CALL] finishPay, param:');
+        console.log(param);
+
+        const order = await models.dbs.order.getById({
+            orderId: param.orderId,
+        });
+        if( order && order.state == 'OPEN' ) {
+            await models.dbs.order.update({
+                orderId: order._id,
+                state: 'SUCCESS',
+                payInfo: {
+                    endDate: new Date(),
+                    payout: param.payout,
+                    type: 'PAY',
+                    channel: 'WECHAT',
+                    transaction_id: param.transaction_id,
+                },
+            });
+            if( order.adInfo ){
+                const ad = await models.dbs.ad.cancel({ adId: order.adInfo.adId });
+                await models.dbs.ader.payoutBalance({
+                    aderId: order.adInfo.aderId,
+                    payout: -ad.deliverInfo.payout,
+                });
+            }
+            const user = await models.dbs.user.getById({ userId: order.userId });
+            await models.order.finishOrder({
+                user: user,
+                order: order,
+                payout: param.payout,
+            });
+        }
+
+        console.log('[CALLBACK] finishPay, result:');
+        console.log(order);
+        return order;
+    },
+
+    finishOrder: async param => {
+        console.log(__filename + '\n[CALL] finishOrder, param:');
+        console.log(param);
+
+        const point = await models.dbs.point.getById({ pointId: param.order.pointId });
+        await models.dbs.partner.incomeBalance({
+            partnerId: point.partnerId,
+            income: param.payout,
+        });
+        if( point.type == 'POINT' ) {
+            await models.order.sendMessage({
+                user: param.user,
+                point: point,
+                order: param.order,
+                openid: param.user.authId.wechatId,
+                first: '订单凭证',
+                remark: '感谢使用青橙服务！商家马上就为您派送哦~',
+                url: SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
+            });
+            if( point.deployInfo.operatorWechatId ){
+                await models.order.sendMessage({
+                    user: param.user,
+                    point: point,
+                    order: param.order,
+                    openid: point.deployInfo.operatorWechatId,
+                    first: '您有新的订单，请尽快派送',
+                    remark: '感谢使用青橙服务！客户正等待您派送哦~',
+                });
+            }
+        } else if( point.type == 'DEVICE' ) {
+            await models.order.sendMessage({
+                user: param.user,
+                point: point,
+                order: param.order,
+                openid: param.user.authId.wechatId,
+                first: '订单凭证',
+                remark: '感谢使用青橙服务！机器正在努力取出您的物品哦~',
+                url: SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
+            });
+            if( point.deployInfo.operatorWechatId ){
+                await models.order.sendMessage({
+                    user: param.user,
+                    point: point,
+                    order: param.order,
+                    openid: point.deployInfo.operatorWechatId,
+                    first: '您有新的订单，已自动派送',
+                    remark: '感谢使用青橙服务！机器已经自动派送哦~',
+                });
+            }
+            const result = await models.apis.device.takeItem({
+                orderId: param.order._id,
+                devNo: point.deviceInfo.devNo,
+            });
+            if( result == 'FAIL' ){
+                await models.dbs.order.update({
+                    orderId: param.order._id,
+                    state: result,
+                });
+            }
+        }
+
+        console.log('[CALLBACK] finishOrder, result:');
+        console.log(param.order);
+        return param.order;
+    },
+
+    sendMessage: async param => {
+        console.log(__filename + '\n[CALL] sendMessage, param:');
+        console.log(param);
+
+        const ad = await models.dbs.ad.getDefault();
+        const mpToken = await models.wechat.getMpToken({ ad: ad });
+        const result = await models.apis.wechatMp.sendMessage({
+            mpToken: mpToken,
+            openid: param.openid,
+            template_id: 'liuskL8rPL0B0BkfbocJwJKzZFWt9MHsw4aevL-TeFA',
+            url: param.url,
+            data: {
+                first: {
+                    value: param.first,
+                },
+                tradeDateTime: {
+                    value: new Date().toLocaleString(),
+                },
+                orderType: {
+                    value: param.order.item,
+                },
+                customerInfo: {
+                    value: param.user.wechatInfo.nickname,
+                },
+                orderItemName: {
+                    value: '点位信息',
+                },
+                orderItemData: {
+                    value: param.point.deployInfo.shop + '-' + param.point.deployInfo.name,
+                },
+                remark: {
+                    value: param.remark,
+                },
+            }
+        });
+
+        console.log('[CALLBACK] sendMessage, result:');
+        console.log(result);
+        return result;
+    },
+
+};
+
