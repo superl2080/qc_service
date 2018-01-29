@@ -1,7 +1,7 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const models = require('../../models');
+import mongoose from 'mongoose';
+import models from '../../models';
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -14,6 +14,7 @@ const orderSchema = new mongoose.Schema({
     pointId:                { $type: ObjectId,           required: true },
     partnerId:              { $type: ObjectId,           required: true },
     item:                   { $type: String,             required: true },
+    city:                   { $type: String,             required: true },
     price:                  { $type: Number,             required: true },
     state:                  { $type: String,             default: 'OPEN' }, //'OPEN', 'SUCCESS', 'FAIL', 'CANCEL'
 
@@ -82,6 +83,7 @@ module.exports = {
             pointId: param.point._id,
             partnerId: param.point.partnerId,
             item: param.point.deployInfo.item,
+            city: param.point.deployInfo.city,
             price: param.point.deployInfo.price,
         });
 
@@ -137,7 +139,7 @@ module.exports = {
             }).exec();
         } else if( param.expiresInDate ){
             orders = await orderModel.find({
-                createDate: { $lt: param.expiresInDate }
+                createDate: { $lt: param.expiresInDate },
                 state: { $in: ['OPEN'] },
             }).exec();
         }

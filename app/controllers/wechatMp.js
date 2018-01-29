@@ -1,6 +1,6 @@
 'use strict';
 
-const models = require('../models')
+import models from '../models';
 
 const WECHAT_OPEN_APP_ID = process.env.WECHAT_OPEN_APP_ID;
 const WECHAT_OPEN_ENCODE_KEY = process.env.WECHAT_OPEN_ENCODE_KEY;

@@ -1,7 +1,7 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const models = require('../../models');
+import mongoose from 'mongoose';
+import models from '../../models';
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -12,8 +12,6 @@ const adChannelSchema = new mongoose.Schema({
 }, { typeKey: '$type' });
 
 const otherSchema = new mongoose.Schema({
-    auto_reply:             String,
-    price:                  Number,
     deviceUrl:              String,
 }, { typeKey: '$type' });
 

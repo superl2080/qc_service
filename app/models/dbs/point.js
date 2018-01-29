@@ -1,7 +1,7 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const models = require('../../models');
+import mongoose from 'mongoose';
+import models from '../../models';
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

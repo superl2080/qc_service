@@ -8,8 +8,11 @@ const test1 = async (req, res, next) => {
 }
 
 
-module.exports = app => {
+const index = async app => {
 
     app.get('/test/1', test1);
 
 };
+
+export default index;
+

@@ -1,7 +1,7 @@
 'use strict';
 
-const cheerio = require('cheerio');
-const models = require('../../models');
+import cheerio from 'cheerio';
+import models from '../../models';
 
 
 module.exports = {

@@ -1,6 +1,6 @@
 'use strict';
 
-const models = require('../models')
+import models from '../models';
 
 const WECHAT_OPEN_APP_ID = process.env.WECHAT_OPEN_APP_ID;
 const WECHAT_OPEN_ENCODE_KEY = process.env.WECHAT_OPEN_ENCODE_KEY;
@@ -47,16 +47,3 @@ module.exports = {
 
 };
 
-
-router.post('/wechat/payBack', function(req, res, next) {
-    console.log('[POST] /wechat/payBack');
-    console.log(req.body);
-
-
-
-        orderHelper.FinishPay(result, (err, result) => {
-            res.send(cryptHelper.GetXmlFromJsonForceCData({
-            }));
-        });
-    });
-});

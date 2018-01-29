@@ -1,6 +1,6 @@
 'use strict';
 
-const models = require('../models');
+import models from '../models';
 
 const SIT_URL = process.env.SIT_URL;
 

@@ -1,9 +1,9 @@
 'use strict';
 
-const request = require('request');
-const xml2js = require('xml2js');
-const myXml2js = require('./myXml2js');
-const models = require('../../models');
+import request from 'request';
+import xml2js from 'xml2js';
+import myXml2js from './myXml2js';
+import models from '../../models';
 
 const xml2jsParser = new xml2js.Parser({
     explicitArray: false,

@@ -1,6 +1,6 @@
 'use strict';
 
-const models = require('../models')
+import models from '../models';
 
 const SERVICE_URL = process.env.SERVICE_URL;
 const WECHAT_MP_APP_ID = process.env.WECHAT_MP_APP_ID;

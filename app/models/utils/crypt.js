@@ -1,13 +1,13 @@
 'use strict';
 
-const crypto = require('crypto');
-const bcrypt = require('bcrypt');
-const models = require('../../models');
+import crypto from 'crypto';
+import bcrypt from 'bcrypt';
+import models from '../../models';
 
 const BCRYPT_SALT_ROUNDS = 10;
 
 
-const encryptWechatAes256 = (param) => {
+const encryptWechatAes256 = async (param) => {
 
     const aesKey = new Buffer(param.aesKey + '=', 'base64');
     const aesIv = aesKey.slice(0, 16);
@@ -25,7 +25,7 @@ const encryptWechatAes256 = (param) => {
 };
 
 
-const decryptWechatAes256 = (param) => {
+const decryptWechatAes256 = async (param) => {
 
     const aesKey = new Buffer(param.aesKey + '=', 'base64');
     const aesIv = aesKey.slice(0, 16);

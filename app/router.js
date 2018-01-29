@@ -1,8 +1,8 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const tests = require('./tests/');
-const controllers = require('./controllers/');
+import mongoose from 'mongoose';
+import tests from './tests';
+import controllers from './controllers';
 
 
 module.exports = app => {
