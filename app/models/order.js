@@ -9,7 +9,7 @@ module.exports = {
         console.log(param);
 
         await this.models.dbs.order.cancel({ user: param.user });
-        const order = await this.models.dbs.order.create({
+        let order = await this.models.dbs.order.create({
             user: param.user,
             point: param.point,
         });
