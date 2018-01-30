@@ -2,6 +2,7 @@
 
 module.exports = {
 
+    WECHAT_MP_APP_ID: process.env.WECHAT_MP_APP_ID,
     WECHAT_OPEN_ENCODE_KEY: process.env.WECHAT_OPEN_ENCODE_KEY,
 
     notice: async function (req, res, next) {
@@ -34,7 +35,8 @@ module.exports = {
                         },
                     });
 
-                    if( decryptMsg.Event == 'subscribe' ){
+                    if( decryptMsg.Event == 'subscribe'
+                        || appid == this.WECHAT_MP_APP_ID ){
                         const order = await this.models.order.adSubscribe({
                             user: user,
                             appid: ad.wechatMpAuthInfo.appid,
