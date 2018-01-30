@@ -13,8 +13,8 @@ module.exports = {
                 let url = adChannelConfig.url;
                 url += '?bid=' + adChannelConfig.bid;
                 url += '&openid=' + param.user._id.toString();
-                url += '&nickname=' + param.user.wechatInfo.nickname;
-                url += '&bidcity=' + param.city;
+                url += '&nickname=' + encodeURIComponent(param.user.wechatInfo.nickname);
+                url += '&bidcity=' + encodeURIComponent(param.city);
 
                 const apiResult = await this.models.utils.request.getJson({ url : url });
 
