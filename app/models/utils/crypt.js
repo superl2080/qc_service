@@ -34,7 +34,7 @@ module.exports = {
         console.log(param);
 
         const json = await this.models.utils.request.getJsonFromXml({ xml: param.msg });
-        const decryptData = this.decryptWechatAes256({
+        const decryptData = await this.decryptWechatAes256({
             data: json.Encrypt,
             aesKey: param.aesKey,
         });
@@ -50,7 +50,7 @@ module.exports = {
         console.log(param);
 
         const xml = await this.models.utils.request.getXmlFromJsonForceCData({ xml: param.msg });
-        const encryptData = this.encryptWechatAes256({
+        const encryptData = await this.encryptWechatAes256({
             date: xml,
             aesKey: param.aesKey,
             appId: param.appId,
