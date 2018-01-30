@@ -58,7 +58,7 @@ module.exports = {
                 throw new Error('token or orderId or body or spbill_create_ip is empty');
             }
 
-            const order = await this.models.dbs.order.getByAppid({ orderId: req.body.orderId });
+            const order = await this.models.dbs.order.getByUserAppid({ orderId: req.body.orderId });
             if( !order ){
                 throw new Error('orderId is error');
             }
