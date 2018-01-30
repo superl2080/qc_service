@@ -17,7 +17,7 @@ module.exports = {
                 throw new Error('token or orderId is empty');
             }
 
-            const order = await this.models.dbs.order.getByAppid({ orderId: req.query.orderId });
+            const order = await this.models.dbs.order.getById({ orderId: req.query.orderId });
             if( !order ){
                 throw new Error('orderId is error');
             }
