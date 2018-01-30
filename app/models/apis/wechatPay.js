@@ -1,28 +1,3 @@
-'use strict';
-
-import models from '../../models';
-
-
-const paySign = async param => {
-    console.log(__filename + '\n[CALL] paySign, param:');
-    console.log(param);
-
-    let stringSign = '';
-    let keys = Object.keys(param.data);
-    keys = keys.sort();
-    for( let key of keys ){
-        stringSign += '&' + key + '=' + param.data[key];
-    }
-
-    stringSign = stringSign.substr(1);
-    stringSign += '&key=' + param.payKey;
-
-    const result = await models.utils.crypt.encodeMd5({ data: stringSign });
-
-    console.log('[CALLBACK] paySign, result:');
-    console.log(result);
-    return result;
-}
 
 
 module.exports = {
@@ -41,15 +16,15 @@ module.exports = {
                 total_fee: param.total_fee,
                 appid: param.mpAppid,
                 mch_id: param.payId,
-                nonce_str: await models.utils.crypt.randomHex(16),
+                nonce_str: await this.models.utils.crypt.randomHex(16),
                 trade_type: 'JSAPI',
             };
-            prepayJson.sign = await paySign({
+            prepayJson.sign = await this.paySign({
                 data: prepayJson,
                 payKey: param.payKey,
             });
 
-            const apiResult = await models.utils.request.postXml({
+            const apiResult = await this.models.utils.request.postXml({
                 url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
                 json: prepayJson,
             });
@@ -62,12 +37,12 @@ module.exports = {
 
             let result = {
                 appId: param.mpAppid,
-                nonceStr: await models.utils.crypt.randomHex(16),
+                nonceStr: await this.models.utils.crypt.randomHex(16),
                 package: 'prepay_id=' + apiResult.prepay_id,
                 signType: 'MD5',
                 timeStamp: Math.round(new Date().getTime() / 1000).toString(),
             };
-            result.paySign = await paySign({
+            result.paySign = await this.paySign({
                 data: result,
                 payKey: param.payKey,
             });
@@ -82,5 +57,25 @@ module.exports = {
 
     },
 
+    paySign: async param => {
+        console.log(__filename + '\n[CALL] paySign, param:');
+        console.log(param);
+
+        let stringSign = '';
+        let keys = Object.keys(param.data);
+        keys = keys.sort();
+        for( let key of keys ){
+            stringSign += '&' + key + '=' + param.data[key];
+        }
+
+        stringSign = stringSign.substr(1);
+        stringSign += '&key=' + param.payKey;
+
+        const result = await this.models.utils.crypt.encodeMd5({ data: stringSign });
+
+        console.log('[CALLBACK] paySign, result:');
+        console.log(result);
+        return result;
+    },
 };
 

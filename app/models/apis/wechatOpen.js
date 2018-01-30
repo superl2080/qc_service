@@ -1,6 +1,3 @@
-'use strict';
-
-import models from '../../models';
 
 
 module.exports = {
@@ -24,7 +21,7 @@ module.exports = {
         console.log(param);
 
         try {
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: 'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
                 json: {
                     component_appid: param.openAppid,
@@ -56,7 +53,7 @@ module.exports = {
         console.log(param);
 
         try {
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: 'https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=' + param.openToken,
                 json: {
                     component_appid: param.openAppid,
@@ -85,7 +82,7 @@ module.exports = {
         console.log(param);
 
         try {
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=' + param.openToken,
                 json: {
                     component_appid: param.openAppid,
@@ -115,7 +112,7 @@ module.exports = {
         console.log(param);
 
         try {
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: 'https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=' + param.openToken,
                 json: {
                     component_appid: param.openAppid,
@@ -145,7 +142,7 @@ module.exports = {
         console.log(param);
 
         try {
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: 'https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token=' + param.openToken,
                 json: {
                     component_appid: param.openAppid,

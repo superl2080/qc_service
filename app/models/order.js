@@ -1,22 +1,19 @@
-'use strict';
-
-import models from '../models';
-
-const SIT_URL = process.env.SIT_URL;
 
 
 module.exports = {
+
+    SIT_URL: process.env.SIT_URL,
 
     create: async param => {
         console.log(__filename + '\n[CALL] create, param:');
         console.log(param);
 
-        await models.dbs.order.cancel({ user: param.user });
-        const order = await models.dbs.order.create({
+        await this.models.dbs.order.cancel({ user: param.user });
+        const order = await this.models.dbs.order.create({
             user: param.user,
             point: param.point,
         });
-        const ad = await models.dbs.ad.getDeliverAd({ user: param.user });
+        const ad = await this.models.dbs.ad.getDeliverAd({ user: param.user });
 
         if( ad ){
             let adInfo = {
@@ -29,7 +26,7 @@ module.exports = {
                 adInfo.qrcode_url = ad.wechatMpAuthInfo.qrcode_url;
 
             } else if( ad.type == 'WECHAT_MP_API' ){
-                const channelAd = await models.apis.channel.deliverAd({
+                const channelAd = await this.models.apis.channel.deliverAd({
                     adChannelId: ad.wechatMpApiInfo.adChannelId,
                     user: param.user,
                     city: param.point.deployInfo.city,
@@ -37,24 +34,24 @@ module.exports = {
                 adInfo.appid = channelAd.appid;
                 adInfo.qrcode_url = channelAd.qrcode_url;
                 if( channelAd.auth === true ) {
-                    const qrcode = await models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
+                    const qrcode = await this.models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
                     adInfo.qrcode_url = qrcode.url;
                 }
             }
 
-            order = await models.dbs.order.update({
+            order = await this.models.dbs.order.update({
                 orderId: order._id,
                 adInfo: adInfo,
             });
         } else if( point.state == 'TEST' ){
-            const ad = await models.dbs.ad.getDefault();
+            const ad = await this.models.dbs.ad.getDefault();
             let adInfo = {
                 adId: ad._id,
                 aderId: ad.aderId,
                 appid: ad.wechatMpAuthInfo.appid,
                 qrcode_url: ad.wechatMpAuthInfo.qrcode_url,
             };
-            order = await models.dbs.order.update({
+            order = await this.models.dbs.order.update({
                 orderId: order._id,
                 adInfo: adInfo,
             });
@@ -69,12 +66,12 @@ module.exports = {
         console.log(__filename + '\n[CALL] adSubscribe, param:');
         console.log(param);
 
-        const order = await models.dbs.order.getByUserAppid({
+        const order = await this.models.dbs.order.getByUserAppid({
             userId: param.user._id,
             appid: param.ad.wechatMpAuthInfo.appid,
         });
         if( order ) {
-            await models.dbs.order.update({
+            await this.models.dbs.order.update({
                 orderId: order._id,
                 state: 'SUCCESS',
                 payInfo: {
@@ -84,7 +81,7 @@ module.exports = {
                     openid: param.openid,
                 },
             });
-            await models.order.finishOrder({
+            await this.finishOrder({
                 user: param.user,
                 order: order,
                 payout: param.ad.deliverInfo.payout,
@@ -100,11 +97,11 @@ module.exports = {
         console.log(__filename + '\n[CALL] finishPay, param:');
         console.log(param);
 
-        const order = await models.dbs.order.getById({
+        const order = await this.models.dbs.order.getById({
             orderId: param.orderId,
         });
         if( order && order.state == 'OPEN' ) {
-            await models.dbs.order.update({
+            await this.models.dbs.order.update({
                 orderId: order._id,
                 state: 'SUCCESS',
                 payInfo: {
@@ -116,14 +113,14 @@ module.exports = {
                 },
             });
             if( order.adInfo ){
-                const ad = await models.dbs.ad.cancel({ adId: order.adInfo.adId });
-                await models.dbs.ader.payoutBalance({
+                const ad = await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
+                await this.models.dbs.ader.payoutBalance({
                     aderId: order.adInfo.aderId,
                     payout: -ad.deliverInfo.payout,
                 });
             }
-            const user = await models.dbs.user.getById({ userId: order.userId });
-            await models.order.finishOrder({
+            const user = await this.models.dbs.user.getById({ userId: order.userId });
+            await this.finishOrder({
                 user: user,
                 order: order,
                 payout: param.payout,
@@ -139,23 +136,23 @@ module.exports = {
         console.log(__filename + '\n[CALL] finishOrder, param:');
         console.log(param);
 
-        const point = await models.dbs.point.getById({ pointId: param.order.pointId });
-        await models.dbs.partner.incomeBalance({
+        const point = await this.models.dbs.point.getById({ pointId: param.order.pointId });
+        await this.models.dbs.partner.incomeBalance({
             partnerId: point.partnerId,
             income: param.payout,
         });
         if( point.type == 'POINT' ) {
-            await models.order.sendMessage({
+            await this.sendMessage({
                 user: param.user,
                 point: point,
                 order: param.order,
                 openid: param.user.authId.wechatId,
                 first: '订单凭证',
                 remark: '感谢使用青橙服务！商家马上就为您派送哦~',
-                url: SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
+                url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
             });
             if( point.deployInfo.operatorWechatId ){
-                await models.order.sendMessage({
+                await this.sendMessage({
                     user: param.user,
                     point: point,
                     order: param.order,
@@ -165,17 +162,17 @@ module.exports = {
                 });
             }
         } else if( point.type == 'DEVICE' ) {
-            await models.order.sendMessage({
+            await this.sendMessage({
                 user: param.user,
                 point: point,
                 order: param.order,
                 openid: param.user.authId.wechatId,
                 first: '订单凭证',
                 remark: '感谢使用青橙服务！机器正在努力取出您的物品哦~',
-                url: SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
+                url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
             });
             if( point.deployInfo.operatorWechatId ){
-                await models.order.sendMessage({
+                await this.sendMessage({
                     user: param.user,
                     point: point,
                     order: param.order,
@@ -184,12 +181,12 @@ module.exports = {
                     remark: '感谢使用青橙服务！机器已经自动派送哦~',
                 });
             }
-            const result = await models.apis.device.takeItem({
+            const result = await this.models.apis.device.takeItem({
                 orderId: param.order._id,
                 devNo: point.deviceInfo.devNo,
             });
             if( result == 'FAIL' ){
-                await models.dbs.order.update({
+                await this.models.dbs.order.update({
                     orderId: param.order._id,
                     state: result,
                 });
@@ -205,9 +202,9 @@ module.exports = {
         console.log(__filename + '\n[CALL] sendMessage, param:');
         console.log(param);
 
-        const ad = await models.dbs.ad.getDefault();
-        const mpToken = await models.wechat.getMpToken({ ad: ad });
-        const result = await models.apis.wechatMp.sendMessage({
+        const ad = await this.models.dbs.ad.getDefault();
+        const mpToken = await this.models.wechat.getMpToken({ ad: ad });
+        const result = await this.models.apis.wechatMp.sendMessage({
             mpToken: mpToken,
             openid: param.openid,
             template_id: 'liuskL8rPL0B0BkfbocJwJKzZFWt9MHsw4aevL-TeFA',

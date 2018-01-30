@@ -1,6 +1,3 @@
-'use strict';
-
-import models from '../../models';
 
 
 module.exports = {

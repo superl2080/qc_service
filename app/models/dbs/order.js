@@ -1,10 +1,7 @@
-'use strict';
 
-import mongoose from 'mongoose';
-import models from '../../models';
+const mongoose = require('mongoose');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 
 const orderSchema = new mongoose.Schema({
 
@@ -148,8 +145,8 @@ module.exports = {
             order.state = 'CANCEL';
             await order.save();
             if( order.adInfo ){
-                const ad = await models.dbs.ad.cancel({ adId: order.adInfo.adId });
-                await models.dbs.ader.payoutBalance({
+                const ad = await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
+                await this.models.dbs.ader.payoutBalance({
                     aderId: order.adInfo.aderId,
                     payout: -ad.deliverInfo.payout,
                 });

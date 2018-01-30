@@ -1,55 +1,17 @@
-'use strict';
 
-import crypto from 'crypto';
-import bcrypt from 'bcrypt';
-import models from '../../models';
-
-const BCRYPT_SALT_ROUNDS = 10;
-
-
-const encryptWechatAes256 = async (param) => {
-
-    const aesKey = new Buffer(param.aesKey + '=', 'base64');
-    const aesIv = aesKey.slice(0, 16);
-
-    const msg_content = new Buffer(param.data);
-    const msg_len = new Buffer(4);
-    msg_len.writeUInt32BE(msg_content.length, 0);
-    const msg_appId = new Buffer(param.appId);
-    const msg = Buffer.concat([crypto.pseudoRandomBytes(16), msg_len, msg_content, msg_appId]);
-
-    const cipher = crypto.createCipheriv('aes-256-cbc', aesKey, aesIv);
-    const msgEncrypt = Buffer.concat([cipher.update(msg), cipher.final()]).toString('base64');
-
-    return msgEncrypt;
-};
-
-
-const decryptWechatAes256 = async (param) => {
-
-    const aesKey = new Buffer(param.aesKey + '=', 'base64');
-    const aesIv = aesKey.slice(0, 16);
-
-    const decipher = crypto.createDecipheriv('aes-256-cbc', aesKey, aesIv);
-    decipher.setAutoPadding(false);
-    const decipheredBuff = Buffer.concat([decipher.update(param.data, 'base64'), decipher.final()]);
-
-    const msg = await models.utils.crypt.decodePKCS7({ data: decipheredBuff }).slice(16);
-    const msg_len = msg.slice(0, 4).readUInt32BE(0);
-    const msg_content = msg.slice(4, msg_len + 4).toString('utf-8');
-    const msg_appId = msg.slice(msg_len + 4).toString('utf-8');
-
-    return msg_content;
-};
+const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 
 module.exports = {
+
+    BCRYPT_SALT_ROUNDS: 10,
 
     passwordCrypt: async param => {
         console.log(__filename + '\n[CALL] passwordCrypt, param:');
         console.log(param);
 
-        const result = await bcrypt.hash(param.password, BCRYPT_SALT_ROUNDS);
+        const result = await bcrypt.hash(param.password, this.BCRYPT_SALT_ROUNDS);
 
         console.log('[CALLBACK] passwordCrypt, result:');
         console.log(result);
@@ -71,12 +33,12 @@ module.exports = {
         console.log(__filename + '\n[CALL] decryptWechatMsg, param:');
         console.log(param);
 
-        const json = await models.utils.request.getJsonFromXml({ xml: param.msg });
-        const decryptData = decryptWechatAes256({
+        const json = await this.models.utils.request.getJsonFromXml({ xml: param.msg });
+        const decryptData = this.decryptWechatAes256({
             data: json.Encrypt,
             aesKey: param.aesKey,
         });
-        const result = await models.utils.request.getJsonFromXml({ xml: decryptData });
+        const result = await this.models.utils.request.getJsonFromXml({ xml: decryptData });
 
         console.log('[CALLBACK] decryptWechatMsg, result:');
         console.log(result);
@@ -87,8 +49,8 @@ module.exports = {
         console.log(__filename + '\n[CALL] encryptWechatMsg, param:');
         console.log(param);
 
-        const xml = await models.utils.request.getXmlFromJsonForceCData({ xml: param.msg });
-        const encryptData = encryptWechatAes256({
+        const xml = await this.models.utils.request.getXmlFromJsonForceCData({ xml: param.msg });
+        const encryptData = this.encryptWechatAes256({
             date: xml,
             aesKey: param.aesKey,
             appId: param.appId,
@@ -101,15 +63,50 @@ module.exports = {
         );
         const msgEncryptJson = {
             Encrypt: encryptData,
-            MsgSignature: await models.utils.crypt.encodeSha1({ data: msgSignatureArray.sort().join('') }),
+            MsgSignature: await this.encodeSha1({ data: msgSignatureArray.sort().join('') }),
             TimeStamp: param.timestamp,
             Nonce: param.nonce,
         };
-        const msgEncryptXml = await models.utils.request.getXmlFromJsonForceCData(msgEncryptJson);
+        const msgEncryptXml = await this.models.utils.request.getXmlFromJsonForceCData(msgEncryptJson);
 
         console.log('[CALLBACK] encryptWechatMsg, result:');
         console.log(msgEncryptXml);
         return msgEncryptXml;
+    },
+
+    encryptWechatAes256: async (param) => {
+
+        const aesKey = new Buffer(param.aesKey + '=', 'base64');
+        const aesIv = aesKey.slice(0, 16);
+
+        const msg_content = new Buffer(param.data);
+        const msg_len = new Buffer(4);
+        msg_len.writeUInt32BE(msg_content.length, 0);
+        const msg_appId = new Buffer(param.appId);
+        const msg = Buffer.concat([crypto.pseudoRandomBytes(16), msg_len, msg_content, msg_appId]);
+
+        const cipher = crypto.createCipheriv('aes-256-cbc', aesKey, aesIv);
+        const msgEncrypt = Buffer.concat([cipher.update(msg), cipher.final()]).toString('base64');
+
+        return msgEncrypt;
+    },
+
+
+    decryptWechatAes256: async (param) => {
+
+        const aesKey = new Buffer(param.aesKey + '=', 'base64');
+        const aesIv = aesKey.slice(0, 16);
+
+        const decipher = crypto.createDecipheriv('aes-256-cbc', aesKey, aesIv);
+        decipher.setAutoPadding(false);
+        const decipheredBuff = Buffer.concat([decipher.update(param.data, 'base64'), decipher.final()]);
+
+        const msg = await this.decodePKCS7({ data: decipheredBuff }).slice(16);
+        const msg_len = msg.slice(0, 4).readUInt32BE(0);
+        const msg_content = msg.slice(4, msg_len + 4).toString('utf-8');
+        const msg_appId = msg.slice(msg_len + 4).toString('utf-8');
+
+        return msg_content;
     },
 
     encryptString: async param => {

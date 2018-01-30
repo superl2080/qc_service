@@ -1,14 +1,11 @@
-'use strict';
-
-import models from '../models';
-
-const SERVICE_URL = process.env.SERVICE_URL;
-const WECHAT_MP_APP_ID = process.env.WECHAT_MP_APP_ID;
-const WECHAT_PAY_ID = process.env.WECHAT_PAY_ID;
-const WECHAT_PAY_KEY = process.env.WECHAT_PAY_KEY;
 
 
 module.exports = {
+
+    SERVICE_URL: process.env.SERVICE_URL,
+    WECHAT_MP_APP_ID: process.env.WECHAT_MP_APP_ID,
+    WECHAT_PAY_ID: process.env.WECHAT_PAY_ID,
+    WECHAT_PAY_KEY: process.env.WECHAT_PAY_KEY,
 
     get: async (req, res, next) => {
         console.log(__filename + '\n[CALL] get, query:');
@@ -20,12 +17,12 @@ module.exports = {
                 throw new Error('token or orderId is empty');
             }
 
-            const order = await models.dbs.order.getByAppid({ orderId: req.query.orderId });
+            const order = await this.models.dbs.order.getByAppid({ orderId: req.query.orderId });
             if( !order ){
                 throw new Error('orderId is error');
             }
 
-            const user = await models.dbs.user.getById({ userId: req.query.token });
+            const user = await this.models.dbs.user.getById({ userId: req.query.token });
             if( !user
                 || order.userId != user._id ){
                 throw new Error('token is error');
@@ -61,26 +58,26 @@ module.exports = {
                 throw new Error('token or orderId or body or spbill_create_ip is empty');
             }
 
-            const order = await models.dbs.order.getByAppid({ orderId: req.body.orderId });
+            const order = await this.models.dbs.order.getByAppid({ orderId: req.body.orderId });
             if( !order ){
                 throw new Error('orderId is error');
             }
 
-            const user = await models.dbs.user.getById({ userId: req.body.token });
+            const user = await this.models.dbs.user.getById({ userId: req.body.token });
             if( !user
                 || order.userId != user._id ){
                 throw new Error('token is error');
             }
-            const prepay = await models.apis.wechatPay.prepay({
+            const prepay = await this.models.apis.wechatPay.prepay({
                 body: req.body.body,
-                notify_url: SERVICE_URL + '/wechat/pay/notice',
+                notify_url: this.SERVICE_URL + '/wechat/pay/notice',
                 openid: user.authId.wechatId,
                 spbill_create_ip: req.body.spbill_create_ip,
                 out_trade_no: order._id.toString(),
                 total_fee: order.price,
-                mpAppid: WECHAT_MP_APP_ID,
-                payId: WECHAT_PAY_ID,
-                payKey: WECHAT_PAY_KEY,
+                mpAppid: this.WECHAT_MP_APP_ID,
+                payId: this.WECHAT_PAY_ID,
+                payKey: this.WECHAT_PAY_KEY,
             });
 
             res.send({

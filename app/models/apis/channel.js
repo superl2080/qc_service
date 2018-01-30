@@ -1,6 +1,3 @@
-'use strict';
-
-import models from '../../models';
 
 
 module.exports = {
@@ -10,7 +7,7 @@ module.exports = {
         console.log(param);
 
         try {
-            const adChannelConfig = await models.dbs.config.getAdChannel({ adChannelId: param.adChannelId });
+            const adChannelConfig = await this.models.dbs.config.getAdChannel({ adChannelId: param.adChannelId });
 
             if(adChannelConfig.name == 'YOUFENTONG') {
                 let url = adChannelConfig.url;
@@ -19,7 +16,7 @@ module.exports = {
                 url += '&nickname=' + param.user.info.nickname;
                 url += '&bidcity=' + param.city;
 
-                const apiResult = await models.utils.request.getJson({ url : url });
+                const apiResult = await this.models.utils.request.getJson({ url : url });
 
                 if( !apiResult
                     || apiResult.error !== 0

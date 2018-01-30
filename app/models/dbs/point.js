@@ -1,10 +1,7 @@
-'use strict';
 
-import mongoose from 'mongoose';
-import models from '../../models';
+const mongoose = require('mongoose');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 
 const pointSchema = new mongoose.Schema({
 
@@ -61,7 +58,7 @@ module.exports = {
 
         let point = await pointModel.findOne({ 'deviceInfo.devNo': param.devNo }).exec();
         if( !point ) {
-            const partner = await models.dbs.partner.getDefaultPartner();
+            const partner = await this.models.dbs.partner.getDefaultPartner();
             point = await pointModel.create({
                 createDate: new Date(),
                 partnerId: partner._id,

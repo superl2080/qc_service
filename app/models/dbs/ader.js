@@ -1,10 +1,7 @@
-'use strict';
 
-import mongoose from 'mongoose';
-import models from '../../models';
+const mongoose = require('mongoose');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 
 const aderSchema = new mongoose.Schema({
 

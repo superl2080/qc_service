@@ -1,10 +1,7 @@
-'use strict';
 
-import mongoose from 'mongoose';
-import models from '../../models';
+const mongoose = require('mongoose');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 
 const partnerSchema = new mongoose.Schema({
 
@@ -65,7 +62,7 @@ module.exports = {
             throw new Error('Can not find partner');
         }
 
-        const partnerDeduct = await models.dbs.config.getPartnerDeduct({ partnerDeductId: partner.partnerDeductId });
+        const partnerDeduct = await this.models.dbs.config.getPartnerDeduct({ partnerDeductId: partner.partnerDeductId });
         partner.balance += Math.round(param.income * (1 - partnerDeduct.percent));
         await partner.save();
 

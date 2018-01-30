@@ -1,6 +1,3 @@
-'use strict';
-
-import models from '../models';
 
 
 module.exports = {
@@ -15,17 +12,17 @@ module.exports = {
                 throw new Error('userId or appid is empty');
             }
 
-            const ad = await models.dbs.ad.getByAppid({ appid: req.body.appid });
+            const ad = await this.models.dbs.ad.getByAppid({ appid: req.body.appid });
             if( !ad ){
                 throw new Error('appid is error');
             }
 
-            const user = await models.dbs.user.getById({ userId: req.body.userId });
+            const user = await this.models.dbs.user.getById({ userId: req.body.userId });
             if( !user ){
                 throw new Error('userId is error');
             }
 
-            await models.order.adSubscribe({
+            await this.models.order.adSubscribe({
                 user: user,
                 ad: ad,
             });

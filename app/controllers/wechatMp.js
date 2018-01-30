@@ -1,21 +1,17 @@
-'use strict';
-
-import models from '../models';
-
-const WECHAT_OPEN_APP_ID = process.env.WECHAT_OPEN_APP_ID;
-const WECHAT_OPEN_ENCODE_KEY = process.env.WECHAT_OPEN_ENCODE_KEY;
 
 
 module.exports = {
+
+    WECHAT_OPEN_ENCODE_KEY: process.env.WECHAT_OPEN_ENCODE_KEY,
 
     notice: async (req, res, next) => {
         console.log(__filename + '\n[CALL] notice, body:');
         console.log(req.body);
 
         try {
-            const decryptMsg = await models.utils.crypt.decryptWechatMsg({
+            const decryptMsg = await this.models.utils.crypt.decryptWechatMsg({
                 msg: req.body,
-                aesKey: WECHAT_OPEN_ENCODE_KEY,
+                aesKey: this.WECHAT_OPEN_ENCODE_KEY,
             });
 
             if( decryptMsg.MsgType == 'event'
@@ -23,21 +19,21 @@ module.exports = {
 
                 const openid = decryptMsg.FromUserName;
                 const appid = req.params.appid;
-                const ad = await models.dbs.ad.getByAppid({ appid: appid });
-                const mpToken = await models.wechat.getMpToken({ ad: ad });
-                const userInfo = await models.apis.wechatMp.getUserInfo({
+                const ad = await this.models.dbs.ad.getByAppid({ appid: appid });
+                const mpToken = await this.models.wechat.getMpToken({ ad: ad });
+                const userInfo = await this.models.apis.wechatMp.getUserInfo({
                     mpToken: mpToken,
                     openid: openid,
                 });
-                let user = await models.dbs.user.getByWechatInfo(userInfo);
+                let user = await this.models.dbs.user.getByWechatInfo(userInfo);
                 if( user ){
-                    user = await models.dbs.user.update({
+                    user = await this.models.dbs.user.update({
                         userId: user._id,
                         appid: appid,
                     });
 
                     if( decryptMsg.Event == 'subscribe' ){
-                        const order = await models.order.adSubscribe({
+                        const order = await this.models.order.adSubscribe({
                             user: user,
                             ad: ad,
                             openid: openid,

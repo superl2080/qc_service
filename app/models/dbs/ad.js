@@ -1,10 +1,7 @@
-'use strict';
 
-import mongoose from 'mongoose';
-import models from '../../models';
+const mongoose = require('mongoose');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 
 const adSchema = new mongoose.Schema({
 
@@ -95,7 +92,7 @@ module.exports = {
         let deliverAd;
         for( let ad of ads ){
             try {
-                await models.dbs.ader.payoutBalance({
+                await this.models.dbs.ader.payoutBalance({
                     aderId: ad.aderId,
                     payout: ad.deliverInfo.payout,
                 });
@@ -191,7 +188,7 @@ module.exports = {
         if( !param.appid ){
             throw new Error('appid is empty');
         }
-        const sameAppidAd = await models.dbs.ad.getByAppid({ appid: param.appid });
+        const sameAppidAd = await this.getByAppid({ appid: param.appid });
         if( sameAppidAd ){
             throw new Error('appid is exist');
         }

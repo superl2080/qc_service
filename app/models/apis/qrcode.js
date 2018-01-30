@@ -1,7 +1,5 @@
-'use strict';
 
-import cheerio from 'cheerio';
-import models from '../../models';
+const cheerio = require('cheerio');
 
 
 module.exports = {
@@ -17,7 +15,7 @@ module.exports = {
             }
             let url = 'https://cli.im/api/qrcode/code?text=' + param.url + '&mhid=' + mhid;
 
-            let apiResult = await models.utils.request.getHtml({ url: url });
+            let apiResult = await this.models.utils.request.getHtml({ url: url });
             let $ = cheerio.load(apiResult);
             apiResult = $('img').attr('src');
             

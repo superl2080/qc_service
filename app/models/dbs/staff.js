@@ -1,10 +1,7 @@
-'use strict';
 
-import mongoose from 'mongoose';
-import models from '../../models';
+const mongoose = require('mongoose');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 
 const staffSchema = new mongoose.Schema({
 
@@ -33,7 +30,7 @@ module.exports = {
         const staff = await staffModel.findOne({ logid: param.logid }).exec();
         let result = false;
         if( staff ) {
-            result = await models.utils.crypt.passwordCompare({
+            result = await this.models.utils.crypt.passwordCompare({
                 passwordAuth: param.password,
                 passwordCrypt: staff.password,
             });
@@ -49,7 +46,7 @@ module.exports = {
         console.log(param);
 
         let option = {};
-        if( param.password ) option.password = await models.utils.crypt.passwordCrypt({ password: param.password });
+        if( param.password ) option.password = await this.models.utils.crypt.passwordCrypt({ password: param.password });
 
         let staff = await staffModel.findOne({ logid: param.logid }).exec();
         if( !staff ) {

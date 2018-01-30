@@ -1,6 +1,3 @@
-'use strict';
-
-import models from '../../models';
 
 
 module.exports = {
@@ -10,9 +7,9 @@ module.exports = {
         console.log(param);
 
         try {
-            const otherConfig = await models.dbs.config.getOther();
+            const otherConfig = await this.models.dbs.config.getOther();
 
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: otherConfig.deviceUrl + '/api/TakeDeviceItem',
                 json: {
                     devNo: param.devNo,

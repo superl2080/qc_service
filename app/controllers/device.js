@@ -1,6 +1,3 @@
-'use strict';
-
-import models from '../models';
 
 
 module.exports = {
@@ -25,7 +22,7 @@ module.exports = {
                 throw new Error('state is error');
             }
 
-            await models.dbs.point.updateDeviceForce(deviceInfo);
+            await this.models.dbs.point.updateDeviceForce(deviceInfo);
 
             res.send({
                 code: 0,

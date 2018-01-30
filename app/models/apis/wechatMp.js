@@ -1,6 +1,3 @@
-'use strict';
-
-import models from '../../models';
 
 
 module.exports = {
@@ -36,7 +33,7 @@ module.exports = {
             url += '&component_appid=' + param.openAppid;
             url += '&component_access_token=' + param.openToken;
 
-            const apiResult = await models.utils.request.getJson({ url: url });
+            const apiResult = await this.models.utils.request.getJson({ url: url });
 
             if( !apiResult
                 || !apiResult.openid
@@ -65,7 +62,7 @@ module.exports = {
             url += '&openid=' + param.openid;
             url += '&lang=zh_CN';
 
-            const apiResult = await models.utils.request.getJson({ url: url });
+            const apiResult = await this.models.utils.request.getJson({ url: url });
 
             if( !apiResult
                 || !apiResult.nickname ){
@@ -100,7 +97,7 @@ module.exports = {
             url += '&openid=' + param.openid;
             url += '&lang=zh_CN';
 
-            const apiResult = await models.utils.request.getJson({ url: url });
+            const apiResult = await this.models.utils.request.getJson({ url: url });
 
             if( !apiResult
                 || !apiResult.nickname ){
@@ -137,7 +134,7 @@ module.exports = {
                 data: param.data,
             };
             if( param.url ) json.url = param.url;
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' + param.mpToken,
                 json: json,
             });
@@ -168,7 +165,7 @@ module.exports = {
             let expire_seconds = 24 * 60 * 60;
             if( param.expire_seconds) expire_seconds = param.expire_seconds;
 
-            const apiResult = await models.utils.request.postJson({
+            const apiResult = await this.models.utils.request.postJson({
                 url: 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' + param.mpToken,
                 json: {
                     expire_seconds: expire_seconds,
