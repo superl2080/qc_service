@@ -37,28 +37,28 @@ module.exports = {
 
         this.controllers.jobs.run();
 
-        app.post('/channel/subscribe',              this.controllers.channel.subscribe);
+        app.post('/channel/subscribe',              this.controllers.channel.subscribe.bind(this.controllers.channel));
 
-        app.post('/device/update',                  this.controllers.device.update);
+        app.post('/device/update',                  this.controllers.device.update.bind(this.controllers.device));
 
-        app.get('/user/login/wechat',               this.controllers.user.loginWechat);
-        app.get('/user/login/wechatCbk',            this.controllers.user.loginWechatCbk);
-        app.get('/user/scan/wechat',                this.controllers.user.scanWechat);
-        app.get('/user/scan/wechatCbk',             this.controllers.user.scanWechatCbk);
+        app.get('/user/login/wechat',               this.controllers.user.loginWechat.bind(this.controllers.user));
+        app.get('/user/login/wechatCbk',            this.controllers.user.loginWechatCbk.bind(this.controllers.user));
+        app.get('/user/scan/wechat',                this.controllers.user.scanWechat.bind(this.controllers.user));
+        app.get('/user/scan/wechatCbk',             this.controllers.user.scanWechatCbk.bind(this.controllers.user));
 
-        app.get('/order',                           this.controllers.order.get);
-        app.post('/order/prepay/wechat',            this.controllers.order.prepayWechat);
+        app.get('/order',                           this.controllers.order.get.bind(this.controllers.order));
+        app.post('/order/prepay/wechat',            this.controllers.order.prepayWechat.bind(this.controllers.order));
 
-        app.post('/wechat/mp/notice/:appid',        this.controllers.wechatMp.notice);
+        app.post('/wechat/mp/notice/:appid',        this.controllers.wechatMp.notice.bind(this.controllers.wechatMp));
 
-        app.post('/wechat/open/notice',             this.controllers.wechatOpen.notice);
-        app.get('/wechat/open/adAuth',              this.controllers.wechatOpen.adAuth);
-        app.get('/wechat/open/adAuthCbk',           this.controllers.wechatOpen.adAuthCbk);
+        app.post('/wechat/open/notice',             this.controllers.wechatOpen.notice.bind(this.controllers.wechatOpen));
+        app.get('/wechat/open/adAuth',              this.controllers.wechatOpen.adAuth.bind(this.controllers.wechatOpen));
+        app.get('/wechat/open/adAuthCbk',           this.controllers.wechatOpen.adAuthCbk.bind(this.controllers.wechatOpen));
 
-        app.post('/wechat/pay/notice',              this.controllers.wechatPay.notice);
+        app.post('/wechat/pay/notice',              this.controllers.wechatPay.notice.bind(this.controllers.wechatPay));
     },
 
-    loadModules: async (path, objs) => {
+    loadModules: async function (path, objs) {
         const files = fs.readdirSync(path);
         for( let file of files ){
             const pos = file.lastIndexOf('.');
@@ -84,7 +84,7 @@ module.exports = {
         }
     },
 
-    setModules: async (obj, name, module) => {
+    setModules: async function (obj, name, module) {
         for( let key of Object.keys(obj) ){
             obj[key][name] = module;
         }

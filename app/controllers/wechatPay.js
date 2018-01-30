@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    notice: async (req, res, next) => {
+    notice: async function (req, res, next) {
         console.log(__filename + '\n[CALL] notice, body:');
         console.log(req.body);
 

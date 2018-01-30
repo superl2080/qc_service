@@ -5,7 +5,7 @@ module.exports = {
     WECHAT_OPEN_APP_ID: process.env.WECHAT_OPEN_APP_ID,
     WECHAT_OPEN_APP_SECRET: process.env.WECHAT_OPEN_APP_SECRET,
 
-    getOpenToken: async param => {
+    getOpenToken: async function (param) {
         console.log(__filename + '\n[CALL] getOpenToken, param:');
         console.log(param);
 
@@ -31,7 +31,7 @@ module.exports = {
         return result;
     },
 
-    getMpToken: async param => {
+    getMpToken: async function (param) {
         console.log(__filename + '\n[CALL] getMpToken, param:');
         console.log(param);
 
@@ -62,7 +62,7 @@ module.exports = {
         return result;
     },
 
-    updateMpAuthInfo: async param => {
+    updateMpAuthInfo: async function (param) {
         console.log(__filename + '\n[CALL] updateMpAuthInfo, param:');
         console.log(param);
 

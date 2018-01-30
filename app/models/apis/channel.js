@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    deliverAd: async param => {
+    deliverAd: async function (param) {
         console.log(__filename + '\n[CALL] deliverAd, param:');
         console.log(param);
 

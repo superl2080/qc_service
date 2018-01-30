@@ -22,7 +22,7 @@ const aderModel = mongoose.model('ader', aderSchema);
 
 module.exports = {
 
-    getById: async param => {
+    getById: async function (param) {
         console.log(__filename + '\n[CALL] getById, param:');
         console.log(param);
 
@@ -33,7 +33,7 @@ module.exports = {
         return ader;
     },
 
-    payoutBalance: async param => {
+    payoutBalance: async function (param) {
         console.log(__filename + '\n[CALL] payoutBalance, param:');
         console.log(param);
 

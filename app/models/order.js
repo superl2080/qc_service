@@ -4,7 +4,7 @@ module.exports = {
 
     SIT_URL: process.env.SIT_URL,
 
-    create: async param => {
+    create: async function (param) {
         console.log(__filename + '\n[CALL] create, param:');
         console.log(param);
 
@@ -62,7 +62,7 @@ module.exports = {
         return order;
     },
 
-    adSubscribe: async param => {
+    adSubscribe: async function (param) {
         console.log(__filename + '\n[CALL] adSubscribe, param:');
         console.log(param);
 
@@ -93,7 +93,7 @@ module.exports = {
         return order;
     },
 
-    finishPay: async param => {
+    finishPay: async function (param) {
         console.log(__filename + '\n[CALL] finishPay, param:');
         console.log(param);
 
@@ -132,7 +132,7 @@ module.exports = {
         return order;
     },
 
-    finishOrder: async param => {
+    finishOrder: async function (param) {
         console.log(__filename + '\n[CALL] finishOrder, param:');
         console.log(param);
 
@@ -198,7 +198,7 @@ module.exports = {
         return param.order;
     },
 
-    sendMessage: async param => {
+    sendMessage: async function (param) {
         console.log(__filename + '\n[CALL] sendMessage, param:');
         console.log(param);
 

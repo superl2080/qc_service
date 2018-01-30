@@ -31,7 +31,7 @@ const partnerModel = mongoose.model('partner', partnerSchema);
 
 module.exports = {
 
-    getById: async param => {
+    getById: async function (param) {
         console.log(__filename + '\n[CALL] getById, param:');
         console.log(param);
 
@@ -42,7 +42,7 @@ module.exports = {
         return partner;
     },
 
-    getDefault: async param => {
+    getDefault: async function (param) {
         console.log(__filename + '\n[CALL] getDefault, param:');
         console.log(param);
 
@@ -53,7 +53,7 @@ module.exports = {
         return partner;
     },
 
-    incomeBalance: async param => {
+    incomeBalance: async function (param) {
         console.log(__filename + '\n[CALL] incomeBalance, param:');
         console.log(param);
 

@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    getOAuthUrl: async param => {
+    getOAuthUrl: async function (param) {
         console.log(__filename + '\n[CALL] getOAuthUrl, param:');
         console.log(param);
 
@@ -22,7 +22,7 @@ module.exports = {
         return url;
     },
 
-    getOAuthToken: async param => {
+    getOAuthToken: async function (param) {
         console.log(__filename + '\n[CALL] getOAuthToken, param:');
         console.log(param);
 
@@ -53,7 +53,7 @@ module.exports = {
 
     },
 
-    getOAuthUserInfo: async param => {
+    getOAuthUserInfo: async function (param) {
         console.log(__filename + '\n[CALL] getOAuthUserInfo, param:');
         console.log(param);
 
@@ -88,7 +88,7 @@ module.exports = {
 
     },
 
-    getUserInfo: async param => {
+    getUserInfo: async function (param) {
         console.log(__filename + '\n[CALL] getUserInfo, param:');
         console.log(param);
 
@@ -123,7 +123,7 @@ module.exports = {
 
     },
 
-    sendMessage: async param => {
+    sendMessage: async function (param) {
         console.log(__filename + '\n[CALL] sendMessage, param:');
         console.log(param);
 
@@ -157,7 +157,7 @@ module.exports = {
 
     },
 
-    createQrcode: async param => {
+    createQrcode: async function (param) {
         console.log(__filename + '\n[CALL] createQrcode, param:');
         console.log(param);
 

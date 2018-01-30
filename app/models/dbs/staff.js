@@ -23,7 +23,7 @@ const staffModel = mongoose.model('staff', staffSchema);
 
 module.exports = {
 
-    checkPassword: async param => {
+    checkPassword: async function (param) {
         console.log(__filename + '\n[CALL] checkPassword, param:');
         console.log(param);
 
@@ -41,7 +41,7 @@ module.exports = {
         return result;
     },
 
-    update: async param => {
+    update: async function (param) {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
 

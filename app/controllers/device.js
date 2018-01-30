@@ -2,12 +2,12 @@
 
 module.exports = {
 
-    update: async (req, res, next) => {
+    update: async function (req, res, next) {
         console.log(__filename + '\n[CALL] update, body:');
         console.log(req.body);
 
         try {
-            let deviceInfo;
+            let deviceInfo = {};
             if( req.body.devNo ) deviceInfo.devNo = req.body.devNo;
             if( req.body.type ) deviceInfo.type = req.body.type;
             if( req.body.state ) deviceInfo.state = req.body.state;

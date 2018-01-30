@@ -21,7 +21,7 @@ const xml2jsBuilderForceCData = new myXml2js.Builder({
 
 module.exports = {
 
-    getJsonFromXml: async param => {
+    getJsonFromXml: async function (param) {
         console.log(__filename + '\n[CALL] getJsonFromXml, param:');
         console.log(param);
 
@@ -34,7 +34,7 @@ module.exports = {
         return result.xml;
     },
 
-    getXmlFromJson: async param => {
+    getXmlFromJson: async function (param) {
         console.log(__filename + '\n[CALL] getXmlFromJson, param:');
         console.log(param);
 
@@ -45,7 +45,7 @@ module.exports = {
         return result;
     },
 
-    getXmlFromJsonForceCData: async param => {
+    getXmlFromJsonForceCData: async function (param) {
         console.log(__filename + '\n[CALL] getXmlFromJsonForceCData, param:');
         console.log(param);
 
@@ -56,7 +56,7 @@ module.exports = {
         return result;
     },
 
-    getJson: async param => {
+    getJson: async function (param) {
         console.log(__filename + '\n[CALL] getJson, param:');
         console.log(param);
 
@@ -72,7 +72,7 @@ module.exports = {
         return json;
     },
 
-    getHtml: async param => {
+    getHtml: async function (param) {
         console.log(__filename + '\n[CALL] getHtml, param:');
         console.log(param);
 
@@ -87,7 +87,7 @@ module.exports = {
         return result;
     },
 
-    postJson: async param => {
+    postJson: async function (param) {
         console.log(__filename + '\n[CALL] postJson, param:');
         console.log(param);
 
@@ -107,7 +107,7 @@ module.exports = {
         return result;
     },
 
-    postXml: async param => {
+    postXml: async function (param) {
         console.log(__filename + '\n[CALL] postXml, param:');
         console.log(param);
 
@@ -129,7 +129,7 @@ module.exports = {
         return json;
     },
 
-    xml2jsParserString: param => {
+    xml2jsParserString: function (param) {
          return new Promise((resolve, reject) => {
             xml2jsParser.parseString(param.xml, (err, result) => {
                 if(err) {
@@ -141,7 +141,7 @@ module.exports = {
         });
     },
 
-    requestSend: param => {
+    requestSend: function (param) {
          return new Promise((resolve, reject) => {
             if( param.option.method == 'POST' ) {
                 request.post(param.option, (err, ret, body) => {

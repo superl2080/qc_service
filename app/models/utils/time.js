@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    createExpiresInDate: async param => {
+    createExpiresInDate: async function (param) {
         console.log(__filename + '\n[CALL] createExpiresIn, param:');
         console.log(param);
 
@@ -14,7 +14,7 @@ module.exports = {
         return expiresInDate;
     },
 
-    checkExpiresInDate: async param => {
+    checkExpiresInDate: async function (param) {
         console.log(__filename + '\n[CALL] passwordCompare, param:');
         console.log(param);
 

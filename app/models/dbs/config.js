@@ -31,7 +31,7 @@ const wechatOpenModel = mongoose.model('configWechatOpen', wechatOpenSchema);
 
 module.exports = {
 
-    getAdChannel: async param => {
+    getAdChannel: async function (param) {
         console.log(__filename + '\n[CALL] getAdChannel, param:');
         console.log(param);
 
@@ -42,7 +42,7 @@ module.exports = {
         return adChannel;
     },
 
-    getOther: async param => {
+    getOther: async function (param) {
         console.log(__filename + '\n[CALL] getOther, param:');
         console.log(param);
 
@@ -53,7 +53,7 @@ module.exports = {
         return other;
     },
 
-    getPartnerDeduct: async param => {
+    getPartnerDeduct: async function (param) {
         console.log(__filename + '\n[CALL] getPartnerDeduct, param:');
         console.log(param);
 
@@ -64,7 +64,7 @@ module.exports = {
         return partnerDeduct;
     },
 
-    getWechatOpen: async param => {
+    getWechatOpen: async function (param) {
         console.log(__filename + '\n[CALL] getWechatOpen, param:');
         console.log(param);
 
@@ -75,7 +75,7 @@ module.exports = {
         return wechatOpen;
     },
 
-    updateWechatOpenForce: async param => {
+    updateWechatOpenForce: async function (param) {
         console.log(__filename + '\n[CALL] updateWechatOpenForce, param:');
         console.log(param);
 

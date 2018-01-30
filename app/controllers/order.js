@@ -7,7 +7,7 @@ module.exports = {
     WECHAT_PAY_ID: process.env.WECHAT_PAY_ID,
     WECHAT_PAY_KEY: process.env.WECHAT_PAY_KEY,
 
-    get: async (req, res, next) => {
+    get: async function (req, res, next) {
         console.log(__filename + '\n[CALL] get, query:');
         console.log(req.query);
 
@@ -46,7 +46,7 @@ module.exports = {
         }
     },
 
-    prepayWechat: async (req, res, next) => {
+    prepayWechat: async function (req, res, next) {
         console.log(__filename + '\n[CALL] prepayWechat, body:');
         console.log(req.body);
 

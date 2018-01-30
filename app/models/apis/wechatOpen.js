@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    getMpAuthUrl: async param => {
+    getMpAuthUrl: async function (param) {
         console.log(__filename + '\n[CALL] getMpAuthUrl, param:');
         console.log(param);
 
@@ -16,7 +16,7 @@ module.exports = {
         return url;
     },
 
-    getOpenToken: async param => {
+    getOpenToken: async function (param) {
         console.log(__filename + '\n[CALL] getOpenToken, param:');
         console.log(param);
 
@@ -48,7 +48,7 @@ module.exports = {
 
     },
 
-    createPreAuthCode: async param => {
+    createPreAuthCode: async function (param) {
         console.log(__filename + '\n[CALL] createPreAuthCode, param:');
         console.log(param);
 
@@ -77,7 +77,7 @@ module.exports = {
 
     },
 
-    queryAuth: async param => {
+    queryAuth: async function (param) {
         console.log(__filename + '\n[CALL] queryAuth, param:');
         console.log(param);
 
@@ -107,7 +107,7 @@ module.exports = {
 
     },
 
-    refreshAuth: async param => {
+    refreshAuth: async function (param) {
         console.log(__filename + '\n[CALL] refreshAuth, param:');
         console.log(param);
 
@@ -137,7 +137,7 @@ module.exports = {
 
     },
 
-    getMpInfo: async param => {
+    getMpInfo: async function (param) {
         console.log(__filename + '\n[CALL] getMpInfo, param:');
         console.log(param);
 

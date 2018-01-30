@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    prepay: async param => {
+    prepay: async function (param) {
         console.log(__filename + '\n[CALL] prepay, param:');
         console.log(param);
 
@@ -57,7 +57,7 @@ module.exports = {
 
     },
 
-    paySign: async param => {
+    paySign: async function (param) {
         console.log(__filename + '\n[CALL] paySign, param:');
         console.log(param);
 

@@ -28,7 +28,7 @@ const userModel = mongoose.model('user', userSchema);
 
 module.exports = {
 
-    getById: async param => {
+    getById: async function (param) {
         console.log(__filename + '\n[CALL] getById, param:');
         console.log(param);
 
@@ -39,7 +39,7 @@ module.exports = {
         return user;
     },
 
-    getByWechatInfo: async param => {
+    getByWechatInfo: async function (param) {
         console.log(__filename + '\n[CALL] getByWechatInfo, param:');
         console.log(param);
 
@@ -56,7 +56,7 @@ module.exports = {
         return user;
     },
 
-    getByWechatForce: async param => {
+    getByWechatForce: async function (param) {
         console.log(__filename + '\n[CALL] getByWechatForce, param:');
         console.log(param);
 
@@ -77,7 +77,7 @@ module.exports = {
         return user;
     },
 
-    update: async param => {
+    update: async function (param) {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
 

@@ -7,7 +7,7 @@ module.exports = {
 
     BCRYPT_SALT_ROUNDS: 10,
 
-    passwordCrypt: async param => {
+    passwordCrypt: async function (param) {
         console.log(__filename + '\n[CALL] passwordCrypt, param:');
         console.log(param);
 
@@ -18,7 +18,7 @@ module.exports = {
         return result;
     },
 
-    passwordCompare: async param => {
+    passwordCompare: async function (param) {
         console.log(__filename + '\n[CALL] passwordCompare, param:');
         console.log(param);
 
@@ -29,7 +29,7 @@ module.exports = {
         return result;
     },
 
-    decryptWechatMsg: async param => {
+    decryptWechatMsg: async function (param) {
         console.log(__filename + '\n[CALL] decryptWechatMsg, param:');
         console.log(param);
 
@@ -45,7 +45,7 @@ module.exports = {
         return result;
     },
 
-    encryptWechatMsg: async param => {
+    encryptWechatMsg: async function (param) {
         console.log(__filename + '\n[CALL] encryptWechatMsg, param:');
         console.log(param);
 
@@ -74,7 +74,7 @@ module.exports = {
         return msgEncryptXml;
     },
 
-    encryptWechatAes256: async (param) => {
+    encryptWechatAes256: async function (param) {
 
         const aesKey = new Buffer(param.aesKey + '=', 'base64');
         const aesIv = aesKey.slice(0, 16);
@@ -92,7 +92,7 @@ module.exports = {
     },
 
 
-    decryptWechatAes256: async (param) => {
+    decryptWechatAes256: async function (param) {
 
         const aesKey = new Buffer(param.aesKey + '=', 'base64');
         const aesIv = aesKey.slice(0, 16);
@@ -109,7 +109,7 @@ module.exports = {
         return msg_content;
     },
 
-    encryptString: async param => {
+    encryptString: async function (param) {
         console.log(__filename + '\n[CALL] encryptString, param:');
         console.log(param);
 
@@ -123,7 +123,7 @@ module.exports = {
         return strEncrypt;
     },
 
-    decryptString: async param => {
+    decryptString: async function (param) {
         console.log(__filename + '\n[CALL] decryptString, param:');
         console.log(param);
 
@@ -137,7 +137,7 @@ module.exports = {
         return strDecrypt;
     },
 
-    encodePKCS7: async param => {
+    encodePKCS7: async function (param) {
         console.log(__filename + '\n[CALL] encodePKCS7, param:');
         console.log(param);
 
@@ -153,7 +153,7 @@ module.exports = {
         return result;
     },
 
-    decodePKCS7: async param => {
+    decodePKCS7: async function (param) {
         console.log(__filename + '\n[CALL] decodePKCS7, param:');
         console.log(param);
 
@@ -168,7 +168,7 @@ module.exports = {
         return result;
     },
 
-    encodeSha1: async param => {
+    encodeSha1: async function (param) {
         console.log(__filename + '\n[CALL] encodeSha1, param:');
         console.log(param);
 
@@ -179,7 +179,7 @@ module.exports = {
         return result;
     },
 
-    encodeMd5: async param => {
+    encodeMd5: async function (param) {
         console.log(__filename + '\n[CALL] encodeMd5, param:');
         console.log(param);
 
@@ -190,7 +190,7 @@ module.exports = {
         return result;
     },
 
-    randomHex: async param => {
+    randomHex: async function (param) {
         console.log(__filename + '\n[CALL] randomHex, param:');
         console.log(param);
 

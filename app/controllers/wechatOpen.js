@@ -5,7 +5,7 @@ module.exports = {
     WECHAT_OPEN_APP_ID: process.env.WECHAT_OPEN_APP_ID,
     WECHAT_OPEN_ENCODE_KEY: process.env.WECHAT_OPEN_ENCODE_KEY,
 
-    notice: async (req, res, next) => {
+    notice: async function (req, res, next) {
         console.log(__filename + '\n[CALL] notice, body:');
         console.log(req.body);
 
@@ -43,7 +43,7 @@ module.exports = {
         }
     },
 
-    adAuth: async (req, res, next) => {
+    adAuth: async function (req, res, next) {
         console.log(__filename + '\n[CALL] adAuth, query:');
         console.log(req.query);
         try {
@@ -77,7 +77,7 @@ module.exports = {
         }
     },
 
-    adAuthCbk: async (req, res, next) => {
+    adAuthCbk: async function (req, res, next) {
         console.log(__filename + '\n[CALL] adAuthCbk, query:');
         console.log(req.query);
         try {

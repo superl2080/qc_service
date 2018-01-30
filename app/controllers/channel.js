@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    subscribe: async (req, res, next) => {
+    subscribe: async function (req, res, next) {
         console.log(__filename + '\n[CALL] subscribe, body:');
         console.log(req.body);
 

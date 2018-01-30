@@ -4,7 +4,7 @@ module.exports = {
 
     WECHAT_OPEN_ENCODE_KEY: process.env.WECHAT_OPEN_ENCODE_KEY,
 
-    notice: async (req, res, next) => {
+    notice: async function (req, res, next) {
         console.log(__filename + '\n[CALL] notice, body:');
         console.log(req.body);
 

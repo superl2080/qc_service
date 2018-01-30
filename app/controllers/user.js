@@ -5,7 +5,7 @@ module.exports = {
     WECHAT_MP_APP_ID: process.env.WECHAT_MP_APP_ID,
     WECHAT_OPEN_APP_ID: process.env.WECHAT_OPEN_APP_ID,
 
-    loginWechat: async (req, res, next) => {
+    loginWechat: async function (req, res, next) {
         console.log(__filename + '\n[CALL] loginWechat, query:');
         console.log(req.query);
 
@@ -30,7 +30,7 @@ module.exports = {
         }
     },
 
-    loginWechatCbk: async (req, res, next) => {
+    loginWechatCbk: async function (req, res, next) {
         console.log(__filename + '\n[CALL] loginWechatCbk');
         console.log(req.query);
 
@@ -74,7 +74,7 @@ module.exports = {
         }
     },
 
-    scanWechat: async (req, res, next) => {
+    scanWechat: async function (req, res, next) {
         console.log(__filename + '\n[CALL] scanWechat, query:');
         console.log(req.query);
 
@@ -101,7 +101,7 @@ module.exports = {
         }
     },
 
-    scanWechatCbk: async (req, res, next) => {
+    scanWechatCbk: async function (req, res, next) {
         console.log(__filename + '\n[CALL] scanWechatCbk');
         console.log(req.query);
 

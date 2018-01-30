@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 
 module.exports = {
 
-    getImage: async param => {
+    getImage: async function (param) {
         console.log(__filename + '\n[CALL] getImage, param:');
         console.log(param);
 

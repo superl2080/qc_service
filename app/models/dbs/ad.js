@@ -46,7 +46,7 @@ const adModel = mongoose.model('ad', adSchema);
 
 module.exports = {
 
-    getById: async param => {
+    getById: async function (param) {
         console.log(__filename + '\n[CALL] getById, param:');
         console.log(param);
 
@@ -57,7 +57,7 @@ module.exports = {
         return ad;
     },
 
-    getByAppid: async param => {
+    getByAppid: async function (param) {
         console.log(__filename + '\n[CALL] getByAppid, param:');
         console.log(param);
 
@@ -68,7 +68,7 @@ module.exports = {
         return ad;
     },
 
-    getDefault: async param => {
+    getDefault: async function (param) {
         console.log(__filename + '\n[CALL] getDefault, param:');
         console.log(param);
 
@@ -79,7 +79,7 @@ module.exports = {
         return ad;
     },
 
-    getDeliverAd: async param => {
+    getDeliverAd: async function (param) {
         console.log(__filename + '\n[CALL] getDeliverAd, param:');
         console.log(param);
 
@@ -109,7 +109,7 @@ module.exports = {
         return deliverAd;
     },
 
-    cancel: async param => {
+    cancel: async function (param) {
         console.log(__filename + '\n[CALL] cancel, param:');
         console.log(param);
 
@@ -126,7 +126,7 @@ module.exports = {
         return ad;
     },
 
-    update: async param => {
+    update: async function (param) {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
 
@@ -149,7 +149,7 @@ module.exports = {
         return ad;
     },
 
-    createAuth: async param => {
+    createAuth: async function (param) {
         console.log(__filename + '\n[CALL] createAuth, param:');
         console.log(param);
 
@@ -171,7 +171,7 @@ module.exports = {
         return ad;
     },
 
-    finishAuth: async param => {
+    finishAuth: async function (param) {
         console.log(__filename + '\n[CALL] finishAuth, param:');
         console.log(param);
 
@@ -211,7 +211,7 @@ module.exports = {
         return ad;
     },
 
-    cancelAuth: async param => {
+    cancelAuth: async function (param) {
         console.log(__filename + '\n[CALL] cancelAuth, param:');
         console.log(param);
 

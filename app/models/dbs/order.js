@@ -39,7 +39,7 @@ const orderModel = mongoose.model('order', orderSchema);
 
 module.exports = {
 
-    getById: async param => {
+    getById: async function (param) {
         console.log(__filename + '\n[CALL] getById, param:');
         console.log(param);
 
@@ -50,7 +50,7 @@ module.exports = {
         return order;
     },
 
-    getByUserAppid: async param => {
+    getByUserAppid: async function (param) {
         console.log(__filename + '\n[CALL] getByUserAppid, param:');
         console.log(param);
 
@@ -65,7 +65,7 @@ module.exports = {
         return order;
     },
 
-    create: async param => {
+    create: async function (param) {
         console.log(__filename + '\n[CALL] create, param:');
         console.log(param);
 
@@ -89,7 +89,7 @@ module.exports = {
         return order;
     },
 
-    update: async param => {
+    update: async function (param) {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
 
@@ -124,7 +124,7 @@ module.exports = {
         return order;
     },
 
-    cancel: async param => {
+    cancel: async function (param) {
         console.log(__filename + '\n[CALL] cancel, param:');
         console.log(param);
 

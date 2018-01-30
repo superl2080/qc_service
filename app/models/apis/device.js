@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    takeItem: async param => {
+    takeItem: async function (param) {
         console.log(__filename + '\n[CALL] takeItem, param:');
         console.log(param);
 

@@ -36,7 +36,7 @@ const pointModel = mongoose.model('point', pointSchema);;
 
 module.exports = {
 
-    getById: async param => {
+    getById: async function (param) {
         console.log(__filename + '\n[CALL] getById, param:');
         console.log(param);
 
@@ -47,7 +47,7 @@ module.exports = {
         return point;
     },
 
-    updateDeviceForce: async param => {
+    updateDeviceForce: async function (param) {
         console.log(__filename + '\n[CALL] updateDeviceForce, param:');
         console.log(param);
 
