@@ -45,15 +45,12 @@ module.exports = {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
 
-        let option = {};
-        if( param.password ) option.password = await this.models.utils.crypt.passwordCrypt({ password: param.password });
-
         let staff = await staffModel.findOne({ logid: param.logid }).exec();
         if( !staff ) {
             throw new Error('Can not find staff');
         }
 
-        Object.assign(staff, option);
+        if( param.password ) staff.password = await this.models.utils.crypt.passwordCrypt({ password: param.password });
         await staff.save();
 
         console.log('[CALLBACK] update, result:');

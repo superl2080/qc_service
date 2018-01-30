@@ -92,31 +92,27 @@ module.exports = {
     update: async function (param) {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
-
-        let option = {};
-        let adInfo = {};
-        let payInfo = {};
         
-        if( param.state ) option.state = param.state;
-        if( param.adInfo && param.adInfo.adId ) adInfo.adId = param.adInfo.adId;
-        if( param.adInfo && param.adInfo.aderId ) adInfo.aderId = param.adInfo.aderId;
-        if( param.adInfo && param.adInfo.qrcode_url ) adInfo.qrcode_url = param.adInfo.qrcode_url;
-        if( param.adInfo && param.adInfo.appid ) adInfo.appid = param.adInfo.appid;
-        if( param.payInfo && param.payInfo.type ) payInfo.type = param.payInfo.type;
-        if( param.payInfo && param.payInfo.endDate ) payInfo.endDate = param.payInfo.endDate;
-        if( param.payInfo && param.payInfo.openid ) payInfo.openid = param.payInfo.openid;
-        if( param.payInfo && param.payInfo.payout ) payInfo.payout = param.payInfo.payout;
-        if( param.payInfo && param.payInfo.channel ) payInfo.channel = param.payInfo.channel;
-        if( param.payInfo && param.payInfo.transaction_id ) payInfo.transaction_id = param.payInfo.transaction_id;
-
         let order = await orderModel.findById(param.orderId).exec();
         if( !order ) {
             throw new Error('Can not find order');
         }
 
-        Object.assign(order, option);
-        Object.assign(order.adInfo, adInfo);
-        Object.assign(order.payInfo, payInfo);
+        if( param.state ) order.state = param.state;
+        if( param.adInfo ){
+            if( param.adInfo.adId ) order.adInfo.adId = param.adInfo.adId;
+            if( param.adInfo.aderId ) order.adInfo.aderId = param.adInfo.aderId;
+            if( param.adInfo.qrcode_url ) order.adInfo.qrcode_url = param.adInfo.qrcode_url;
+            if( param.adInfo.appid ) order.adInfo.appid = param.adInfo.appid;
+        }
+        if( param.payInfo ){
+            if( param.payInfo.type ) order.payInfo.type = param.payInfo.type;
+            if( param.payInfo.endDate ) order.payInfo.endDate = param.payInfo.endDate;
+            if( param.payInfo.openid ) order.payInfo.openid = param.payInfo.openid;
+            if( param.payInfo.payout ) order.payInfo.payout = param.payInfo.payout;
+            if( param.payInfo.channel ) order.payInfo.channel = param.payInfo.channel;
+            if( param.payInfo.transaction_id ) order.payInfo.transaction_id = param.payInfo.transaction_id;
+        }
         await order.save();
 
         console.log('[CALLBACK] update, result:');

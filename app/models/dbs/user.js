@@ -69,6 +69,9 @@ module.exports = {
                     wechatId: param.wechatId,
                 },
                 tags: ['微信'],
+                wechatInfo: {
+                    appids: [],
+                },
             });
         }
 
@@ -81,27 +84,24 @@ module.exports = {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
 
-        let option = {};
         let wechatInfo = {};
         let appid;
-        if( param.wechatInfo ){
-            if( param.wechatInfo.nickname !== undefined ) wechatInfo.nickname = param.wechatInfo.nickname;
-            if( param.wechatInfo.sex !== undefined ) wechatInfo.sex = param.wechatInfo.sex;
-            if( param.wechatInfo.city !== undefined ) wechatInfo.city = param.wechatInfo.city;
-            if( param.wechatInfo.province !== undefined ) wechatInfo.province = param.wechatInfo.province;
-            if( param.wechatInfo.country !== undefined ) wechatInfo.country = param.wechatInfo.country;
-        }
-        if( param.appid ) appid = param.appid;
 
         let user = await userModel.findById(param.userId).exec();
         if( !user ) {
             throw new Error('Can not find user');
         }
 
-        Object.assign(user, option);
-        Object.assign(user.wechatInfo, wechatInfo);
+        if( param.wechatInfo ){
+            if( param.wechatInfo.nickname !== undefined ) user.wechatInfo.nickname = param.wechatInfo.nickname;
+            if( param.wechatInfo.sex !== undefined ) user.wechatInfo.sex = param.wechatInfo.sex;
+            if( param.wechatInfo.city !== undefined ) user.wechatInfo.city = param.wechatInfo.city;
+            if( param.wechatInfo.province !== undefined ) user.wechatInfo.province = param.wechatInfo.province;
+            if( param.wechatInfo.country !== undefined ) user.wechatInfo.country = param.wechatInfo.country;
+            if( param.wechatInfo.appid
+                && user.wechatInfo.appids.indexOf(param.wechatInfo.appid) < 0 ) user.wechatInfo.appids.push(param.wechatInfo.appid);
+        }
 
-        if( appid && user.wechatInfo.appids.indexOf(appid) < 0 ) user.wechatInfo.appids.push(appid);
         if ( user.tags.indexOf(user.wechatInfo.sex) < 0 ) user.tags.push(user.wechatInfo.sex);
         if ( user.tags.indexOf(user.wechatInfo.city) < 0 ) user.tags.push(user.wechatInfo.city);
         if ( user.tags.indexOf(user.wechatInfo.province) < 0 ) user.tags.push(user.wechatInfo.province);

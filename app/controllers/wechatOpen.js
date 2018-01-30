@@ -58,7 +58,9 @@ module.exports = {
             });
             await this.models.dbs.ad.update({
                 adId: req.query.adId,
-                pre_auth_code: preAuthCode.pre_auth_code,
+                wechatMpAuthInfo: {
+                    pre_auth_code: preAuthCode.pre_auth_code,
+                },
             });
             const url = await this.models.apis.wechatOpen.getMpAuthUrl({
                 openAppid: this.WECHAT_OPEN_APP_ID,

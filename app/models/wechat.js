@@ -49,9 +49,11 @@ module.exports = {
             });
             const ad = await this.models.dbs.ad.update({
                 adId: param.ad._id,
-                access_token: newMpToken.authorizer_access_token,
-                expires_in: await this.models.utils.time.createExpiresInDate({ expires_in: newMpToken.expires_in }),
-                refresh_token: newMpToken.authorizer_refresh_token,
+                wechatMpAuthInfo: {
+                    access_token: newMpToken.authorizer_access_token,
+                    expires_in: await this.models.utils.time.createExpiresInDate({ expires_in: newMpToken.expires_in }),
+                    refresh_token: newMpToken.authorizer_refresh_token,
+                },
             });
             wechatMpAuthInfo = ad.wechatMpAuthInfo;
         }
@@ -93,17 +95,19 @@ module.exports = {
         const qrcode_url = 'http://open.weixin.qq.com/qr/code?username=' + mpInfo.user_name;
 
         const ad = await this.models.dbs.ad.finishAuth({
-            pre_auth_code: param.pre_auth_code,
-            appid: mpAuth.authorizer_appid,
-            user_name: mpInfo.user_name,
-            qrcode_url: qrcode_url,
-            access_token: mpAuth.authorizer_access_token,
-            expires_in: await this.models.utils.time.createExpiresInDate({ expires_in: mpAuth.expires_in }),
-            refresh_token: mpAuth.authorizer_refresh_token,
-            nick_name: mpInfo.nick_name,
-            head_img: mpInfo.head_img,
-            service_type: mpInfo.service_type_info.id,
-            verify_type: mpInfo.verify_type_info.id,
+            wechatMpAuthInfo: {
+                pre_auth_code: param.pre_auth_code,
+                appid: mpAuth.authorizer_appid,
+                user_name: mpInfo.user_name,
+                qrcode_url: qrcode_url,
+                access_token: mpAuth.authorizer_access_token,
+                expires_in: await this.models.utils.time.createExpiresInDate({ expires_in: mpAuth.expires_in }),
+                refresh_token: mpAuth.authorizer_refresh_token,
+                nick_name: mpInfo.nick_name,
+                head_img: mpInfo.head_img,
+                service_type: mpInfo.service_type_info.id,
+                verify_type: mpInfo.verify_type_info.id,
+            },
         });
 
         console.log('[CALLBACK] updateMpAuthInfo, result:');

@@ -130,18 +130,17 @@ module.exports = {
         console.log(__filename + '\n[CALL] update, param:');
         console.log(param);
 
-        let wechatMpAuthInfo = {};
-        if( param.pre_auth_code ) wechatMpAuthInfo.pre_auth_code = param.pre_auth_code;
-        if( param.access_token ) wechatMpAuthInfo.access_token = param.access_token;
-        if( param.expires_in ) wechatMpAuthInfo.expires_in = param.expires_in;
-        if( param.refresh_token ) wechatMpAuthInfo.refresh_token = param.refresh_token;
-
         let ad = await adModel.findById(param.adId).exec();
         if( !ad ) {
             throw new Error('Can not find ad');
         }
 
-        Object.assign(ad.wechatMpAuthInfo, wechatMpAuthInfo);
+        if( param.wechatMpAuthInfo ){
+            if( param.wechatMpAuthInfo.pre_auth_code ) ad.wechatMpAuthInfo.pre_auth_code = param.wechatMpAuthInfo.pre_auth_code;
+            if( param.wechatMpAuthInfo.access_token ) ad.wechatMpAuthInfo.access_token = param.wechatMpAuthInfo.access_token;
+            if( param.wechatMpAuthInfo.expires_in ) ad.wechatMpAuthInfo.expires_in = param.wechatMpAuthInfo.expires_in;
+            if( param.wechatMpAuthInfo.refresh_token ) ad.wechatMpAuthInfo.refresh_token = param.wechatMpAuthInfo.refresh_token;
+        }
         await ad.save();
 
         console.log('[CALLBACK] update, result:');
@@ -164,6 +163,7 @@ module.exports = {
             deliverInfo: {
                 payout: param.ader.payout,
             },
+            wechatMpAuthInfo: { },
         });
 
         console.log('[CALLBACK] createAuth, result:');
@@ -175,35 +175,35 @@ module.exports = {
         console.log(__filename + '\n[CALL] finishAuth, param:');
         console.log(param);
 
-        let wechatMpAuthInfo = {};
-        if( param.user_name ) wechatMpAuthInfo.user_name = param.user_name;
-        if( param.qrcode_url ) wechatMpAuthInfo.qrcode_url = param.qrcode_url;
-        if( param.access_token ) wechatMpAuthInfo.access_token = param.access_token;
-        if( param.expires_in ) wechatMpAuthInfo.expires_in = param.expires_in;
-        if( param.refresh_token ) wechatMpAuthInfo.refresh_token = param.refresh_token;
-        if( param.nick_name ) wechatMpAuthInfo.nick_name = param.nick_name;
-        if( param.head_img ) wechatMpAuthInfo.head_img = param.head_img;
-        if( param.service_type ) wechatMpAuthInfo.service_type = param.service_type;
-        if( param.verify_type ) wechatMpAuthInfo.verify_type = param.verify_type;
-        if( !param.appid ){
+        if( !param.wechatMpAuthInfo.appid ){
             throw new Error('appid is empty');
         }
-        const sameAppidAd = await this.getByAppid({ appid: param.appid });
+        const sameAppidAd = await this.getByAppid({ appid: param.wechatMpAuthInfo.appid });
         if( sameAppidAd ){
             throw new Error('appid is exist');
         }
-        wechatMpAuthInfo.appid = param.appid;
 
         let ad = await adModel.findOne({
-            'wechatMpAuthInfo.pre_auth_code': param.pre_auth_code,
+            'wechatMpAuthInfo.pre_auth_code': param.wechatMpAuthInfo.pre_auth_code,
             state: 'CREATE',
         }).exec();
         if( !ad ) {
             throw new Error('Can not find ad');
         }
 
+        if( param.wechatMpAuthInfo ){
+            if( param.wechatMpAuthInfo.appid ) ad.wechatMpAuthInfo.appid = param.wechatMpAuthInfo.appid;
+            if( param.wechatMpAuthInfo.user_name ) ad.wechatMpAuthInfo.user_name = param.wechatMpAuthInfo.user_name;
+            if( param.wechatMpAuthInfo.qrcode_url ) ad.wechatMpAuthInfo.qrcode_url = param.wechatMpAuthInfo.qrcode_url;
+            if( param.wechatMpAuthInfo.access_token ) ad.wechatMpAuthInfo.access_token = param.wechatMpAuthInfo.access_token;
+            if( param.wechatMpAuthInfo.expires_in ) ad.wechatMpAuthInfo.expires_in = param.wechatMpAuthInfo.expires_in;
+            if( param.wechatMpAuthInfo.refresh_token ) ad.wechatMpAuthInfo.refresh_token = param.wechatMpAuthInfo.refresh_token;
+            if( param.wechatMpAuthInfo.nick_name ) ad.wechatMpAuthInfo.nick_name = param.wechatMpAuthInfo.nick_name;
+            if( param.wechatMpAuthInfo.head_img ) ad.wechatMpAuthInfo.head_img = param.wechatMpAuthInfo.head_img;
+            if( param.wechatMpAuthInfo.service_type ) ad.wechatMpAuthInfo.service_type = param.wechatMpAuthInfo.service_type;
+            if( param.wechatMpAuthInfo.verify_type ) ad.wechatMpAuthInfo.verify_type = param.wechatMpAuthInfo.verify_type;
+        }
         ad.state = 'OPEN';
-        Object.assign(ad.wechatMpAuthInfo, wechatMpAuthInfo);
         await ad.save();
 
         console.log('[CALLBACK] finishAuth, result:');

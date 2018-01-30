@@ -29,7 +29,9 @@ module.exports = {
                 if( user ){
                     user = await this.models.dbs.user.update({
                         userId: user._id,
-                        appid: appid,
+                        wechatInfo: {
+                            appid: appid,
+                        },
                     });
 
                     if( decryptMsg.Event == 'subscribe' ){
