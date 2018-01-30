@@ -27,7 +27,8 @@ module.exports = {
                     throw new Error('deliverAd is error');
                 }
 
-                const result = apiResult.list;
+                const result = apiResult.list[0];
+                result.auth = false;
                 console.log('[CALLBACK] deliverAd, result:');
                 console.log(result);
                 return result;
