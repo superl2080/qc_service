@@ -21,9 +21,9 @@ module.exports = {
                 if( !apiResult
                     || apiResult.error !== 0
                     || !apiResult.list
-                    || apiResult.list.auth === undefined
-                    || !apiResult.list.appid
-                    || !apiResult.list.qrcode_url ){
+                    || apiResult.list[0].auth === undefined
+                    || !apiResult.list[0].appid
+                    || !apiResult.list[0].qrcode_url ){
                     throw new Error('deliverAd is error');
                 }
 

@@ -21,6 +21,11 @@ module.exports = {
                 aderId: ad.aderId,
             };
 
+            order = await this.models.dbs.order.update({
+                orderId: order._id,
+                adInfo: adInfo,
+            });
+            
             if( ad.type == 'WECHAT_MP_AUTH' ){
                 adInfo.appid = ad.wechatMpAuthInfo.appid;
                 adInfo.qrcode_url = ad.wechatMpAuthInfo.qrcode_url;
