@@ -24,7 +24,7 @@ module.exports = {
 
             const user = await this.models.dbs.user.getById({ userId: req.query.token });
             if( !user
-                || order.userId != user._id ){
+                || order.userId.toString() != user._id.toString() ){
                 throw new Error('token is error');
             }
 
