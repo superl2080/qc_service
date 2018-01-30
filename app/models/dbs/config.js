@@ -6,6 +6,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const adChannelSchema = new mongoose.Schema({
     name:                   { $type: String,             required: true, unique: true },
     url:                    { $type: String,             required: true },
+    bid:                    String,
 }, { typeKey: '$type' });
 
 const otherSchema = new mongoose.Schema({
