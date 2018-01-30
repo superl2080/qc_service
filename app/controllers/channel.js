@@ -22,15 +22,20 @@ module.exports = {
                 throw new Error('userId is error');
             }
 
-            await this.models.order.adSubscribe({
+            const order = await this.models.order.adSubscribe({
                 user: user,
                 ad: ad,
             });
+
+            if( !order ){
+                throw new Error('can not find order');
+            }
 
             res.send({
                 code: 0,
                 data: {
                     res: 'SUCCESS',
+                    orderId: order._id.toString(),
                 },
                 message: 'Channel subscribe success.',
             });
