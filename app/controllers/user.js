@@ -85,7 +85,7 @@ module.exports = {
             }
 
             const redirect_uri = await this.models.utils.crypt.encryptString({ str: req.query.redirect_uri });
-            const new_redirect_uri = 'http://' + req.headers.host + '/user/login/wechatCbk?redirect_uri=' + redirect_uri;
+            const new_redirect_uri = 'http://' + req.headers.host + '/user/scan/wechatCbk?redirect_uri=' + redirect_uri;
             const url = await this.models.apis.wechatMp.getOAuthUrl({
                 openAppid: this.WECHAT_OPEN_APP_ID,
                 mpAppid: this.WECHAT_MP_APP_ID,
