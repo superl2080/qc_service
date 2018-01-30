@@ -12,11 +12,6 @@ module.exports = {
                 throw new Error('userId or appid is empty');
             }
 
-            const ad = await this.models.dbs.ad.getByAppid({ appid: req.body.appid });
-            if( !ad ){
-                throw new Error('appid is error');
-            }
-
             const user = await this.models.dbs.user.getById({ userId: req.body.userId });
             if( !user ){
                 throw new Error('userId is error');
@@ -24,7 +19,7 @@ module.exports = {
 
             const order = await this.models.order.adSubscribe({
                 user: user,
-                ad: ad,
+                appid: req.body.appid,
             });
 
             if( !order ){

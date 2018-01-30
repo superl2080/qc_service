@@ -73,15 +73,16 @@ module.exports = {
 
         const order = await this.models.dbs.order.getByUserAppid({
             userId: param.user._id,
-            appid: param.ad.wechatMpAuthInfo.appid,
+            appid: param.appid,
         });
+        const ad = await this.models.dbs.ad.getById({ adId: order.adInfo.adId });
         if( order ) {
             await this.models.dbs.order.update({
                 orderId: order._id,
                 state: 'SUCCESS',
                 payInfo: {
                     endDate: new Date(),
-                    payout: param.ad.deliverInfo.payout,
+                    payout: ad.deliverInfo.payout,
                     type: 'AD',
                     openid: param.openid,
                 },
@@ -89,7 +90,7 @@ module.exports = {
             await this.finishOrder({
                 user: param.user,
                 order: order,
-                payout: param.ad.deliverInfo.payout,
+                payout: ad.deliverInfo.payout,
             });
         }
 

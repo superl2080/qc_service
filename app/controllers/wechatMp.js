@@ -37,7 +37,7 @@ module.exports = {
                     if( decryptMsg.Event == 'subscribe' ){
                         const order = await this.models.order.adSubscribe({
                             user: user,
-                            ad: ad,
+                            appid: ad.wechatMpAuthInfo.appid,
                             openid: openid,
                         });
                     }
