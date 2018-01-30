@@ -144,7 +144,8 @@ module.exports = {
         for( let order of orders ){
             order.state = 'CANCEL';
             await order.save();
-            if( order.adInfo ){
+            if( order.adInfo
+                && order.adInfo.adId ){
                 const ad = await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
                 await this.models.dbs.ader.payoutBalance({
                     aderId: order.adInfo.aderId,
