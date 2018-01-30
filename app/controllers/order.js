@@ -65,7 +65,7 @@ module.exports = {
 
             const user = await this.models.dbs.user.getById({ userId: req.body.token });
             if( !user
-                || order.userId != user._id ){
+                || order.userId.toString() != user._id.toString() ){
                 throw new Error('token is error');
             }
             const prepay = await this.models.apis.wechatPay.prepay({
