@@ -96,7 +96,7 @@ module.exports = {
                 url: param.url,
                 method: 'POST',
                 headers: {  
-                    'content-type': 'application/json',
+                    'content-type': 'application/json;charset=UTF-8',
                 },
                 json: param.json,
             },
