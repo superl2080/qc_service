@@ -88,7 +88,7 @@ module.exports = {
         const mpInfo = await this.models.apis.wechatOpen.getMpInfo({
             openAppid: this.WECHAT_OPEN_APP_ID,
             openToken: openToken,
-            appid: mpAuth.authorizer_appid,
+            mpAppid: mpAuth.authorizer_appid,
         });
         const qrcode_url = 'http://open.weixin.qq.com/qr/code?username=' + mpInfo.user_name;
 
