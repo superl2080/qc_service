@@ -16,7 +16,7 @@ module.exports = {
                 total_fee: param.total_fee,
                 appid: param.mpAppid,
                 mch_id: param.payId,
-                nonce_str: await this.models.utils.crypt.randomHex(16),
+                nonce_str: await this.models.utils.crypt.randomHex({ byte: 16 }),
                 trade_type: 'JSAPI',
             };
             prepayJson.sign = await this.paySign({
@@ -37,7 +37,7 @@ module.exports = {
 
             let result = {
                 appId: param.mpAppid,
-                nonceStr: await this.models.utils.crypt.randomHex(16),
+                nonceStr: await this.models.utils.crypt.randomHex({ byte: 16 }),
                 package: 'prepay_id=' + apiResult.prepay_id,
                 signType: 'MD5',
                 timeStamp: Math.round(new Date().getTime() / 1000).toString(),
