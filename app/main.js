@@ -31,8 +31,6 @@ module.exports = {
         await this.loadModules(path.join(__dirname, 'tests'), [this.tests, this.modules]);
         await this.setModules(this.modules, 'models', this.models);
 
-        console.log(this.modules);
-
         if( process.env.NODE_ENV == 'test' ) {
             this.tests.main.run(app);
         }

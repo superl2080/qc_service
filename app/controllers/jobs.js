@@ -3,7 +3,7 @@
 module.exports = {
 
     run: async () => {
-        setInterval(cleaningOrder, 1 * 60 * 1000);
+        setInterval(this.cleaningOrder, 1 * 60 * 1000);
     },
 
     cleaningOrder: async () => {
