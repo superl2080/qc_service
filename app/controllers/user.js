@@ -142,7 +142,7 @@ module.exports = {
             } else {
                 redirect_uri += '?token=' + user._id.toString();
             }
-            redirect_uri += '?orderId=' + order._id.toString();
+            redirect_uri += '&orderId=' + order._id.toString();
             res.redirect(redirect_uri);
 
         } catch(err) {
