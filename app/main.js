@@ -18,7 +18,9 @@ module.exports = {
 
     tests: { },
 
-    run: async app => {
+    run: async function (app) {
+        console.log(__filename + '\n[CALL] run');
+
         mongoose.connect(process.env.MONGO_URL, { useMongoClient: true });
 
         await this.loadModules(path.join(__dirname, 'controllers'), [this.controllers, this.modules]);
