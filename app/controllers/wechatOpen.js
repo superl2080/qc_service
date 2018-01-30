@@ -60,7 +60,7 @@ module.exports = {
                 adId: req.query.adId,
                 pre_auth_code: preAuthCode.pre_auth_code,
             });
-            const url = await mpdels.apis.wechatOpen.getMpAuthUrl({
+            const url = await this.models.apis.wechatOpen.getMpAuthUrl({
                 openAppid: this.WECHAT_OPEN_APP_ID,
                 pre_auth_code: preAuthCode.pre_auth_code,
                 redirect_uri: 'http://' + req.headers.host + '/wechat/open/adAuthCbk?pre_auth_code=' + preAuthCode.pre_auth_code,
