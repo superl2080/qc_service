@@ -101,7 +101,8 @@ module.exports = {
         decipher.setAutoPadding(false);
         const decipheredBuff = Buffer.concat([decipher.update(param.data, 'base64'), decipher.final()]);
 
-        const msg = await this.decodePKCS7({ data: decipheredBuff }).slice(16);
+        const msgDecrypt = await this.decodePKCS7({ data: decipheredBuff });
+        const msg = msgDecrypt.slice(16);
         const msg_len = msg.slice(0, 4).readUInt32BE(0);
         const msg_content = msg.slice(4, msg_len + 4).toString('utf-8');
         const msg_appId = msg.slice(msg_len + 4).toString('utf-8');
