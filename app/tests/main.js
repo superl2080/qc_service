@@ -11,7 +11,8 @@ module.exports = {
     test1: async function (req, res, next) {
         console.log(__filename + '\n[CALL] test1');
 
-        res.send(this.models);
+        console.log(this.models);
+        res.send('test1');
     }
 };
 
