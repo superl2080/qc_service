@@ -18,7 +18,7 @@ module.exports = {
             });
 
             if( !apiResult.data
-                || ( apiResult.data.res != 'SUCCESS' && apiResult.data.res != 'FAIL') ){
+                || apiResult.data.res != 'SUCCESS' ){
                 throw new Error('takeItem is error');
             }
 

@@ -39,7 +39,8 @@ module.exports = {
                 });
                 adInfo.appid = channelAd.appid;
                 adInfo.qrcode_url = channelAd.qrcode_url;
-                if( channelAd.payout ) adInfo.payout = channelAd.payout;
+                if( channelAd.payout
+                    && channelAd.payout > ad.deliverInfo.payout ) adInfo.payout = channelAd.payout;
                 if( channelAd.auth === true ) {
                     const qrcode = await this.models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
                     adInfo.qrcode_url = qrcode.url;
@@ -189,14 +190,15 @@ module.exports = {
                     remark: '感谢使用青橙服务！机器已经自动派送哦~',
                 });
             }
-            const result = await this.models.apis.device.takeItem({
-                orderId: param.order._id,
-                devNo: point.deviceInfo.devNo,
-            });
-            if( result == 'FAIL' ){
+            try {
+                const result = await this.models.apis.device.takeItem({
+                    orderId: param.order._id,
+                    devNo: point.deviceInfo.devNo,
+                });
+            } catch(err){
                 await this.models.dbs.order.update({
                     orderId: param.order._id,
-                    state: result,
+                    state: 'FAIL',
                 });
             }
         }
