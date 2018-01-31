@@ -152,44 +152,60 @@ module.exports = {
             income: param.payout,
         });
         if( point.type == 'POINT' ) {
-            await this.sendMessage({
-                user: param.user,
-                point: point,
-                order: param.order,
-                openid: param.user.authId.wechatId,
-                first: '订单凭证',
-                remark: '感谢使用青橙服务！商家马上就为您派送哦~',
-                url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
-            });
-            if( point.deployInfo.operatorWechatId ){
+            try {
                 await this.sendMessage({
                     user: param.user,
                     point: point,
                     order: param.order,
-                    openid: point.deployInfo.operatorWechatId,
-                    first: '您有新的订单，请尽快派送',
-                    remark: '感谢使用青橙服务！客户正等待您派送哦~',
+                    openid: param.user.authId.wechatId,
+                    first: '订单凭证',
+                    remark: '感谢使用青橙服务！商家马上就为您派送哦~',
+                    url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
                 });
+            } catch(err){
+                console.error(err);
+            }
+            if( point.deployInfo.operatorWechatId ){
+                try {
+                    await this.sendMessage({
+                        user: param.user,
+                        point: point,
+                        order: param.order,
+                        openid: point.deployInfo.operatorWechatId,
+                        first: '您有新的订单，请尽快派送',
+                        remark: '感谢使用青橙服务！客户正等待您派送哦~',
+                    });
+                } catch(err){
+                    console.error(err);
+                }
             }
         } else if( point.type == 'DEVICE' ) {
-            await this.sendMessage({
-                user: param.user,
-                point: point,
-                order: param.order,
-                openid: param.user.authId.wechatId,
-                first: '订单凭证',
-                remark: '感谢使用青橙服务！机器正在努力取出您的物品哦~',
-                url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
-            });
-            if( point.deployInfo.operatorWechatId ){
+            try {
                 await this.sendMessage({
                     user: param.user,
                     point: point,
                     order: param.order,
-                    openid: point.deployInfo.operatorWechatId,
-                    first: '您有新的订单，已自动派送',
-                    remark: '感谢使用青橙服务！机器已经自动派送哦~',
+                    openid: param.user.authId.wechatId,
+                    first: '订单凭证',
+                    remark: '感谢使用青橙服务！机器正在努力取出您的物品哦~',
+                    url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
                 });
+            } catch(err){
+                console.error(err);
+            }
+            if( point.deployInfo.operatorWechatId ){
+                try {
+                    await this.sendMessage({
+                        user: param.user,
+                        point: point,
+                        order: param.order,
+                        openid: point.deployInfo.operatorWechatId,
+                        first: '您有新的订单，已自动派送',
+                        remark: '感谢使用青橙服务！机器已经自动派送哦~',
+                    });
+                } catch(err){
+                    console.error(err);
+                }
             }
             try {
                 const result = await this.models.apis.device.takeItem({
