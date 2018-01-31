@@ -43,13 +43,15 @@ module.exports = {
         console.log(__filename + '\n[CALL] getByWechatInfo, param:');
         console.log(param);
 
-        const user = await userModel.findOne({
+        let option = {
             'wechatInfo.nickname': param.nickname,
-            'wechatInfo.sex': param.sex,
-            'wechatInfo.city': param.city,
-            'wechatInfo.province': param.province,
-            'wechatInfo.country': param.country,
-        }).exec();
+        };
+        if( param.sex ) option['wechatInfo.sex'] =  param.sex;
+        if( param.city ) option['wechatInfo.city'] =  param.city;
+        if( param.province ) option['wechatInfo.province'] =  param.province;
+        if( param.country ) option['wechatInfo.country'] =  param.country;
+
+        const user = await userModel.findOne(option).exec();
 
         console.log('[CALLBACK] getByWechatInfo, result:');
         console.log(user);
