@@ -51,7 +51,7 @@ module.exports = {
                 orderId: order._id,
                 adInfo: adInfo,
             });
-        } else if( point.state == 'TEST' ){
+        } else if( param.point.state == 'TEST' ){
             const ad = await this.models.dbs.ad.getDefault();
             let adInfo = {
                 adId: ad._id,
