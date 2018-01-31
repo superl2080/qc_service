@@ -105,13 +105,13 @@ module.exports = {
             if( param.adInfo.aderId ) order.adInfo.aderId = param.adInfo.aderId;
             if( param.adInfo.qrcode_url ) order.adInfo.qrcode_url = param.adInfo.qrcode_url;
             if( param.adInfo.appid ) order.adInfo.appid = param.adInfo.appid;
-            if( param.adInfo.payout ) order.adInfo.payout = param.adInfo.payout;
+            if( param.adInfo.payout !== undefined ) order.adInfo.payout = param.adInfo.payout;
         }
         if( param.payInfo ){
             if( param.payInfo.type ) order.payInfo.type = param.payInfo.type;
             if( param.payInfo.endDate ) order.payInfo.endDate = param.payInfo.endDate;
             if( param.payInfo.openid ) order.payInfo.openid = param.payInfo.openid;
-            if( param.payInfo.payout ) order.payInfo.payout = param.payInfo.payout;
+            if( param.payInfo.payout !== undefined ) order.payInfo.payout = param.payInfo.payout;
             if( param.payInfo.channel ) order.payInfo.channel = param.payInfo.channel;
             if( param.payInfo.transaction_id ) order.payInfo.transaction_id = param.payInfo.transaction_id;
         }
