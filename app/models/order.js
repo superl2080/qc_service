@@ -58,6 +58,7 @@ module.exports = {
                 aderId: ad.aderId,
                 appid: ad.wechatMpAuthInfo.appid,
                 qrcode_url: ad.wechatMpAuthInfo.qrcode_url,
+                payout: ad.deliverInfo.payout,
             };
             order = await this.models.dbs.order.update({
                 orderId: order._id,
