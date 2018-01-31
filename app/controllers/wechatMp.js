@@ -57,7 +57,7 @@ module.exports = {
                             FromUserName: decryptMsg.ToUserName,
                             CreateTime: Math.round((new Date()).getTime() / 1000),
                             MsgType: 'text',
-                            Content: '[青橙]点击完成领取: ' + this.SIT_URL + '/subscribe/' + req.params.appid,
+                            Content: '<a href="' + this.SIT_URL + '/subscribe/' + req.params.appid + '">[青橙] 点击完成领取</a>',
                         },
                         token: this.WECHAT_OPEN_MESSAGE_TOKEN,
                         timestamp: req.query.timestamp,
