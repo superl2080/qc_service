@@ -65,10 +65,11 @@ module.exports = {
                 url: param.url,
             },
         });
+        console.log('[CALLBACK] getJson, result:');
+        console.log(result);
+
         const json = result ? JSON.parse(result) : result;
 
-        console.log('[CALLBACK] getJson, result:');
-        console.log(json);
         return json;
     },
 
@@ -122,10 +123,11 @@ module.exports = {
                 body: xml,
             },
         });
+        console.log('[CALLBACK] postXml, result:');
+        console.log(result);
+        
         const json = await this.getJsonFromXml({ xml: result });
 
-        console.log('[CALLBACK] postXml, result:');
-        console.log(json);
         return json;
     },
 
