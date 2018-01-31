@@ -65,7 +65,7 @@ module.exports = {
                 url: param.url,
             },
         });
-        const json = JSON.parse(result);
+        const json = result ? JSON.parse(result) : result;
 
         console.log('[CALLBACK] getJson, result:');
         console.log(json);
