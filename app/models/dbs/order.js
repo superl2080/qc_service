@@ -20,6 +20,7 @@ const orderSchema = new mongoose.Schema({
         aderId:             ObjectId,
         qrcode_url:         String,
         appid:              String,
+        payout:             Number,
     },
 
     payInfo: {
@@ -104,6 +105,7 @@ module.exports = {
             if( param.adInfo.aderId ) order.adInfo.aderId = param.adInfo.aderId;
             if( param.adInfo.qrcode_url ) order.adInfo.qrcode_url = param.adInfo.qrcode_url;
             if( param.adInfo.appid ) order.adInfo.appid = param.adInfo.appid;
+            if( param.adInfo.payout ) order.adInfo.payout = param.adInfo.payout;
         }
         if( param.payInfo ){
             if( param.payInfo.type ) order.payInfo.type = param.payInfo.type;
@@ -142,10 +144,10 @@ module.exports = {
             await order.save();
             if( order.adInfo
                 && order.adInfo.adId ){
-                const ad = await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
+                await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
                 await this.models.dbs.ader.payoutBalance({
                     aderId: order.adInfo.aderId,
-                    payout: -ad.deliverInfo.payout,
+                    payout: -order.adInfo.payout,
                 });
             }
         }

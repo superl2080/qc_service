@@ -19,6 +19,7 @@ module.exports = {
             let adInfo = {
                 adId: ad._id,
                 aderId: ad.aderId,
+                payout: ad.deliverInfo.payout,
             };
 
             order = await this.models.dbs.order.update({
@@ -38,6 +39,7 @@ module.exports = {
                 });
                 adInfo.appid = channelAd.appid;
                 adInfo.qrcode_url = channelAd.qrcode_url;
+                if( channelAd.payout ) adInfo.payout = channelAd.payout;
                 if( channelAd.auth === true ) {
                     const qrcode = await this.models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
                     adInfo.qrcode_url = qrcode.url;
@@ -119,10 +121,10 @@ module.exports = {
                 },
             });
             if( order.adInfo ){
-                const ad = await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
+                await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
                 await this.models.dbs.ader.payoutBalance({
                     aderId: order.adInfo.aderId,
-                    payout: -ad.deliverInfo.payout,
+                    payout: -order.adInfo.payout,
                 });
             }
             const user = await this.models.dbs.user.getById({ userId: order.userId });
