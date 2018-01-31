@@ -51,11 +51,11 @@ module.exports = {
         if( param.province ) option['wechatInfo.province'] =  param.province;
         if( param.country ) option['wechatInfo.country'] =  param.country;
 
-        const user = await userModel.findOne(option).exec();
+        const users = await userModel.find(option).exec();
 
         console.log('[CALLBACK] getByWechatInfo, result:');
-        console.log(user);
-        return user;
+        console.log(users);
+        return users;
     },
 
     getByWechatForce: async function (param) {

@@ -144,11 +144,7 @@ module.exports = {
             await order.save();
             if( order.adInfo
                 && order.adInfo.adId ){
-                await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
-                await this.models.dbs.ader.payoutBalance({
-                    aderId: order.adInfo.aderId,
-                    payout: -order.adInfo.payout,
-                });
+                await this.models.dbs.ad.cancelDeliver({ adId: order.adInfo.adId });
             }
         }
 

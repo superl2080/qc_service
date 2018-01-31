@@ -104,17 +104,9 @@ module.exports = {
 
         let deliverAd;
         for( let ad of ads ){
-            try {
-                await this.models.dbs.ader.payoutBalance({
-                    aderId: ad.aderId,
-                    payout: ad.deliverInfo.payout,
-                });
-                ad.deliverInfo.count -= 1;
-                deliverAd = await ad.save();
-                break;
-            } catch(err) {
-                // find next
-            }
+            ad.deliverInfo.count -= 1;
+            deliverAd = await ad.save();
+            break;
         }
 
         console.log('[CALLBACK] getDeliverAd, result:');
@@ -122,8 +114,8 @@ module.exports = {
         return deliverAd;
     },
 
-    cancel: async function (param) {
-        console.log(__filename + '\n[CALL] cancel, param:');
+    cancelDeliver: async function (param) {
+        console.log(__filename + '\n[CALL] cancelDeliver, param:');
         console.log(param);
 
         let ad = await adModel.findById(param.adId).exec();
@@ -134,7 +126,23 @@ module.exports = {
         ad.deliverInfo.count += 1;
         await ad.save();
 
-        console.log('[CALLBACK] cancel, result:');
+        console.log('[CALLBACK] cancelDeliver, result:');
+        console.log(ad);
+        return ad;
+    },
+
+    stopAll: async function (param) {
+        console.log(__filename + '\n[CALL] stopAll, param:');
+        console.log(param);
+
+        let ads = await adModel.find({ aderId: param.aderId }).exec();
+
+        for( let ad of ads ){
+            ad.state = 'NO_BALANCE';
+            await ad.save();
+        }
+
+        console.log('[CALLBACK] stopAll, result:');
         console.log(ad);
         return ad;
     },
@@ -230,7 +238,6 @@ module.exports = {
 
         let raw = await adModel.update({
             'wechatMpAuthInfo.appid': param.appid,
-            state: { $in: ['OPEN', 'DELIVER'] },
         }, {
             $set: { state: 'CANCEL' },
         }, {

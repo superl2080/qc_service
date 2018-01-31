@@ -26,8 +26,8 @@ module.exports = {
                     mpToken: mpToken,
                     openid: openid,
                 });
-                let user = await this.models.dbs.user.getByWechatInfo(userInfo);
-                if( user ){
+                const users = await this.models.dbs.user.getByWechatInfo(userInfo);
+                for( let user of users ){
                     user = await this.models.dbs.user.update({
                         userId: user._id,
                         wechatInfo: {
@@ -35,8 +35,7 @@ module.exports = {
                         },
                     });
 
-                    if( decryptMsg.Event == 'subscribe'
-                        || appid == this.WECHAT_MP_APP_ID ){
+                    if( decryptMsg.Event == 'subscribe' ){
                         const order = await this.models.order.adSubscribe({
                             user: user,
                             appid: ad.wechatMpAuthInfo.appid,

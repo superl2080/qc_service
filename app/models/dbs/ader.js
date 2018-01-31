@@ -43,11 +43,8 @@ module.exports = {
         }
 
         ader.balance -= param.payout;
-        if( ader.balance < 0 ){
-            throw new Error('NO_BALANCE');
-        }
         await ader.save();
-
+        
         console.log('[CALLBACK] payoutBalance, result:');
         console.log(ader);
         return ader;

@@ -63,7 +63,7 @@ module.exports = {
             }
         } else if( param.point.state == 'TEST' ){
             try {
-                const ad = await this.models.dbs.ad.getDefaultDeliverAd();
+                ad = await this.models.dbs.ad.getDefaultDeliverAd();
                 let adInfo = {
                     adId: ad._id,
                     aderId: ad.aderId,
@@ -93,22 +93,31 @@ module.exports = {
             userId: param.user._id,
             appid: param.appid,
         });
-        const ad = await this.models.dbs.ad.getById({ adId: order.adInfo.adId });
         if( order ) {
+            const ad = await this.models.dbs.ad.getById({ adId: order.adInfo.adId });
             await this.models.dbs.order.update({
                 orderId: order._id,
                 state: 'SUCCESS',
                 payInfo: {
                     endDate: new Date(),
-                    payout: ad.deliverInfo.payout,
+                    payout: order.adInfo.payout,
                     type: 'AD',
                     openid: param.openid,
                 },
             });
+            const ader = await this.models.dbs.ader.payoutBalance({
+                aderId: order.adInfo.aderId,
+                payout: order.adInfo.payout,
+            });
+            if( ader.balance <= 0 ){
+                await this.models.dbs.ad.stopAll({
+                    aderId: order.adInfo.aderId,
+                });
+            }
             await this.finishOrder({
                 user: param.user,
                 order: order,
-                payout: ad.deliverInfo.payout,
+                payout: order.adInfo.payout,
             });
         }
 
@@ -137,11 +146,7 @@ module.exports = {
                 },
             });
             if( order.adInfo ){
-                await this.models.dbs.ad.cancel({ adId: order.adInfo.adId });
-                await this.models.dbs.ader.payoutBalance({
-                    aderId: order.adInfo.aderId,
-                    payout: -order.adInfo.payout,
-                });
+                await this.models.dbs.ad.cancelDeliver({ adId: order.adInfo.adId });
             }
             const user = await this.models.dbs.user.getById({ userId: order.userId });
             await this.finishOrder({
