@@ -51,7 +51,7 @@ module.exports = {
 
         const xml = await this.models.utils.request.getXmlFromJsonForceCData({ json: param.msg });
         const encryptData = await this.encryptWechatAes256({
-            date: xml,
+            data: xml,
             aesKey: param.aesKey,
             appId: param.appId,
         });
