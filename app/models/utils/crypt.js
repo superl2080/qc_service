@@ -49,7 +49,7 @@ module.exports = {
         console.log(__filename + '\n[CALL] encryptWechatMsg, param:');
         console.log(param);
 
-        const xml = await this.models.utils.request.getXmlFromJsonForceCData({ xml: param.msg });
+        const xml = await this.models.utils.request.getXmlFromJsonForceCData({ json: param.msg });
         const encryptData = await this.encryptWechatAes256({
             date: xml,
             aesKey: param.aesKey,
@@ -67,7 +67,7 @@ module.exports = {
             TimeStamp: param.timestamp,
             Nonce: param.nonce,
         };
-        const msgEncryptXml = await this.models.utils.request.getXmlFromJsonForceCData(msgEncryptJson);
+        const msgEncryptXml = await this.models.utils.request.getXmlFromJsonForceCData({ json: msgEncryptJson });
 
         console.log('[CALLBACK] encryptWechatMsg, result:');
         console.log(msgEncryptXml);
