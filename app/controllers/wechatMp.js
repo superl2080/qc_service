@@ -54,7 +54,7 @@ module.exports = {
                         appId: this.WECHAT_OPEN_APP_ID,
                         msg: {
                             ToUserName: decryptMsg.FromUserName,
-                            FromUserName: decryptMsg.ToUserName,
+                            FromUserName: this.WECHAT_OPEN_APP_ID,
                             CreateTime: Math.round((new Date()).getTime() / 1000),
                             MsgType: 'news',
                             ArticleCount: 1,
