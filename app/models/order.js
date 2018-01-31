@@ -13,7 +13,13 @@ module.exports = {
             user: param.user,
             point: param.point,
         });
-        const ad = await this.models.dbs.ad.getDeliverAd({ user: param.user });
+
+        let ad;
+        try {
+            ad = await this.models.dbs.ad.getDeliverAd({ user: param.user });
+        } catch(err){
+            // no ad
+        }
 
         if( ad ){
             let adInfo = {
@@ -27,43 +33,51 @@ module.exports = {
                 adInfo: adInfo,
             });
             
-            if( ad.type == 'WECHAT_MP_AUTH' ){
-                adInfo.appid = ad.wechatMpAuthInfo.appid;
-                adInfo.qrcode_url = ad.wechatMpAuthInfo.qrcode_url;
+            try {
+                if( ad.type == 'WECHAT_MP_AUTH' ){
+                    adInfo.appid = ad.wechatMpAuthInfo.appid;
+                    adInfo.qrcode_url = ad.wechatMpAuthInfo.qrcode_url;
 
-            } else if( ad.type == 'WECHAT_MP_API' ){
-                const channelAd = await this.models.apis.channel.deliverAd({
-                    adChannelId: ad.wechatMpApiInfo.adChannelId,
-                    user: param.user,
-                    city: param.point.deployInfo.city,
-                });
-                adInfo.appid = channelAd.appid;
-                adInfo.qrcode_url = channelAd.qrcode_url;
-                if( channelAd.payout
-                    && channelAd.payout > ad.deliverInfo.payout ) adInfo.payout = channelAd.payout;
-                if( channelAd.auth === true ) {
-                    const qrcode = await this.models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
-                    adInfo.qrcode_url = qrcode.url;
+                } else if( ad.type == 'WECHAT_MP_API' ){
+                    const channelAd = await this.models.apis.channel.deliverAd({
+                        adChannelId: ad.wechatMpApiInfo.adChannelId,
+                        user: param.user,
+                        city: param.point.deployInfo.city,
+                    });
+                    adInfo.appid = channelAd.appid;
+                    adInfo.qrcode_url = channelAd.qrcode_url;
+                    if( channelAd.payout
+                        && channelAd.payout > ad.deliverInfo.payout ) adInfo.payout = channelAd.payout;
+                    if( channelAd.auth === true ) {
+                        const qrcode = await this.models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
+                        adInfo.qrcode_url = qrcode.url;
+                    }
                 }
-            }
 
-            order = await this.models.dbs.order.update({
-                orderId: order._id,
-                adInfo: adInfo,
-            });
+                order = await this.models.dbs.order.update({
+                    orderId: order._id,
+                    adInfo: adInfo,
+                });
+            } catch(err){
+                // with not useful ad
+            }
         } else if( param.point.state == 'TEST' ){
-            const ad = await this.models.dbs.ad.getDefault();
-            let adInfo = {
-                adId: ad._id,
-                aderId: ad.aderId,
-                appid: ad.wechatMpAuthInfo.appid,
-                qrcode_url: ad.wechatMpAuthInfo.qrcode_url,
-                payout: ad.deliverInfo.payout,
-            };
-            order = await this.models.dbs.order.update({
-                orderId: order._id,
-                adInfo: adInfo,
-            });
+            try {
+                const ad = await this.models.dbs.ad.getDefaultDeliverAd();
+                let adInfo = {
+                    adId: ad._id,
+                    aderId: ad.aderId,
+                    appid: ad.wechatMpAuthInfo.appid,
+                    qrcode_url: ad.wechatMpAuthInfo.qrcode_url,
+                    payout: 0,
+                };
+                order = await this.models.dbs.order.update({
+                    orderId: order._id,
+                    adInfo: adInfo,
+                });
+            } catch(err){
+                // with not useful ad
+            }
         }
 
         console.log('[CALLBACK] create, result:');

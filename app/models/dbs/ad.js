@@ -79,6 +79,19 @@ module.exports = {
         return ad;
     },
 
+    getDefaultDeliverAd: async function (param) {
+        console.log(__filename + '\n[CALL] getDefaultDeliverAd, param:');
+        console.log(param);
+
+        let ad = await adModel.findOne({ isDefault: true }).exec();
+        ad.deliverInfo.count -= 1;
+        ad = await ad.save();
+
+        console.log('[CALLBACK] getDefaultDeliverAd, result:');
+        console.log(ad);
+        return ad;
+    },
+
     getDeliverAd: async function (param) {
         console.log(__filename + '\n[CALL] getDeliverAd, param:');
         console.log(param);
