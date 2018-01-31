@@ -12,7 +12,7 @@ module.exports = {
                 throw new Error('userId or appid is empty');
             }
 
-            const user = await this.models.dbs.user.getById({ userId: req.body.userId });
+            let user = await this.models.dbs.user.getById({ userId: req.body.userId });
             if( !user ){
                 throw new Error('userId is error');
             }
