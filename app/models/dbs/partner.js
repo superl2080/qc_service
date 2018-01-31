@@ -63,7 +63,7 @@ module.exports = {
         }
 
         const partnerDeduct = await this.models.dbs.config.getPartnerDeduct({ partnerDeductId: partner.partnerDeductId });
-        partner.balance += Math.round(param.income * (1 - partnerDeduct.percent));
+        partner.balance += Math.round(param.income * (100 - partnerDeduct.percent) / 100);
         await partner.save();
 
         console.log('[CALLBACK] incomeBalance, result:');

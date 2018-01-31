@@ -11,6 +11,7 @@ const adChannelSchema = new mongoose.Schema({
 
 const otherSchema = new mongoose.Schema({
     deviceUrl:              String,
+    auto_reply:             String,
 }, { typeKey: '$type' });
 
 const partnerDeductSchema = new mongoose.Schema({
