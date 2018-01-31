@@ -55,19 +55,19 @@ module.exports = {
                         msg: {
                             ToUserName: decryptMsg.FromUserName,
                             FromUserName: decryptMsg.ToUserName,
-                            CreateTime: Math.round((new Date()).getTime() / 1000),/*
+                            CreateTime: Math.round((new Date()).getTime() / 1000),
                             MsgType: 'news',
                             ArticleCount: 1,
                             Articles: {
                                 item: {
                                     Title: '青橙',
                                     Description: '点击完成领取',
-                                    PicUrl: this.SIT_URL + '/images/product-zhijin.jpg',
+                                    PicUrl: this.SIT_URL + '/images/product-activity.jpg',
                                     Url: this.SIT_URL + '/subscribe/' + req.params.appid,
                                 },
-                            },*/
+                            },/*
                             MsgType: 'text',
-                            Content: '[青橙]点击完成领取:' + this.SIT_URL + '/subscribe/' + req.params.appid,
+                            Content: '[青橙]点击完成领取:' + this.SIT_URL + '/subscribe/' + req.params.appid,*/
                         },
                         token: this.WECHAT_OPEN_MESSAGE_TOKEN,
                         timestamp: req.query.timestamp,
