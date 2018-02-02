@@ -16,12 +16,6 @@ module.exports = {
             if( !user ){
                 throw new Error('userId is error');
             }
-            user = await this.models.dbs.user.update({
-                userId: user._id,
-                wechatInfo: {
-                    appid: req.body.appid,
-                },
-            });
 
             const order = await this.models.order.adSubscribe({
                 user: user,

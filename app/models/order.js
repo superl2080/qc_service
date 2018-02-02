@@ -89,8 +89,14 @@ module.exports = {
         console.log(__filename + '\n[CALL] adSubscribe, param:');
         console.log(param);
 
-        const order = await this.models.dbs.order.getByUserAppid({
+        const user = await this.models.dbs.user.update({
             userId: param.user._id,
+            wechatInfo: {
+                appid: param.appid,
+            },
+        });
+        const order = await this.models.dbs.order.getByUserAppid({
+            userId: user._id,
             appid: param.appid,
         });
         if( order ) {
@@ -115,7 +121,7 @@ module.exports = {
                 });
             }
             await this.finishOrder({
-                user: param.user,
+                user: user,
                 order: order,
                 payout: order.adInfo.payout,
             });

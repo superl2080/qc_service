@@ -8,7 +8,10 @@ module.exports = {
 
     modules: { },
 
-    controllers: { },
+    controllers: {
+        sit: { },
+        bos: { },
+    },
 
     models: {
         apis: { },
@@ -24,6 +27,8 @@ module.exports = {
         mongoose.connect(process.env.MONGO_URL, { useMongoClient: true });
 
         await this.loadModules(path.join(__dirname, 'controllers'), [this.controllers, this.modules]);
+        await this.loadModules(path.join(__dirname, 'controllers/bos'), [this.controllers.bos, this.modules]);
+        await this.loadModules(path.join(__dirname, 'controllers/sit'), [this.controllers.sit, this.modules]);
         await this.loadModules(path.join(__dirname, 'models'), [this.models, this.modules]);
         await this.loadModules(path.join(__dirname, 'models/apis'), [this.models.apis, this.modules]);
         await this.loadModules(path.join(__dirname, 'models/dbs'), [this.models.dbs, this.modules]);
@@ -41,14 +46,6 @@ module.exports = {
 
         app.post('/device/update',                  this.controllers.device.update.bind(this.controllers.device));
 
-        app.get('/user/login/wechat',               this.controllers.user.loginWechat.bind(this.controllers.user));
-        app.get('/user/login/wechatCbk',            this.controllers.user.loginWechatCbk.bind(this.controllers.user));
-        app.get('/user/scan/wechat',                this.controllers.user.scanWechat.bind(this.controllers.user));
-        app.get('/user/scan/wechatCbk',             this.controllers.user.scanWechatCbk.bind(this.controllers.user));
-
-        app.get('/order',                           this.controllers.order.get.bind(this.controllers.order));
-        app.post('/order/prepay/wechat',            this.controllers.order.prepayWechat.bind(this.controllers.order));
-
         app.post('/wechat/mp/notice/:appid',        this.controllers.wechatMp.notice.bind(this.controllers.wechatMp));
 
         app.post('/wechat/open/notice',             this.controllers.wechatOpen.notice.bind(this.controllers.wechatOpen));
@@ -56,6 +53,13 @@ module.exports = {
         app.get('/wechat/open/adAuthCbk',           this.controllers.wechatOpen.adAuthCbk.bind(this.controllers.wechatOpen));
 
         app.post('/wechat/pay/notice',              this.controllers.wechatPay.notice.bind(this.controllers.wechatPay));
+
+        app.get('/sit/user/wechatScanPoint',        this.controllers.sit.user.wechatScanPoint.bind(this.controllers.sit.user));
+        app.get('/sit/user/wechatScanPointCbk',     this.controllers.sit.user.wechatScanPointCbk.bind(this.controllers.sit.user));
+        app.get('/sit/user/wechatSubscribeMp',      this.controllers.sit.user.wechatSubscribeMp.bind(this.controllers.sit.user));
+        app.get('/sit/user/wechatSubscribeMpCbk',   this.controllers.sit.user.wechatSubscribeMpCbk.bind(this.controllers.sit.user));
+        app.get('/sit/order',                       this.controllers.sit.order.get.bind(this.controllers.sit.order));
+        app.post('/sit/order/wechatPrepay',         this.controllers.sit.order.wechatPrepay.bind(this.controllers.sit.order));
     },
 
     loadModules: async function (path, objs) {
