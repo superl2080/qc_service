@@ -37,7 +37,7 @@ const adSchema = new mongoose.Schema({
     },
 
     wechatMpApiInfo: {
-        adChannelId:        ObjectId,
+        channelId:        ObjectId,
     },
 }, { typeKey: '$type' });
 

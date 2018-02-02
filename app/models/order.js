@@ -40,7 +40,7 @@ module.exports = {
 
                 } else if( ad.type == 'WECHAT_MP_API' ){
                     const channelAd = await this.models.apis.channel.deliverAd({
-                        adChannelId: ad.wechatMpApiInfo.adChannelId,
+                        adChannelId: ad.wechatMpApiInfo.channelId,
                         user: param.user,
                         city: param.point.deployInfo.city,
                     });

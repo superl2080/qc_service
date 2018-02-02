@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const adChannelSchema = new mongoose.Schema({
-    name:                   { $type: String,             required: true, unique: true },
+    name:                   { $type: String,             required: true, unique: true }, // YOUFENTONG
     url:                    { $type: String,             required: true },
     bid:                    String,
 }, { typeKey: '$type' });
@@ -14,9 +14,9 @@ const otherSchema = new mongoose.Schema({
     auto_reply:             String,
 }, { typeKey: '$type' });
 
-const partnerDeductSchema = new mongoose.Schema({
-    character:              { $type: String,             required: true, unique: true },
-    percent:                { $type: Number,             required: true },
+const partnerCharacterSchema = new mongoose.Schema({
+    name:                   { $type: String,             required: true, unique: true }, // DEVICER, OPERATOR, AGENT
+    deduct:                 { $type: Number,             required: true },
 }, { typeKey: '$type' });
 
 const wechatOpenSchema = new mongoose.Schema({
@@ -27,19 +27,19 @@ const wechatOpenSchema = new mongoose.Schema({
 
 const adChannelModel = mongoose.model('configAdChannel', adChannelSchema);
 const otherModel = mongoose.model('configOther', otherSchema);
-const partnerDeductModel = mongoose.model('configPartnerDeduct', partnerDeductSchema);
+const partnerCharacterModel = mongoose.model('configPartnerCharacter', partnerCharacterSchema);
 const wechatOpenModel = mongoose.model('configWechatOpen', wechatOpenSchema);
 
 
 module.exports = {
 
-    getAdChannel: async function (param) {
-        console.log(__filename + '\n[CALL] getAdChannel, param:');
+    getAdChannelById: async function (param) {
+        console.log(__filename + '\n[CALL] getAdChannelById, param:');
         console.log(param);
 
         const adChannel = await adChannelModel.findById(param.adChannelId).exec();
 
-        console.log('[CALLBACK] getAdChannel, result:');
+        console.log('[CALLBACK] getAdChannelById, result:');
         console.log(adChannel);
         return adChannel;
     },
@@ -55,15 +55,26 @@ module.exports = {
         return other;
     },
 
-    getPartnerDeduct: async function (param) {
-        console.log(__filename + '\n[CALL] getPartnerDeduct, param:');
+    getPartnerCharacterById: async function (param) {
+        console.log(__filename + '\n[CALL] getPartnerCharacterById, param:');
         console.log(param);
 
-        const partnerDeduct = await partnerDeductModel.findById(param.partnerDeductId).exec();
+        const partnerCharacter = await partnerCharacterModel.findById(param.partnerCharacterId).exec();
 
-        console.log('[CALLBACK] getPartnerDeduct, result:');
-        console.log(partnerDeduct);
-        return partnerDeduct;
+        console.log('[CALLBACK] getPartnerCharacterById, result:');
+        console.log(partnerCharacter);
+        return partnerCharacter;
+    },
+
+    getPartnerCharacterByName: async function (param) {
+        console.log(__filename + '\n[CALL] getPartnerCharacterByName, param:');
+        console.log(param);
+
+        const partnerCharacter = await partnerCharacterModel.findOne({ name: param.name }).exec();
+
+        console.log('[CALLBACK] getPartnerCharacterByName, result:');
+        console.log(partnerCharacter);
+        return partnerCharacter;
     },
 
     getWechatOpen: async function (param) {

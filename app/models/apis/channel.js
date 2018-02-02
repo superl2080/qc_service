@@ -7,7 +7,7 @@ module.exports = {
         console.log(param);
 
         try {
-            const adChannelConfig = await this.models.dbs.config.getAdChannel({ adChannelId: param.adChannelId });
+            const adChannelConfig = await this.models.dbs.config.getAdChannelById({ adChannelId: param.adChannelId });
 
             if(adChannelConfig.name == 'YOUFENTONG') {
                 let url = adChannelConfig.url;

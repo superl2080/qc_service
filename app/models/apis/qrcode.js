@@ -13,7 +13,7 @@ module.exports = {
             if( param.type == 'SCAN' ) {
                 mhid = 'skTHBF3tnJ4hMHctLdZVOaI';
             }
-            let url = 'https://cli.im/api/qrcode/code?text=' + param.url + '&mhid=' + mhid;
+            let url = 'https://cli.im/api/qrcode/code?text=' + encodeURIComponent(param.url) + '&mhid=' + mhid;
 
             let apiResult = await this.models.utils.request.getHtml({ url: url });
             let $ = cheerio.load(apiResult);

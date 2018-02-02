@@ -58,7 +58,7 @@ module.exports = {
 
         let point = await pointModel.findOne({ 'deviceInfo.devNo': param.devNo }).exec();
         if( !point ) {
-            const partner = await this.models.dbs.partner.getDefault();
+            const partner = await this.models.dbs.partner.getDevicer();
             point = await pointModel.create({
                 createDate: new Date(),
                 partnerId: partner._id,

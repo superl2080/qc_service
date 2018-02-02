@@ -11,9 +11,8 @@ const partnerSchema = new mongoose.Schema({
         wechatId:           String,
     },
 
-    isDefault:              { $type: Boolean,            default: false },
     balance:                { $type: Number,             required: true, default: 0 },
-    partnerDeductId:        { $type: ObjectId,           required: true },
+    characterId:            { $type: ObjectId,           required: true },
 
     info: {
         lastDate:           Date,
@@ -42,13 +41,14 @@ module.exports = {
         return partner;
     },
 
-    getDefault: async function (param) {
-        console.log(__filename + '\n[CALL] getDefault, param:');
+    getDevicer: async function (param) {
+        console.log(__filename + '\n[CALL] getDevicer, param:');
         console.log(param);
 
-        const partner = await partnerModel.findOne({ isDefault: true }).exec();
+        const partnerCharacter = await this.models.dbs.config.getPartnerCharacterByName({ name: 'DEVICER' });
+        const partner = await partnerModel.findOne({ characterId: partnerCharacter._id }).exec();
 
-        console.log('[CALLBACK] getDefault, result:');
+        console.log('[CALLBACK] getDevicer, result:');
         console.log(partner);
         return partner;
     },
@@ -62,8 +62,8 @@ module.exports = {
             throw new Error('Can not find partner');
         }
 
-        const partnerDeduct = await this.models.dbs.config.getPartnerDeduct({ partnerDeductId: partner.partnerDeductId });
-        partner.balance += Math.round(param.income * (100 - partnerDeduct.percent) / 100);
+        const partnerCharacter = await this.models.dbs.config.getPartnerCharacterById({ partnerCharacterId: partner.characterId });
+        partner.balance += Math.round(param.income * (100 - partnerCharacter.deduct) / 100);
         await partner.save();
 
         console.log('[CALLBACK] incomeBalance, result:');

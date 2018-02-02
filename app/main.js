@@ -10,7 +10,7 @@ module.exports = {
 
     controllers: {
         sit: { },
-        bos: { },
+        pos: { },
     },
 
     models: {
@@ -27,7 +27,7 @@ module.exports = {
         mongoose.connect(process.env.MONGO_URL, { useMongoClient: true });
 
         await this.loadModules(path.join(__dirname, 'controllers'), [this.controllers, this.modules]);
-        //await this.loadModules(path.join(__dirname, 'controllers/bos'), [this.controllers.bos, this.modules]);
+        //await this.loadModules(path.join(__dirname, 'controllers/pos'), [this.controllers.pos, this.modules]);
         await this.loadModules(path.join(__dirname, 'controllers/sit'), [this.controllers.sit, this.modules]);
         await this.loadModules(path.join(__dirname, 'models'), [this.models, this.modules]);
         await this.loadModules(path.join(__dirname, 'models/apis'), [this.models.apis, this.modules]);
