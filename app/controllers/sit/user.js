@@ -16,7 +16,7 @@ module.exports = {
                 throw new Error('redirect_uri or appid is empty');
             }
 
-            this.wechatLogin({
+            await this.wechatLogin({
                 redirect_uri: req.query.redirect_uri,
                 cbk: '/sit/user/wechatSubscribeMpCbk',
                 state: req.query.appid,
@@ -39,7 +39,7 @@ module.exports = {
                 throw new Error('redirect_uri or pointId is empty');
             }
 
-            this.wechatLogin({
+            await this.wechatLogin({
                 redirect_uri: req.query.redirect_uri,
                 cbk: '/sit/user/wechatScanPointCbk',
                 state: req.query.pointId,
@@ -67,7 +67,7 @@ module.exports = {
     },
 
     wechatSubscribeMpCbk: async function (req, res, next) {
-        console.log(__filename + '\n[CALL] loginWechatCbk');
+        console.log(__filename + '\n[CALL] wechatSubscribeMpCbk');
         console.log(req.query);
 
         try {
@@ -77,7 +77,7 @@ module.exports = {
                 throw new Error('code is empty');
             }
 
-            const user = this.wechatLoginCbk({
+            const user = await this.wechatLoginCbk({
                 code: req.query.code,
             });
 
@@ -96,14 +96,14 @@ module.exports = {
             res.redirect(redirect_uri);
 
         } catch(err) {
-            console.error(__filename + '[CALL] loginWechat, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
+            console.error(__filename + '[CALL] wechatSubscribeMpCbk, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
             let redirect_uri = await this.models.utils.crypt.decryptString({ str: req.query.redirect_uri })
             res.redirect(redirect_uri);
         }
     },
 
     wechatScanPointCbk: async function (req, res, next) {
-        console.log(__filename + '\n[CALL] scanWechatCbk');
+        console.log(__filename + '\n[CALL] wechatScanPointCbk');
         console.log(req.query);
 
         try {
@@ -113,7 +113,7 @@ module.exports = {
                 throw new Error('code is empty');
             }
 
-            const user = this.wechatLoginCbk({
+            const user = await this.wechatLoginCbk({
                 code: req.query.code,
             });
 
@@ -133,7 +133,7 @@ module.exports = {
             res.redirect(redirect_uri);
 
         } catch(err) {
-            console.error(__filename + '[CALL] loginWechat, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
+            console.error(__filename + '[CALL] wechatScanPointCbk, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
             let redirect_uri = await this.models.utils.crypt.decryptString({ str: req.query.redirect_uri })
             res.redirect(redirect_uri);
         }
