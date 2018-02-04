@@ -221,8 +221,8 @@ module.exports = {
             if( param.wechatMpAuthInfo.refresh_token ) ad.wechatMpAuthInfo.refresh_token = param.wechatMpAuthInfo.refresh_token;
             if( param.wechatMpAuthInfo.nick_name ) ad.wechatMpAuthInfo.nick_name = param.wechatMpAuthInfo.nick_name;
             if( param.wechatMpAuthInfo.head_img ) ad.wechatMpAuthInfo.head_img = param.wechatMpAuthInfo.head_img;
-            if( param.wechatMpAuthInfo.service_type ) ad.wechatMpAuthInfo.service_type = param.wechatMpAuthInfo.service_type;
-            if( param.wechatMpAuthInfo.verify_type ) ad.wechatMpAuthInfo.verify_type = param.wechatMpAuthInfo.verify_type;
+            if( param.wechatMpAuthInfo.service_type !== undefined ) ad.wechatMpAuthInfo.service_type = param.wechatMpAuthInfo.service_type;
+            if( param.wechatMpAuthInfo.verify_type !== undefined ) ad.wechatMpAuthInfo.verify_type = param.wechatMpAuthInfo.verify_type;
         }
         ad.state = 'OPEN';
         await ad.save();

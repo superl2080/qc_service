@@ -25,26 +25,44 @@ module.exports = {
                 const appid = req.params.appid;
                 const ad = await this.models.dbs.ad.getByAppid({ appid: appid });
                 const mpToken = await this.models.wechat.getMpToken({ ad: ad });
-                const userInfo = await this.models.apis.wechatMp.getUserInfo({
-                    mpToken: mpToken,
-                    openid: openid,
-                });
-                const users = await this.models.dbs.user.getByWechatInfo(userInfo);
-                for( let user of users ){
-                    user = await this.models.dbs.user.update({
-                        userId: user._id,
-                        wechatInfo: {
-                            appid: appid,
-                        },
+                if( ad.wechatMpAuthInfo.verify_type == 0 ) {
+                    const userInfo = await this.models.apis.wechatMp.getUserInfo({
+                        mpToken: mpToken,
+                        openid: openid,
                     });
-
-                    if( decryptMsg.Event == 'subscribe' ){
-                        const order = await this.models.order.adSubscribe({
-                            user: user,
-                            appid: ad.wechatMpAuthInfo.appid,
-                            openid: openid,
+                    const users = await this.models.dbs.user.getByWechatInfo(userInfo);
+                    for( let user of users ){
+                        user = await this.models.dbs.user.update({
+                            userId: user._id,
+                            wechatInfo: {
+                                appid: appid,
+                            },
                         });
+
+                        if( decryptMsg.Event == 'subscribe' ){
+                            const order = await this.models.order.adSubscribe({
+                                user: user,
+                                appid: ad.wechatMpAuthInfo.appid,
+                                openid: openid,
+                            });
+                        }
                     }
+                } else {
+                    const msgEncryptXml = await this.models.utils.crypt.encryptWechatMsg({
+                        aesKey: this.WECHAT_OPEN_ENCODE_KEY,
+                        appId: this.WECHAT_OPEN_APP_ID,
+                        msg: {
+                            ToUserName: decryptMsg.FromUserName,
+                            FromUserName: decryptMsg.ToUserName,
+                            CreateTime: Math.round((new Date()).getTime() / 1000),
+                            MsgType: 'text',
+                            Content: '[青橙]点击完成领取:' + this.SIT_URL + '/subscribe/' + req.params.appid,
+                        },
+                        token: this.WECHAT_OPEN_MESSAGE_TOKEN,
+                        timestamp: req.query.timestamp,
+                        nonce: req.query.nonce,
+                    });
+                    return res.send(msgEncryptXml);
                 }
             } else if( decryptMsg.MsgType == 'text' ){
                 const otherConfig = await this.models.dbs.config.getOther();

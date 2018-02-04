@@ -78,13 +78,13 @@ module.exports = {
             } else if( apiResult.sex == 2 ){
                 apiResult.sex = '女';
             } else {
-                delete apiResult.sex;
+                apiResult.sex = '未知';
             }
             const result = apiResult;
             return result;
 
         } catch(err) {
-            console.error(__filename + '[CALL] getUserInfo, param:' + JSON.stringify(param) + ', err:' + err.message);
+            console.error(__filename + '[CALL] getOAuthUserInfo, param:' + JSON.stringify(param) + ', err:' + err.message);
             throw err;
         }
 
@@ -114,7 +114,7 @@ module.exports = {
             } else if( apiResult.sex == 2 ){
                 apiResult.sex = '女';
             } else {
-                delete apiResult.sex;
+                apiResult.sex = '未知';
             }
             const result = apiResult;
             return result;
@@ -180,7 +180,7 @@ module.exports = {
 
             console.log('[CALLBACK] createQrcode, result:');
             console.log(apiResult);
-            
+
             if( !apiResult
                 || !apiResult.url ){
                 throw new Error('createQrcode is error');
