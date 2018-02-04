@@ -35,6 +35,9 @@ module.exports = {
 
             const apiResult = await this.models.utils.request.getJson({ url: url });
 
+            console.log('[CALLBACK] getOAuthToken, result:');
+            console.log(apiResult);
+
             if( !apiResult
                 || !apiResult.openid
                 || !apiResult.access_token ){
@@ -42,8 +45,6 @@ module.exports = {
             }
 
             const result = apiResult;
-            console.log('[CALLBACK] getOAuthToken, result:');
-            console.log(result);
             return result;
 
         } catch(err) {
@@ -64,6 +65,9 @@ module.exports = {
 
             const apiResult = await this.models.utils.request.getJson({ url: url });
 
+            console.log('[CALLBACK] getOAuthUserInfo, result:');
+            console.log(apiResult);
+
             if( !apiResult
                 || !apiResult.nickname ){
                 throw new Error('getOAuthUserInfo is error');
@@ -77,8 +81,6 @@ module.exports = {
                 delete apiResult.sex;
             }
             const result = apiResult;
-            console.log('[CALLBACK] getOAuthUserInfo, result:');
-            console.log(result);
             return result;
 
         } catch(err) {
@@ -99,6 +101,9 @@ module.exports = {
 
             const apiResult = await this.models.utils.request.getJson({ url: url });
 
+            console.log('[CALLBACK] getUserInfo, result:');
+            console.log(apiResult);
+
             if( !apiResult
                 || !apiResult.nickname ){
                 throw new Error('getUserInfo is error');
@@ -112,8 +117,6 @@ module.exports = {
                 delete apiResult.sex;
             }
             const result = apiResult;
-            console.log('[CALLBACK] getUserInfo, result:');
-            console.log(result);
             return result;
 
         } catch(err) {
@@ -139,6 +142,9 @@ module.exports = {
                 json: json,
             });
 
+            console.log('[CALLBACK] sendMessage, result:');
+            console.log(apiResult);
+
             if( !apiResult
                 || apiResult.errcode !== 0
                 || !apiResult.msgid ){
@@ -146,8 +152,6 @@ module.exports = {
             }
             
             const result = apiResult.msgid;
-            console.log('[CALLBACK] sendMessage, result:');
-            console.log(result);
             return result;
 
         } catch(err) {
@@ -174,14 +178,15 @@ module.exports = {
                 },
             });
 
+            console.log('[CALLBACK] createQrcode, result:');
+            console.log(apiResult);
+            
             if( !apiResult
                 || !apiResult.url ){
                 throw new Error('createQrcode is error');
             }
             
             const result = apiResult;
-            console.log('[CALLBACK] createQrcode, result:');
-            console.log(result);
             return result;
 
         } catch(err) {
