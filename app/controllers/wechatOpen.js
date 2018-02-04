@@ -21,7 +21,6 @@ module.exports = {
                     ticket: decryptMsg.ComponentVerifyTicket,
                 });
                 break;
-            case 'authorized':
             case 'updateauthorized':
                 await this.models.wechat.updateMpAuthInfo({
                     auth_code: decryptMsg.AuthorizationCode,
