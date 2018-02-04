@@ -47,7 +47,7 @@ module.exports = {
                             });
                         }
                     }
-                } else {
+                } else if( ad.state == 'DELIVER' ) {
                     const msgEncryptXml = await this.models.utils.crypt.encryptWechatMsg({
                         aesKey: this.WECHAT_OPEN_ENCODE_KEY,
                         appId: this.WECHAT_OPEN_APP_ID,
