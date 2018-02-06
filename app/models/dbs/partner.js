@@ -63,7 +63,9 @@ module.exports = {
         }
 
         const partnerCharacter = await this.models.dbs.config.getPartnerCharacterById({ partnerCharacterId: partner.characterId });
-        partner.balance += Math.round(param.income * (100 - partnerCharacter.deduct) / 100);
+        const balance = Math.round(param.income * (partnerCharacter.deduct / 100));
+        await this.models.dbs.config.incomeOtherQcBalance({ income: balance });
+        partner.balance += param.income - balance;
         await partner.save();
 
         console.log('[CALLBACK] incomeBalance, result:');

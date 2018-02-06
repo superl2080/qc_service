@@ -64,31 +64,12 @@ module.exports = {
                     });
                     return res.send(msgEncryptXml);
                 }
-            } else if( decryptMsg.MsgType == 'text' ){
-                const otherConfig = await this.models.dbs.config.getOther();
-                if( otherConfig.auto_reply == decryptMsg.Content ) {
-                    const msgEncryptXml = await this.models.utils.crypt.encryptWechatMsg({
-                        aesKey: this.WECHAT_OPEN_ENCODE_KEY,
-                        appId: this.WECHAT_OPEN_APP_ID,
-                        msg: {
-                            ToUserName: decryptMsg.FromUserName,
-                            FromUserName: decryptMsg.ToUserName,
-                            CreateTime: Math.round((new Date()).getTime() / 1000),
-                            MsgType: 'text',
-                            Content: '[青橙]点击完成领取:' + this.SIT_URL + '/subscribe/' + req.params.appid,
-                        },
-                        token: this.WECHAT_OPEN_MESSAGE_TOKEN,
-                        timestamp: req.query.timestamp,
-                        nonce: req.query.nonce,
-                    });
-                    return res.send(msgEncryptXml);
-                }
             }
-            res.send('success');
+            return res.send('success');
             
         } catch(err) {
             console.error(__filename + '[CALL] notice, req.body:' + JSON.stringify(req.body) + ', err:' + err.message);
-            res.send('success');
+            return res.send('success');
         }
     },
 

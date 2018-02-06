@@ -25,7 +25,7 @@ module.exports = {
                     return_msg: 'OK',
                 },
             });
-            res.send(xml);
+            return res.send(xml);
             
         } catch(err) {
             console.error(__filename + '[CALL] notice, req.body:' + JSON.stringify(req.body) + ', err:' + err.message);
@@ -35,7 +35,7 @@ module.exports = {
                     return_msg: 'OK',
                 },
             });
-            res.send(xml);
+            return res.send(xml);
         }
     },
 

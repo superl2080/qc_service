@@ -11,11 +11,11 @@ const adChannelSchema = new mongoose.Schema({
 
 const otherSchema = new mongoose.Schema({
     deviceUrl:              String,
-    auto_reply:             String,
+    qcBalance:              { $type: Number,             required: true, default: 0 },
 }, { typeKey: '$type' });
 
 const partnerCharacterSchema = new mongoose.Schema({
-    name:                   { $type: String,             required: true, unique: true }, // DEVICER, OPERATOR, AGENT
+    name:                   { $type: String,             required: true, unique: true }, // DEVICER, OPERATOR, AGENT, NORMAL
     deduct:                 { $type: Number,             required: true },
 }, { typeKey: '$type' });
 
@@ -51,6 +51,23 @@ module.exports = {
         const other = await otherModel.findOne({ }).exec();
 
         console.log('[CALLBACK] getOther, result:');
+        console.log(other);
+        return other;
+    },
+
+    incomeOtherQcBalance: async function (param) {
+        console.log(__filename + '\n[CALL] incomeOtherQcBalance, param:');
+        console.log(param);
+
+        let other = await otherModel.findOne({ }).exec();
+        if( !other ) {
+            throw new Error('Can not find other');
+        }
+
+        other.qcBalance += param.income;
+        await other.save();
+
+        console.log('[CALLBACK] incomeOtherQcBalance, result:');
         console.log(other);
         return other;
     },

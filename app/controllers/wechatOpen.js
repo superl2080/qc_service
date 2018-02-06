@@ -34,11 +34,11 @@ module.exports = {
                 ;
             }
 
-            res.send('success');
+            return res.send('success');
 
         } catch(err) {
             console.error(__filename + '[CALL] notice, req.body:' + JSON.stringify(req.body) + ', err:' + err.message);
-            res.send('success');
+            return res.send('success');
         }
     },
 
@@ -66,7 +66,7 @@ module.exports = {
                 pre_auth_code: preAuthCode.pre_auth_code,
                 redirect_uri: 'http://' + req.headers.host + '/wechat/open/adAuthCbk?pre_auth_code=' + preAuthCode.pre_auth_code,
             });
-            res.render('page-button', {
+            return res.render('page-button', {
                 title: '授权公众号吸粉',
                 message: '点击确认，并使用公众号运营者微信进行扫码授权。青橙承诺，授权仅用于吸粉投放和粉丝关注判断。',
                 button: url,
@@ -74,7 +74,7 @@ module.exports = {
 
         } catch(err) {
             console.error(__filename + '[CALL] adAuth, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
-            next(err);
+            return next(err);
         }
     },
 
@@ -91,14 +91,14 @@ module.exports = {
                 auth_code: req.query.auth_code,
                 pre_auth_code: req.query.pre_auth_code,
             });
-            res.render('page', {
+            return res.render('page', {
                 title: '授权公众号吸粉',
                 message: '授权成功！感谢使用青橙服务。',
             });
             
         } catch(err) {
             console.error(__filename + '[CALL] adAuthCbk, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
-            next(err);
+            return next(err);
         }
     },
 
