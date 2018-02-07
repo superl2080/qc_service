@@ -4,25 +4,25 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const adChannelSchema = new mongoose.Schema({
-    name:                   { $type: String,             required: true, unique: true }, // YOUFENTONG
-    url:                    { $type: String,             required: true },
-    bid:                    String,
+  name:                     { $type: String,              required: true, unique: true }, // YOUFENTONG
+  url:                      { $type: String,              required: true },
+  bid:                      String,
 }, { typeKey: '$type' });
 
 const otherSchema = new mongoose.Schema({
-    deviceUrl:              String,
-    qcBalance:              { $type: Number,             required: true, default: 0 },
+  deviceUrl:                String,
+  qcBalance:                { $type: Number,              required: true, default: 0 },
 }, { typeKey: '$type' });
 
 const partnerCharacterSchema = new mongoose.Schema({
-    name:                   { $type: String,             required: true, unique: true }, // DEVICER, OPERATOR, AGENT, NORMAL
-    deduct:                 { $type: Number,             required: true },
+  name:                     { $type: String,              required: true, unique: true }, // DEVICER, OPERATOR, AGENT, NORMAL
+  deduct:                   { $type: Number,              required: true },
 }, { typeKey: '$type' });
 
 const wechatOpenSchema = new mongoose.Schema({
-    ticket:                 String,
-    access_token:           String,
-    expires_in:             Date,
+  ticket:                   String,
+  access_token:             String,
+  expires_in:               Date,
 }, { typeKey: '$type' });
 
 const adChannelModel = mongoose.model('configAdChannel', adChannelSchema);
@@ -33,99 +33,99 @@ const wechatOpenModel = mongoose.model('configWechatOpen', wechatOpenSchema);
 
 module.exports = {
 
-    getAdChannelById: async function (param) {
-        console.log(__filename + '\n[CALL] getAdChannelById, param:');
-        console.log(param);
+  getAdChannelById: async function (param) {
+    console.log(__filename + '\n[CALL] getAdChannelById, param:');
+    console.log(param);
 
-        const adChannel = await adChannelModel.findById(param.adChannelId).exec();
+    const adChannel = await adChannelModel.findById(param.adChannelId).exec();
 
-        console.log('[CALLBACK] getAdChannelById, result:');
-        console.log(adChannel);
-        return adChannel;
-    },
+    console.log('[CALLBACK] getAdChannelById, result:');
+    console.log(adChannel);
+    return adChannel;
+  },
 
-    getOther: async function (param) {
-        console.log(__filename + '\n[CALL] getOther, param:');
-        console.log(param);
+  getOther: async function (param) {
+    console.log(__filename + '\n[CALL] getOther, param:');
+    console.log(param);
 
-        const other = await otherModel.findOne({ }).exec();
+    const other = await otherModel.findOne({ }).exec();
 
-        console.log('[CALLBACK] getOther, result:');
-        console.log(other);
-        return other;
-    },
+    console.log('[CALLBACK] getOther, result:');
+    console.log(other);
+    return other;
+  },
 
-    incomeOtherQcBalance: async function (param) {
-        console.log(__filename + '\n[CALL] incomeOtherQcBalance, param:');
-        console.log(param);
+  incomeOtherQcBalance: async function (param) {
+    console.log(__filename + '\n[CALL] incomeOtherQcBalance, param:');
+    console.log(param);
 
-        let other = await otherModel.findOne({ }).exec();
-        if( !other ) {
-            throw new Error('Can not find other');
-        }
+    let other = await otherModel.findOne({ }).exec();
+    if( !other ) {
+      throw new Error('Can not find other');
+    }
 
-        other.qcBalance += param.income;
-        await other.save();
+    other.qcBalance += param.income;
+    await other.save();
 
-        console.log('[CALLBACK] incomeOtherQcBalance, result:');
-        console.log(other);
-        return other;
-    },
+    console.log('[CALLBACK] incomeOtherQcBalance, result:');
+    console.log(other);
+    return other;
+  },
 
-    getPartnerCharacterById: async function (param) {
-        console.log(__filename + '\n[CALL] getPartnerCharacterById, param:');
-        console.log(param);
+  getPartnerCharacterById: async function (param) {
+    console.log(__filename + '\n[CALL] getPartnerCharacterById, param:');
+    console.log(param);
 
-        const partnerCharacter = await partnerCharacterModel.findById(param.partnerCharacterId).exec();
+    const partnerCharacter = await partnerCharacterModel.findById(param.partnerCharacterId).exec();
 
-        console.log('[CALLBACK] getPartnerCharacterById, result:');
-        console.log(partnerCharacter);
-        return partnerCharacter;
-    },
+    console.log('[CALLBACK] getPartnerCharacterById, result:');
+    console.log(partnerCharacter);
+    return partnerCharacter;
+  },
 
-    getPartnerCharacterByName: async function (param) {
-        console.log(__filename + '\n[CALL] getPartnerCharacterByName, param:');
-        console.log(param);
+  getPartnerCharacterByName: async function (param) {
+    console.log(__filename + '\n[CALL] getPartnerCharacterByName, param:');
+    console.log(param);
 
-        const partnerCharacter = await partnerCharacterModel.findOne({ name: param.name }).exec();
+    const partnerCharacter = await partnerCharacterModel.findOne({ name: param.name }).exec();
 
-        console.log('[CALLBACK] getPartnerCharacterByName, result:');
-        console.log(partnerCharacter);
-        return partnerCharacter;
-    },
+    console.log('[CALLBACK] getPartnerCharacterByName, result:');
+    console.log(partnerCharacter);
+    return partnerCharacter;
+  },
 
-    getWechatOpen: async function (param) {
-        console.log(__filename + '\n[CALL] getWechatOpen, param:');
-        console.log(param);
+  getWechatOpen: async function (param) {
+    console.log(__filename + '\n[CALL] getWechatOpen, param:');
+    console.log(param);
 
-        const wechatOpen = await wechatOpenModel.findOne({ }).exec();
+    const wechatOpen = await wechatOpenModel.findOne({ }).exec();
 
-        console.log('[CALLBACK] getWechatOpen, result:');
-        console.log(wechatOpen);
-        return wechatOpen;
-    },
+    console.log('[CALLBACK] getWechatOpen, result:');
+    console.log(wechatOpen);
+    return wechatOpen;
+  },
 
-    updateWechatOpenForce: async function (param) {
-        console.log(__filename + '\n[CALL] updateWechatOpenForce, param:');
-        console.log(param);
+  updateWechatOpenForce: async function (param) {
+    console.log(__filename + '\n[CALL] updateWechatOpenForce, param:');
+    console.log(param);
 
-        let option = {};
-        if( param.ticket ) option.ticket = param.ticket;
-        if( param.access_token ) option.access_token = param.access_token;
-        if( param.expires_in ) option.expires_in = param.expires_in;
+    let option = {};
+    if( param.ticket ) option.ticket = param.ticket;
+    if( param.access_token ) option.access_token = param.access_token;
+    if( param.expires_in ) option.expires_in = param.expires_in;
 
-        let wechatOpen = await wechatOpenModel.findOne({ }).exec();
-        if( !wechatOpen ) {
-            wechatOpen = await wechatOpenModel.create(option);
-        } else {
-            Object.assign(wechatOpen, option);
-            await wechatOpen.save();
-        }
+    let wechatOpen = await wechatOpenModel.findOne({ }).exec();
+    if( !wechatOpen ) {
+      wechatOpen = await wechatOpenModel.create(option);
+    } else {
+      Object.assign(wechatOpen, option);
+      await wechatOpen.save();
+    }
 
-        console.log('[CALLBACK] updateWechatOpenForce, result:');
-        console.log(wechatOpen);
-        return wechatOpen;
-    },
+    console.log('[CALLBACK] updateWechatOpenForce, result:');
+    console.log(wechatOpen);
+    return wechatOpen;
+  },
 
 };
 
