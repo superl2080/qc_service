@@ -28,7 +28,7 @@ module.exports = {
       return res.send({
         code: 0,
         data: {
-          qrcodeUrl: qrcodeUrl;
+          qrcodeUrl: qrcodeUrl,
         },
         message: 'pre success.',
       });
