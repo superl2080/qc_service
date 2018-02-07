@@ -26,7 +26,7 @@ module.exports = {
         const ad = await this.models.dbs.ad.getByAppid({ appid: appid });
         const mpToken = await this.models.wechat.getMpToken({ ad: ad });
 
-        if( appid === WECHAT_MP_APP_ID ){
+        if( appid === this.WECHAT_MP_APP_ID ){
           if( result.ParseMsg.EventKey ){
             const pointId = result.ParseMsg.EventKey.slice(8);
             const point = await this.models.dbs.point.getById({ pointId: pointId });
