@@ -27,8 +27,8 @@ module.exports = {
         const mpToken = await this.models.wechat.getMpToken({ ad: ad });
 
         if( appid === this.WECHAT_MP_APP_ID ){
-          if( decryptMsg.ParseMsg.EventKey ){
-            const pointId = decryptMsg.ParseMsg.EventKey.slice(8);
+          if( decryptMsg.EventKey ){
+            const pointId = decryptMsg.EventKey.slice(8);
             const point = await this.models.dbs.point.getById({ pointId: pointId });
             if( point ){
               const msgEncryptXml = await this.models.utils.crypt.encryptWechatMsg({
