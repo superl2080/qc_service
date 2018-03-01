@@ -10,10 +10,14 @@ module.exports = {
       const adChannelConfig = await this.models.dbs.config.getAdChannelById({ adChannelId: param.adChannelId });
 
       if(adChannelConfig.name === 'YOUFENTONG') {
+        let sex = 0;
+        if( param.user.wechatInfo.sex.indexOf('男') >= 0 ) sex = 1;
+        if( param.user.wechatInfo.sex.indexOf('女') >= 0 ) sex = 2;
         let url = adChannelConfig.url;
         url += '?bid=' + adChannelConfig.bid;
         url += '&openid=' + param.user._id.toString();
         url += '&nickname=' + encodeURIComponent(param.user.wechatInfo.nickname);
+        url += '&sex=' + sex;
         url += '&bidcity=' + encodeURIComponent(param.city);
 
         const apiResult = await this.models.utils.request.getJson({ url : url });
@@ -21,7 +25,6 @@ module.exports = {
         if( !apiResult
           || apiResult.error !== 0
           || !apiResult.list
-          || apiResult.list[0].auth === undefined
           || !apiResult.list[0].appid
           || !apiResult.list[0].qrcode_url ){
           throw new Error('deliverAd is error');

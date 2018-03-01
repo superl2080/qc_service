@@ -15,7 +15,7 @@ const otherSchema = new mongoose.Schema({
 }, { typeKey: '$type' });
 
 const partnerCharacterSchema = new mongoose.Schema({
-  name:                     { $type: String,              required: true, unique: true }, // DEVICER, OPERATOR, AGENT, NORMAL
+  name:                     { $type: String,              required: true, unique: true }, // DEVICER, OPERATOR, AGENT
   deduct:                   { $type: Number,              required: true },
 }, { typeKey: '$type' });
 
