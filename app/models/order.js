@@ -151,6 +151,10 @@ module.exports = {
           transaction_id: param.transaction_id,
         },
       });
+    console.log('XXXXXXXXXXXXXXXXXX');
+    console.log(order);
+    console.log(order.adInfo);
+    console.log('XXXXXXXXXXXXXXXXXX');
       if( order.adInfo ){
         await this.models.dbs.ad.cancelDeliver({ adId: order.adInfo.adId });
       }
