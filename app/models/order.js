@@ -120,7 +120,7 @@ module.exports = {
           aderId: order.adInfo.aderId,
         });
       }
-      await this.finishOrder({
+      order = await this.finishOrder({
         user: user,
         order: order,
         payout: order.adInfo.payout,
