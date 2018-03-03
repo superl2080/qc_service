@@ -136,11 +136,11 @@ module.exports = {
     console.log(__filename + '\n[CALL] finishPay, param:');
     console.log(param);
 
-    const order = await this.models.dbs.order.getById({
+    let order = await this.models.dbs.order.getById({
       orderId: param.orderId,
     });
     if( order && order.state === 'OPEN' ) {
-      await this.models.dbs.order.update({
+      order = await this.models.dbs.order.update({
         orderId: order._id,
         state: 'SUCCESS',
         payInfo: {
