@@ -7,10 +7,9 @@ const adSchema = new mongoose.Schema({
 
   createDate:               { $type: Date,                required: true },
 
-  isDefault:                { $type: Boolean,             default: false },
   aderId:                   { $type: ObjectId,            required: true },
   type:                     { $type: String,              required: true }, //'WECHAT_MP_AUTH', 'WECHAT_MP_API'
-  state:                    { $type: String,              default: 'CREATE' }, //'CREATE', 'OPEN', 'DELIVER', 'SUCESS', 'CANCEL', 'NO_BALANCE'
+  state:                    { $type: String,              default: 'CREATE' }, //'CREATE', 'OPEN', 'DEFAULT', 'DELIVER', 'SUCESS', 'CANCEL', 'NO_BALANCE'
 
   deliverInfo: {
     payout:                 { $type: Number,              required: true },
@@ -72,22 +71,9 @@ module.exports = {
     console.log(__filename + '\n[CALL] getDefault, param:');
     console.log(param);
 
-    const ad = await adModel.findOne({ isDefault: true }).exec();
+    const ad = await adModel.findOne({ state: 'DEFAULT' }).exec();
 
     console.log('[CALLBACK] getDefault, result:');
-    console.log(ad);
-    return ad;
-  },
-
-  getDefaultDeliverAd: async function (param) {
-    console.log(__filename + '\n[CALL] getDefaultDeliverAd, param:');
-    console.log(param);
-
-    let ad = await adModel.findOne({ isDefault: true }).exec();
-    ad.deliverInfo.count -= 1;
-    ad = await ad.save();
-
-    console.log('[CALLBACK] getDefaultDeliverAd, result:');
     console.log(ad);
     return ad;
   },

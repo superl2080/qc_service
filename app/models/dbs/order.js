@@ -70,8 +70,7 @@ module.exports = {
     console.log(__filename + '\n[CALL] create, param:');
     console.log(param);
 
-    if( param.point.state !== 'DEPLOY' 
-      && param.point.state !== 'TEST' ){
+    if( param.point.state !== 'DEPLOY' ){
       throw new Error('Point is not ok');
     }
 

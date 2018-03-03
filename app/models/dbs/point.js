@@ -9,7 +9,7 @@ const pointSchema = new mongoose.Schema({
 
   partnerId:                { $type: ObjectId,            required: true },
   type:                     { $type: String,              required: true }, //'POINT', 'DEVICE'
-  state:                    { $type: String,              default: 'OPEN' }, //'OPEN', 'DEPLOY', 'TEST', 'CLOSE'
+  state:                    { $type: String,              default: 'OPEN' }, //'OPEN', 'DEPLOY', 'CLOSE'
 
   deviceInfo: {
     devNo:                  String,
