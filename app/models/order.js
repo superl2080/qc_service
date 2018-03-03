@@ -95,13 +95,13 @@ module.exports = {
         appid: param.appid,
       },
     });
-    const order = await this.models.dbs.order.getByUserAppid({
+    let order = await this.models.dbs.order.getByUserAppid({
       userId: user._id,
       appid: param.appid,
     });
     if( order ) {
       const ad = await this.models.dbs.ad.getById({ adId: order.adInfo.adId });
-      await this.models.dbs.order.update({
+      order = await this.models.dbs.order.update({
         orderId: order._id,
         state: 'SUCCESS',
         payInfo: {
@@ -172,7 +172,8 @@ module.exports = {
     console.log(__filename + '\n[CALL] finishOrder, param:');
     console.log(param);
 
-    const point = await this.models.dbs.point.getById({ pointId: param.order.pointId });
+    let order = param.order;
+    const point = await this.models.dbs.point.getById({ pointId: order.pointId });
     await this.models.dbs.partner.incomeBalance({
       partnerId: point.partnerId,
       income: param.payout,
@@ -182,11 +183,11 @@ module.exports = {
         await this.sendMessage({
           user: param.user,
           point: point,
-          order: param.order,
+          order: order,
           openid: param.user.authId.wechatId,
           first: '订单凭证',
           remark: '感谢使用青橙服务！商家马上就为您派送哦~',
-          url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
+          url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + order._id.toString(),
         });
       } catch(err){
         console.error(err);
@@ -196,7 +197,7 @@ module.exports = {
           await this.sendMessage({
             user: param.user,
             point: point,
-            order: param.order,
+            order: order,
             openid: point.deployInfo.operatorWechatId,
             first: '您有新的订单，请尽快派送',
             remark: '感谢使用青橙服务！客户正等待您派送哦~',
@@ -210,11 +211,11 @@ module.exports = {
         await this.sendMessage({
           user: param.user,
           point: point,
-          order: param.order,
+          order: order,
           openid: param.user.authId.wechatId,
           first: '订单凭证',
           remark: '感谢使用青橙服务！机器正在努力取出您的物品哦~',
-          url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + param.order._id.toString(),
+          url: this.SIT_URL + '/order?token=' + param.user._id.toString() + '&orderId=' + order._id.toString(),
         });
       } catch(err){
         console.error(err);
@@ -224,7 +225,7 @@ module.exports = {
           await this.sendMessage({
             user: param.user,
             point: point,
-            order: param.order,
+            order: order,
             openid: point.deployInfo.operatorWechatId,
             first: '您有新的订单，已自动派送',
             remark: '感谢使用青橙服务！机器已经自动派送哦~',
@@ -235,20 +236,20 @@ module.exports = {
       }
       try {
         const result = await this.models.apis.device.takeItem({
-          orderId: param.order._id,
+          orderId: order._id,
           devNo: point.deviceInfo.devNo,
         });
       } catch(err){
-        await this.models.dbs.order.update({
-          orderId: param.order._id,
+        order = await this.models.dbs.order.update({
+          orderId: order._id,
           state: 'FAIL',
         });
       }
     }
 
     console.log('[CALLBACK] finishOrder, result:');
-    console.log(param.order);
-    return param.order;
+    console.log(order);
+    return order;
   },
 
   sendMessage: async function (param) {
