@@ -15,6 +15,7 @@ module.exports = {
     url += '&scope=snsapi_base';
     url += '&state=' + state;
     url += '&component_appid=' + param.openAppid;
+    url += '&connect_redirect=1';
     url += '#wechat_redirect';
 
     console.log('[CALLBACK] getOAuthUrl, result:');
