@@ -51,11 +51,11 @@ module.exports = {
         };
 
         if( ad.deliverInfo.partnerType === 'WHITE'
-          ad.deliverInfo.partnerIds.indexOf(param.point.partnerId) < 0 ) {
+          && ad.deliverInfo.partnerIds.indexOf(param.point.partnerId) < 0 ) {
           throw new Error('Do not in partner white list');
 
         } else if( ad.deliverInfo.partnerType === 'BLACK'
-          ad.deliverInfo.partnerIds.indexOf(param.point.partnerId) >= 0 ) {
+          && ad.deliverInfo.partnerIds.indexOf(param.point.partnerId) >= 0 ) {
           throw new Error('Do in partner black list');
         } 
 
