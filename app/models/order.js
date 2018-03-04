@@ -8,32 +8,75 @@ module.exports = {
     console.log(__filename + '\n[CALL] create, param:');
     console.log(param);
 
-    await this.models.dbs.order.cancel({ user: param.user });
+    await this.models.order.cancel({ user: param.user });
     let order = await this.models.dbs.order.create({
       user: param.user,
       point: param.point,
     });
 
-    let ad;
-    try {
-      ad = await this.models.dbs.ad.getDeliverAd({ user: param.user });
-    } catch(err){
-      // no ad
+    order = this.deliverAd({
+      user: param.user,
+      point: param.point,
+      order: order,
+    });
+
+    console.log('[CALLBACK] create, result:');
+    console.log(order);
+    return order;
+  },
+
+  deliverAd: async function (param) {
+    console.log(__filename + '\n[CALL] deliverAd, param:');
+    console.log(param);
+
+    let order = param.order;
+
+    if( order.adInfo
+      && order.adInfo.adId ){
+      await this.models.dbs.ad.cancelDeliver({
+        adId: order.adInfo.adId,
+        payout: order.adInfo.payout,
+      });
+      order.adInfo.adId = undefined;
     }
 
-    if( ad ){
-      let adInfo = {
-        adId: ad._id,
-        aderId: ad.aderId,
-        payout: ad.deliverInfo.payout,
-      };
+    let ads = await this.models.dbs.ad.getDeliverAds({ user: param.user });
 
-      order = await this.models.dbs.order.update({
-        orderId: order._id,
-        adInfo: adInfo,
-      });
-      
+    for( let ad of ads ){
       try {
+        let adInfo = {
+          adId: ad._id,
+          aderId: ad.aderId,
+          payout: ad.deliverInfo.payout,
+        };
+
+        if( ad.deliverInfo.partnerType === 'WHITE'
+          ad.deliverInfo.partnerIds.indexOf(param.point.partnerId) < 0 ) {
+          throw new Error('Do not in partner white list');
+
+        } else if( ad.deliverInfo.partnerType === 'BLACK'
+          ad.deliverInfo.partnerIds.indexOf(param.point.partnerId) >= 0 ) {
+          throw new Error('Do in partner black list');
+        } 
+
+        if( ad.deliverInfo.userType === 'WHITE' ){
+          let inWhiteList = false;
+          for( let tag of ad.deliverInfo.userTags ){
+            if(param.user.tags.indexOf(tag) >= 0 ) {
+              inWhiteList = true;
+              break;
+            }
+          }
+          if(!inWhiteList) throw new Error('Do not in user tag white list');
+
+        } else if( ad.deliverInfo.userType === 'BLACK' ){
+          for( let tag of ad.deliverInfo.userTags ){
+            if(param.user.tags.indexOf(tag) >= 0 ) {
+              throw new Error('Do in user tag black list');
+            }
+          }
+        } 
+
         if( ad.type === 'WECHAT_MP_AUTH' ){
           adInfo.appid = ad.wechatMpAuthInfo.appid;
           adInfo.qrcode_url = ad.wechatMpAuthInfo.qrcode_url;
@@ -47,25 +90,50 @@ module.exports = {
           adInfo.appid = channelAd.appid;
           adInfo.qrcode_url = channelAd.qrcode_url;
           if( channelAd.payout
-            && channelAd.payout > ad.deliverInfo.payout ) adInfo.payout = channelAd.payout;
-          if( channelAd.auth === true ) {
-            const qrcode = await this.models.apis.qrcode.getImage({ url: channelAd.qrcode_url });
-            adInfo.qrcode_url = qrcode.url;
-          }
+            && channelAd.payout > adInfo.payout ) adInfo.payout = channelAd.payout;
         }
+
+        await this.models.dbs.ad.deliver({
+          adId: adInfo.adId,
+          payout: adInfo.payout,
+        });
 
         order = await this.models.dbs.order.update({
           orderId: order._id,
           adInfo: adInfo,
         });
+
+        break;
+
       } catch(err){
-        // with not useful ad
+        // try next
       }
     }
 
-    console.log('[CALLBACK] create, result:');
+    console.log('[CALLBACK] deliverAd, result:');
     console.log(order);
     return order;
+  },
+
+  cancel: async function (param) {
+    console.log(__filename + '\n[CALL] cancel, param:');
+    console.log(param);
+
+    const orders = await this.models.dbs.order.cancel(param);
+
+    for( let order of orders ){
+      if( order.adInfo
+        && order.adInfo.adId ){
+        await this.models.dbs.ad.cancelDeliver({
+          adId: order.adInfo.adId,
+          payout: order.adInfo.payout,
+        });
+      }
+    }
+
+    console.log('[CALLBACK] cancel, result:');
+    console.log(orders);
+    return orders;
   },
 
   adSubscribe: async function (param) {
@@ -94,19 +162,9 @@ module.exports = {
           openid: param.openid,
         },
       });
-      const ader = await this.models.dbs.ader.payoutBalance({
-        aderId: order.adInfo.aderId,
-        payout: order.adInfo.payout,
-      });
-      if( ader.balance <= 0 ){
-        await this.models.dbs.ad.stopAll({
-          aderId: order.adInfo.aderId,
-        });
-      }
       order = await this.finishOrder({
         user: user,
         order: order,
-        payout: order.adInfo.payout,
       });
     }
 
@@ -128,7 +186,7 @@ module.exports = {
         state: 'SUCCESS',
         payInfo: {
           endDate: new Date(),
-          payout: param.payout,
+          payout: (param.payout <= order.price) ? param.payout : order.price,
           type: 'PAY',
           channel: 'WECHAT',
           transaction_id: param.transaction_id,
@@ -136,13 +194,15 @@ module.exports = {
       });
       if( order.adInfo
         && order.adInfo.adId ){
-        await this.models.dbs.ad.cancelDeliver({ adId: order.adInfo.adId });
+        await this.models.dbs.ad.cancelDeliver({
+          adId: order.adInfo.adId,
+          payout: order.adInfo.payout,
+        });
       }
       const user = await this.models.dbs.user.getById({ userId: order.userId });
       await this.finishOrder({
         user: user,
         order: order,
-        payout: param.payout,
       });
     }
 
@@ -159,7 +219,7 @@ module.exports = {
     const point = await this.models.dbs.point.getById({ pointId: order.pointId });
     await this.models.dbs.partner.incomeBalance({
       partnerId: point.partnerId,
-      income: param.payout,
+      income: order.payInfo.payout,
     });
     if( point.type === 'POINT' ) {
       try {

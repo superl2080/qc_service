@@ -141,10 +141,6 @@ module.exports = {
     for( let order of orders ){
       order.state = 'CANCEL';
       await order.save();
-      if( order.adInfo
-        && order.adInfo.adId ){
-        await this.models.dbs.ad.cancelDeliver({ adId: order.adInfo.adId });
-      }
     }
 
     console.log('[CALLBACK] cancel, result:');

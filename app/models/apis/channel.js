@@ -31,7 +31,6 @@ module.exports = {
         }
 
         const result = apiResult.list[0];
-        result.auth = false;
         result.payout = Math.round(result.price * 100);
         console.log('[CALLBACK] deliverAd, result:');
         console.log(result);

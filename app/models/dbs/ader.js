@@ -42,6 +42,10 @@ module.exports = {
       throw new Error('Can not find ader');
     }
 
+    if( ader.balance < param.payout ) {
+      throw new Error('No balance');
+    }
+
     ader.balance -= param.payout;
     await ader.save();
     

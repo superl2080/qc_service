@@ -9,7 +9,7 @@ const adSchema = new mongoose.Schema({
 
   aderId:                   { $type: ObjectId,            required: true },
   type:                     { $type: String,              required: true }, //'WECHAT_MP_AUTH', 'WECHAT_MP_API'
-  state:                    { $type: String,              default: 'CREATE' }, //'CREATE', 'OPEN', 'DEFAULT', 'DELIVER', 'SUCESS', 'CANCEL', 'NO_BALANCE'
+  state:                    { $type: String,              default: 'CREATE' }, //'CREATE', 'OPEN', 'DEFAULT', 'DELIVER', 'CANCEL'
 
   deliverInfo: {
     payout:                 { $type: Number,              required: true },
@@ -78,26 +78,45 @@ module.exports = {
     return ad;
   },
 
-  getDeliverAd: async function (param) {
-    console.log(__filename + '\n[CALL] getDeliverAd, param:');
+  getDeliverAds: async function (param) {
+    console.log(__filename + '\n[CALL] getDeliverAds, param:');
     console.log(param);
 
     const ads = await adModel.find({ state: 'DELIVER' })
       .gt('deliverInfo.count', 0)
       .nin('wechatMpAuthInfo.appid', param.user.wechatInfo.appids)
-      .sort('-deliverInfo.priority createDate')
+      .sort('-deliverInfo.priority -deliverInfo.count')
       .exec();
 
-    let deliverAd;
-    for( let ad of ads ){
-      ad.deliverInfo.count -= 1;
-      deliverAd = await ad.save();
-      break;
+    console.log('[CALLBACK] getDeliverAds, result:');
+    console.log(ads);
+    return ads;
+  },
+
+  deliver: async function (param) {
+    console.log(__filename + '\n[CALL] deliver, param:');
+    console.log(param);
+
+    let ad = await adModel.findById(param.adId).exec();
+    if( !ad ) {
+      throw new Error('Can not find ad');
     }
 
-    console.log('[CALLBACK] getDeliverAd, result:');
-    console.log(deliverAd);
-    return deliverAd;
+    if( ad.deliverInfo.count < 1 ) {
+      throw new Error('No count');
+    }
+
+    await this.models.dbs.ader.payoutBalance({
+      aderId: ad.aderId,
+      payout: param.payout,
+    });
+
+    ad.deliverInfo.count -= 1;
+    await ad.save();
+
+    console.log('[CALLBACK] deliver, result:');
+    console.log(ad);
+    return ad;
   },
 
   cancelDeliver: async function (param) {
@@ -112,6 +131,11 @@ module.exports = {
     ad.deliverInfo.count += 1;
     await ad.save();
 
+    await this.models.dbs.ader.payoutBalance({
+      aderId: ad.aderId,
+      payout: -param.payout,
+    });
+
     console.log('[CALLBACK] cancelDeliver, result:');
     console.log(ad);
     return ad;
@@ -124,7 +148,7 @@ module.exports = {
     let ads = await adModel.find({ aderId: param.aderId }).exec();
 
     for( let ad of ads ){
-      ad.state = 'NO_BALANCE';
+      ad.state = 'OPEN';
       await ad.save();
     }
 
