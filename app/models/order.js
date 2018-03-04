@@ -61,18 +61,22 @@ module.exports = {
 
         if( ad.deliverInfo.userType === 'WHITE' ){
           let inWhiteList = false;
-          for( let tag of ad.deliverInfo.userTags ){
-            if(param.user.tags.indexOf(tag) >= 0 ) {
-              inWhiteList = true;
-              break;
+          for( let tagList of ad.deliverInfo.userTags ){
+            for( let tagUser of param.user.tags ){
+              if(tagList.indexOf(tagUser) >= 0 ) {
+                inWhiteList = true;
+                break;
+              }
             }
           }
           if(!inWhiteList) throw new Error('Do not in user tag white list');
 
         } else if( ad.deliverInfo.userType === 'BLACK' ){
-          for( let tag of ad.deliverInfo.userTags ){
-            if(param.user.tags.indexOf(tag) >= 0 ) {
-              throw new Error('Do in user tag black list');
+          for( let tagList of ad.deliverInfo.userTags ){
+            for( let tagUser of param.user.tags ){
+              if(tagList.indexOf(tagUser) >= 0 ) {
+                throw new Error('Do in user tag black list');
+              }
             }
           }
         } 
