@@ -61,15 +61,9 @@ module.exports = {
 
         if( ad.deliverInfo.userType === 'WHITE' ){
           let inWhiteList = false;
-    console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-    console.log(ad.deliverInfo.userTags);
-    console.log(param.user.tags);
           for( let tagList of ad.deliverInfo.userTags ){
             for( let tagUser of param.user.tags ){
-    console.log(tagList);
-    console.log(tagUser);
-    console.log(tagList.indexOf(tagUser));
-              if(tagList.indexOf(tagUser) >= 0 ) {
+              if(tagUser.indexOf(tagList) >= 0 ) {
                 inWhiteList = true;
                 break;
               }
@@ -80,7 +74,7 @@ module.exports = {
         } else if( ad.deliverInfo.userType === 'BLACK' ){
           for( let tagList of ad.deliverInfo.userTags ){
             for( let tagUser of param.user.tags ){
-              if(tagList.indexOf(tagUser) >= 0 ) {
+              if(tagUser.indexOf(tagList) >= 0 ) {
                 throw new Error('Do in user tag black list');
               }
             }
