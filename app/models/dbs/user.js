@@ -86,9 +86,6 @@ module.exports = {
     console.log(__filename + '\n[CALL] update, param:');
     console.log(param);
 
-    let wechatInfo = {};
-    let appid;
-
     let user = await userModel.findById(param.userId).exec();
     if( !user ) {
       throw new Error('Can not find user');
@@ -102,11 +99,12 @@ module.exports = {
       if( param.wechatInfo.country !== undefined ) user.wechatInfo.country = param.wechatInfo.country;
       if( param.wechatInfo.appid
         && user.wechatInfo.appids.indexOf(param.wechatInfo.appid) < 0 ) user.wechatInfo.appids.push(param.wechatInfo.appid);
+      if ( user.tags.indexOf(user.wechatInfo.sex) < 0 ) user.tags.push(user.wechatInfo.sex);
+      if ( user.tags.indexOf(user.wechatInfo.city) < 0 ) user.tags.push(user.wechatInfo.city);
+      if ( user.tags.indexOf(user.wechatInfo.province) < 0 ) user.tags.push(user.wechatInfo.province);
     }
 
-    if ( user.tags.indexOf(user.wechatInfo.sex) < 0 ) user.tags.push(user.wechatInfo.sex);
-    if ( user.tags.indexOf(user.wechatInfo.city) < 0 ) user.tags.push(user.wechatInfo.city);
-    if ( user.tags.indexOf(user.wechatInfo.province) < 0 ) user.tags.push(user.wechatInfo.province);
+    if ( param.tag && user.tags.indexOf(param.tag) < 0 ) user.tags.push(param.tag);
 
     await user.save();
 

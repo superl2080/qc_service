@@ -130,6 +130,7 @@ module.exports = {
 
       const ad = await this.models.dbs.ad.getDefault();
       const mpToken = await this.models.wechat.getMpToken({ ad: ad });
+      const point = await this.models.dbs.point.getById({ pointId: req.query.state });
       try {
         const userInfo = await this.models.apis.wechatMp.getUserInfo({
           mpToken: mpToken,
@@ -138,6 +139,7 @@ module.exports = {
         user = await this.models.dbs.user.update({
           userId: user._id,
           wechatInfo: userInfo,
+          tag: point.deployInfo.city,
         });
       } catch(err) {
         if( err.message === 'NOT_SUBSCRIBE' ){
@@ -155,7 +157,6 @@ module.exports = {
         }
       }
 
-      const point = await this.models.dbs.point.getById({ pointId: req.query.state });
       const order = await this.models.order.create({
         user: user,
         point: point,
