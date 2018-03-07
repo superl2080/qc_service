@@ -29,6 +29,32 @@ module.exports = {
     return result;
   },
 
+  encodeUnicode: async function (param) {
+    console.log(__filename + '\n[CALL] encodeUnicode, param:');
+    console.log(param);
+
+    let result = [];
+    for ( let i=0; i < param.str.length; i++ ) {
+      result[i] = ( '00' + param.str.charCodeAt(i).toString(16) ).slice(-4);
+    }
+    result = '\\u' + result.join('\\u');
+    console.log('[CALLBACK] encodeUnicode, result:');
+    console.log(result);
+    return result;
+  },
+
+  decodeUnicode: async function (param) {
+    console.log(__filename + '\n[CALL] decodeUnicode, param:');
+    console.log(param);
+
+    let result = param.str.replace(/\\/g, "%");
+    result = unescape(result);
+
+    console.log('[CALLBACK] decodeUnicode, result:');
+    console.log(result);
+    return result;
+  },
+
   decryptWechatMsg: async function (param) {
     console.log(__filename + '\n[CALL] decryptWechatMsg, param:');
     console.log(param);
