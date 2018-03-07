@@ -13,7 +13,7 @@ module.exports = {
         let sex = 0;
         if( param.user.wechatInfo.sex.indexOf('男') >= 0 ) sex = 1;
         if( param.user.wechatInfo.sex.indexOf('女') >= 0 ) sex = 2;
-        let nickname = await this.models.utils.crypt.encodeUnicode(param.user.wechatInfo.nickname);
+        let nickname = await this.models.utils.crypt.encodeUnicode({ str: param.user.wechatInfo.nickname });
 
         let url = adChannelConfig.url;
         url += '?bid=' + adChannelConfig.bid;
