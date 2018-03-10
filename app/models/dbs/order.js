@@ -70,7 +70,7 @@ module.exports = {
     console.log(__filename + '\n[CALL] getTodayCountByUser, param:');
     console.log(param);
 
-    const todayZeroDate = await models.utils.time.todayZeroDate();
+    const todayZeroDate = await this.models.utils.time.todayZeroDate();
     const todayCount = await orderModel.count({
       userId: param.userId,
       'payInfo.type': 'AD',
