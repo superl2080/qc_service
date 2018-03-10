@@ -79,8 +79,8 @@ module.exports = {
     }).exec();
 
     console.log('[CALLBACK] getTodayCountByUser, result:');
-    console.log(order);
-    return order;
+    console.log(todayCount);
+    return todayCount;
   },
 
   create: async function (param) {
