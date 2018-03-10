@@ -9,8 +9,7 @@ module.exports = {
   WECHAT_OPEN_MESSAGE_TOKEN: process.env.WECHAT_OPEN_MESSAGE_TOKEN,
 
   notice: async function (req, res, next) {
-    console.log(__filename + '\n[CALL] notice, body:');
-    console.log(req.body);
+    console.log(__filename + '\n[CALL] notice');
 
     try {
       const decryptMsg = await this.models.utils.crypt.decryptWechatMsg({
