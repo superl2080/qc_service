@@ -6,8 +6,7 @@ module.exports = {
   WECHAT_OPEN_APP_SECRET: process.env.WECHAT_OPEN_APP_SECRET,
 
   getOpenToken: async function (param) {
-    console.log(__filename + '\n[CALL] getOpenToken, param:');
-    console.log(param);
+    console.log(__filename + '\n[CALL] getOpenToken');
 
     let wechatOpenConfig = await this.models.dbs.config.getWechatOpen();
     if( !wechatOpenConfig
@@ -26,14 +25,12 @@ module.exports = {
     }
     const result = wechatOpenConfig.access_token;
 
-    console.log('[CALLBACK] getOpenToken, result:');
-    console.log(result);
+    console.log('[CALLBACK] getOpenToken');
     return result;
   },
 
   getMpToken: async function (param) {
-    console.log(__filename + '\n[CALL] getMpToken, param:');
-    console.log(param);
+    console.log(__filename + '\n[CALL] getMpToken');
 
     let wechatMpAuthInfo = param.ad.wechatMpAuthInfo;
     if( !wechatMpAuthInfo
@@ -59,8 +56,7 @@ module.exports = {
     }
     const result = wechatMpAuthInfo.access_token;
 
-    console.log('[CALLBACK] getMpToken, result:');
-    console.log(result);
+    console.log('[CALLBACK] getMpToken');
     return result;
   },
 

@@ -26,6 +26,17 @@ module.exports = {
         const mpToken = await this.models.wechat.getMpToken({ ad: ad });
 
         if( appid === this.WECHAT_MP_APP_ID ){
+          const userInfo = await this.models.apis.wechatMp.getUserInfo({
+            mpToken: mpToken,
+            openid: openid,
+          });
+          let user = await this.models.dbs.user.getByWechatForce({
+            wechatId: openid,
+          });
+          user = await this.models.dbs.user.update({
+            userId: user._id,
+            wechatInfo: userInfo,
+          });
           if( decryptMsg.EventKey ){
             const pointId = decryptMsg.EventKey.slice(8);
             const point = await this.models.dbs.point.getById({ pointId: pointId });
@@ -47,17 +58,6 @@ module.exports = {
               return res.send(msgEncryptXml);
             }
           }
-          const userInfo = await this.models.apis.wechatMp.getUserInfo({
-            mpToken: mpToken,
-            openid: openid,
-          });
-          let user = await this.models.dbs.user.getByWechatForce({
-            wechatId: openid,
-          });
-          user = await this.models.dbs.user.update({
-            userId: user._id,
-            wechatInfo: userInfo,
-          });
 
         } else if( ad.wechatMpAuthInfo.verify_type === 0 ) {
           const userInfo = await this.models.apis.wechatMp.getUserInfo({
