@@ -40,6 +40,10 @@ module.exports = {
       order.adInfo.adId = undefined;
     }
 
+    const otherConfig = await this.models.dbs.config.getOther();
+    const userTodayCount = await await this.models.dbs.order.getTodayCountByUser({ userId: param.user._id });
+    if( userTodayCount >= otherConfig.adDeliverLimit ) return order;
+
     let ads = await this.models.dbs.ad.getDeliverAds({ user: param.user });
 
     for( let ad of ads ){

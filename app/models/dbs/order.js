@@ -66,6 +66,23 @@ module.exports = {
     return order;
   },
 
+  getTodayCountByUser: async function (param) {
+    console.log(__filename + '\n[CALL] getTodayCountByUser, param:');
+    console.log(param);
+
+    const todayZeroDate = await models.utils.time.todayZeroDate();
+    const todayCount = await orderModel.count({
+      userId: param.userId,
+      'payInfo.type': 'AD',
+      createDate: { $gt: todayZeroDate },
+      state: { $in: ['SUCCESS', 'FAIL'] },
+    }).exec();
+
+    console.log('[CALLBACK] getTodayCountByUser, result:');
+    console.log(order);
+    return order;
+  },
+
   create: async function (param) {
     console.log(__filename + '\n[CALL] create, param:');
     console.log(param);

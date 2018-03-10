@@ -183,10 +183,6 @@ module.exports = {
     console.log(__filename + '\n[CALL] createAuth, param:');
     console.log(param);
 
-    if( param.ader.balance <= 0 ){
-      throw new Error('Ader is poor');
-    }
-
     const ad = await adModel.create({ 
       createDate: new Date(),
       aderId: param.ader._id,

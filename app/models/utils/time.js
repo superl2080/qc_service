@@ -18,5 +18,13 @@ module.exports = {
     return result;
   },
 
+  todayZeroDate: async function (param) {
+
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    return currentDate;
+  },
+
 };
 

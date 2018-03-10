@@ -12,6 +12,7 @@ const adChannelSchema = new mongoose.Schema({
 const otherSchema = new mongoose.Schema({
   deviceUrl:                String,
   qcBalance:                { $type: Number,              required: true, default: 0 },
+  adDeliverLimit:           { $type: Number,              required: true },
 }, { typeKey: '$type' });
 
 const partnerCharacterSchema = new mongoose.Schema({
