@@ -21,6 +21,7 @@ const pointSchema = new mongoose.Schema({
   item: {
     itemId:                 ObjectId,
     price:                  Number,
+    name:                   String,
   },
 
   info: {
@@ -34,12 +35,6 @@ const pointSchema = new mongoose.Schema({
 
 const pointModel = mongoose.model('point', pointSchema);;
 
-pointSchema.virtual('item.name').get(function () {
-    const item = await this.models.dbs.config.getItemById({ itemId: this.item.itemId });
-    return item.name;
-});
-
-
 
 module.exports = {
 
@@ -48,6 +43,8 @@ module.exports = {
     console.log(param);
 
     let point = await pointModel.findById(param.pointId).exec();
+    const item = await this.models.dbs.config.getItemById({ itemId: point.item.itemId });
+    point.item.name = item.name;
 
     console.log('[CALLBACK] getById, result:');
     console.log(point);

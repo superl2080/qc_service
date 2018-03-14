@@ -15,6 +15,7 @@ const orderSchema = new mongoose.Schema({
   item: {
     itemId:                 ObjectId,
     price:                  Number,
+    name:                   String,
   },
 
   adInfo: {
@@ -39,11 +40,6 @@ const orderSchema = new mongoose.Schema({
 
 const orderModel = mongoose.model('order', orderSchema);
 
-orderSchema.virtual('item.name').get(function () {
-    const item = await this.models.dbs.config.getItemById({ itemId: this.item.itemId });
-    return item.name;
-});
-
 
 module.exports = {
 
@@ -52,6 +48,8 @@ module.exports = {
     console.log(param);
 
     let order = await orderModel.findById(param.orderId).exec();
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] getById, result:');
     console.log(order);
@@ -67,6 +65,8 @@ module.exports = {
       'adInfo.appid': param.appid,
       state: 'OPEN',
     }).exec();
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] getByUserAppid, result:');
     console.log(order);
@@ -108,6 +108,8 @@ module.exports = {
         price: param.point.item.price,
       },
     });
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] create, result:');
     console.log(order);
@@ -140,6 +142,8 @@ module.exports = {
       if( param.payInfo.transaction_id ) order.payInfo.transaction_id = param.payInfo.transaction_id;
     }
     await order.save();
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] update, result:');
     console.log(order);
