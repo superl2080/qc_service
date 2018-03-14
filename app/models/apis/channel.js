@@ -52,7 +52,6 @@ module.exports = {
         });
 
         if( !apiResult
-          || apiResult.error !== 0
           || !apiResult.appid
           || !apiResult.qrcode_url ){
           throw new Error('deliverAd is error');
