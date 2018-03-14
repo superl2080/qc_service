@@ -38,24 +38,27 @@ module.exports = {
             wechatInfo: userInfo,
           });
           if( decryptMsg.EventKey ){
-            const pointId = decryptMsg.EventKey.slice(8);
-            const point = await this.models.dbs.point.getById({ pointId: pointId });
-            if( point ){
-              const msgEncryptXml = await this.models.utils.crypt.encryptWechatMsg({
-                aesKey: this.WECHAT_OPEN_ENCODE_KEY,
-                appId: this.WECHAT_OPEN_APP_ID,
-                msg: {
-                  ToUserName: decryptMsg.FromUserName,
-                  FromUserName: decryptMsg.ToUserName,
-                  CreateTime: Math.round((new Date()).getTime() / 1000),
-                  MsgType: 'text',
-                  Content: '[青橙]点击完成领取:' + this.SIT_URL + '/scan/point/' + pointId,
-                },
-                token: this.WECHAT_OPEN_MESSAGE_TOKEN,
-                timestamp: req.query.timestamp,
-                nonce: req.query.nonce,
-              });
-              return res.send(msgEncryptXml);
+            const type = decryptMsg.EventKey.slice(8, 9);
+            if( type === 'P') {
+              const pointId = decryptMsg.EventKey.slice(9);
+              const point = await this.models.dbs.point.getById({ pointId: pointId });
+              if( point ){
+                const msgEncryptXml = await this.models.utils.crypt.encryptWechatMsg({
+                  aesKey: this.WECHAT_OPEN_ENCODE_KEY,
+                  appId: this.WECHAT_OPEN_APP_ID,
+                  msg: {
+                    ToUserName: decryptMsg.FromUserName,
+                    FromUserName: decryptMsg.ToUserName,
+                    CreateTime: Math.round((new Date()).getTime() / 1000),
+                    MsgType: 'text',
+                    Content: '感谢关注青橙！首次领取请点击以下链接继续:' + this.SIT_URL + '/scan/point/' + pointId,
+                  },
+                  token: this.WECHAT_OPEN_MESSAGE_TOKEN,
+                  timestamp: req.query.timestamp,
+                  nonce: req.query.nonce,
+                });
+                return res.send(msgEncryptXml);
+              }
             }
           }
 

@@ -6,6 +6,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const pointSchema = new mongoose.Schema({
 
   createDate:               { $type: Date,                required: true },
+  name:                     { $type: String,              required: true },
 
   partnerId:                { $type: ObjectId,            required: true },
   type:                     { $type: String,              required: true }, //'POINT', 'DEVICE'
@@ -17,17 +18,17 @@ const pointSchema = new mongoose.Schema({
     state:                  String,
   },
 
-  deployInfo: {
+  item: {
+    itemId:                 ObjectId,
     price:                  Number,
-    item:                   String,
-    name:                   String,
-    shop:                   String,
-    city:                   String,
-    operatorWechatId:       String,
   },
 
   info: {
     descript:               String,
+    city:                   String,
+    shop:                   String,
+    mgrPhone:               String,
+    mgrWechatId:            String,
   },
 }, { typeKey: '$type' });
 
@@ -40,7 +41,9 @@ module.exports = {
     console.log(__filename + '\n[CALL] getById, param:');
     console.log(param);
 
-    const point = await pointModel.findById(param.pointId).exec();
+    let point = await pointModel.findById(param.pointId).exec();
+    const item = await this.models.dbs.config.getItemById({ itemId: point.item.itemId });
+    point.item.name = item.name;
 
     console.log('[CALLBACK] getById, result:');
     console.log(point);
@@ -57,6 +60,7 @@ module.exports = {
     if( param.state ) deviceInfo.state = param.state;
 
     let point = await pointModel.findOne({ 'deviceInfo.devNo': param.devNo }).exec();
+    const item = await this.models.dbs.config.getItemByType({ type: 'ZHIJIN' });
     if( !point ) {
       const partner = await this.models.dbs.partner.getDevicer();
       point = await pointModel.create({
@@ -64,6 +68,10 @@ module.exports = {
         partnerId: partner._id,
         type: 'DEVICE',
         deviceInfo: deviceInfo,
+        item: {
+          itemId: item._id,
+          price: item.price,
+        },
       });
     } else {
       Object.assign(point.deviceInfo, deviceInfo);

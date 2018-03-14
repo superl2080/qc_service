@@ -139,7 +139,7 @@ module.exports = {
         user = await this.models.dbs.user.update({
           userId: user._id,
           wechatInfo: userInfo,
-          tag: point.deployInfo.city,
+          tag: point.info.city,
         });
       } catch(err) {
         if( err.message === 'NOT_SUBSCRIBE' ){

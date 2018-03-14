@@ -21,7 +21,7 @@ module.exports = {
       const mpToken = await this.models.wechat.getMpToken({ ad: ad });
       const qrcode = await this.models.apis.wechatMp.createQrcode({
         mpToken: mpToken,
-        scene_str: req.query.pointId,
+        scene_str: 'P' + req.query.pointId,
       }); 
       const qrcodeUrl = await this.models.apis.wechatMp.getQrcodeUrl({ ticket: qrcode.ticket });
 
@@ -112,7 +112,7 @@ module.exports = {
         openid: user.authId.wechatId,
         spbill_create_ip: req.body.spbill_create_ip,
         out_trade_no: order._id.toString(),
-        total_fee: order.price,
+        total_fee: order.item.price,
         mpAppid: this.WECHAT_MP_APP_ID,
         payId: this.WECHAT_PAY_ID,
         payKey: this.WECHAT_PAY_KEY,

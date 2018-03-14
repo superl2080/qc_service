@@ -19,8 +19,6 @@ module.exports = {
     utils: { },
   },
 
-  tests: { },
-
   run: async function (app) {
     console.log(__filename + '\n[CALL] run');
 
@@ -33,13 +31,8 @@ module.exports = {
     await this.loadModules(path.join(__dirname, 'models/apis'),     [this.models.apis, this.modules]);
     await this.loadModules(path.join(__dirname, 'models/dbs'),      [this.models.dbs, this.modules]);
     await this.loadModules(path.join(__dirname, 'models/utils'),    [this.models.utils, this.modules]);
-    await this.loadModules(path.join(__dirname, 'tests'),           [this.tests, this.modules]);
     
     await this.setModules(this.modules, 'models', this.models);
-
-    if( process.env.NODE_ENV === 'test' ) {
-      this.tests.main.run(app);
-    }
 
     this.controllers.jobs.run();
 

@@ -4,9 +4,15 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const adChannelSchema = new mongoose.Schema({
-  name:                     { $type: String,              required: true, unique: true }, // YOUFENTONG
+  name:                     { $type: String,              required: true, unique: true }, // YOUFENTONG, YUNDAI
   url:                      { $type: String,              required: true },
   bid:                      String,
+}, { typeKey: '$type' });
+
+const itemSchema = new mongoose.Schema({
+  name:                     { $type: String,              required: true },
+  price:                    { $type: Number,              required: true },
+  type:                     String, // OTHER, ZHIJIN
 }, { typeKey: '$type' });
 
 const otherSchema = new mongoose.Schema({
@@ -27,6 +33,7 @@ const wechatOpenSchema = new mongoose.Schema({
 }, { typeKey: '$type' });
 
 const adChannelModel = mongoose.model('configAdChannel', adChannelSchema);
+const itemModel = mongoose.model('configItem', itemSchema);
 const otherModel = mongoose.model('configOther', otherSchema);
 const partnerCharacterModel = mongoose.model('configPartnerCharacter', partnerCharacterSchema);
 const wechatOpenModel = mongoose.model('configWechatOpen', wechatOpenSchema);
@@ -43,6 +50,28 @@ module.exports = {
     console.log('[CALLBACK] getAdChannelById, result:');
     console.log(adChannel);
     return adChannel;
+  },
+
+  getItemById: async function (param) {
+    console.log(__filename + '\n[CALL] getItemById, param:');
+    console.log(param);
+
+    const item = await itemModel.findById(param.itemId).exec();
+
+    console.log('[CALLBACK] getItemById, result:');
+    console.log(item);
+    return item;
+  },
+
+  getItemByType: async function (param) {
+    console.log(__filename + '\n[CALL] getItemByType, param:');
+    console.log(param);
+
+    const item = await itemModel.findOne({ type: param.type }).exec();
+
+    console.log('[CALLBACK] getItemByType, result:');
+    console.log(item);
+    return item;
   },
 
   getOther: async function (param) {

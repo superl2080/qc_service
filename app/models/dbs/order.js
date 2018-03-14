@@ -10,10 +10,12 @@ const orderSchema = new mongoose.Schema({
   userId:                   { $type: ObjectId,            required: true },
   pointId:                  { $type: ObjectId,            required: true },
   partnerId:                { $type: ObjectId,            required: true },
-  item:                     { $type: String,              required: true },
-  city:                     { $type: String,              required: true },
-  price:                    { $type: Number,              required: true },
   state:                    { $type: String,              default: 'OPEN' }, //'OPEN', 'SUCCESS', 'FAIL', 'CANCEL'
+
+  item: {
+    itemId:                 ObjectId,
+    price:                  Number,
+  },
 
   adInfo: {
     adId:                   ObjectId,
@@ -44,7 +46,9 @@ module.exports = {
     console.log(__filename + '\n[CALL] getById, param:');
     console.log(param);
 
-    const order = await orderModel.findById(param.orderId).exec();
+    let order = await orderModel.findById(param.orderId).exec();
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] getById, result:');
     console.log(order);
@@ -55,11 +59,13 @@ module.exports = {
     console.log(__filename + '\n[CALL] getByUserAppid, param:');
     console.log(param);
 
-    const order = await orderModel.findOne({
+    let order = await orderModel.findOne({
       userId: param.userId,
       'adInfo.appid': param.appid,
       state: 'OPEN',
     }).exec();
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] getByUserAppid, result:');
     console.log(order);
@@ -91,15 +97,18 @@ module.exports = {
       throw new Error('Point is not ok');
     }
 
-    const order = await orderModel.create({ 
+    let order = await orderModel.create({ 
       createDate: new Date(),
       userId: param.user._id,
       pointId: param.point._id,
       partnerId: param.point.partnerId,
-      item: param.point.deployInfo.item,
-      city: param.point.deployInfo.city,
-      price: param.point.deployInfo.price,
+      item: {
+        itemId: param.point.item.itemId,
+        price: param.point.item.price,
+      },
     });
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] create, result:');
     console.log(order);
@@ -132,6 +141,9 @@ module.exports = {
       if( param.payInfo.transaction_id ) order.payInfo.transaction_id = param.payInfo.transaction_id;
     }
     await order.save();
+    
+    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
+    order.item.name = item.name;
 
     console.log('[CALLBACK] update, result:');
     console.log(order);

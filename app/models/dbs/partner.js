@@ -5,8 +5,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const partnerSchema = new mongoose.Schema({
 
-  logid:                    String,
-  password:                 String,
+  logid:                    { $type: String,              required: true, unique: true },
+  password:                 { $type: String,              required: true },
   name:                     { $type: String,              required: true },
   createDate:               { $type: Date,                required: true },
   authId: {
@@ -20,7 +20,6 @@ const partnerSchema = new mongoose.Schema({
     lastDate:               Date,
     loginTimes:             { $type: Number,              default: 0 },
     children:               [ ObjectId ],
-    shop:                   String,
     city:                   String,
     phone:                  String,
     descript:               String,

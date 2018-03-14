@@ -93,7 +93,7 @@ module.exports = {
           const channelAd = await this.models.apis.channel.deliverAd({
             adChannelId: ad.wechatMpApiInfo.channelId,
             user: param.user,
-            city: param.point.deployInfo.city,
+            city: param.point.info.city ? param.point.info.city : param.user.wechatInfo.city,
           });
           adInfo.appid = channelAd.appid;
           adInfo.qrcode_url = channelAd.qrcode_url;
@@ -194,7 +194,7 @@ module.exports = {
         state: 'SUCCESS',
         payInfo: {
           endDate: new Date(),
-          payout: (param.payout <= order.price) ? param.payout : order.price,
+          payout: (param.payout <= order.item.price) ? param.payout : order.item.price,
           type: 'PAY',
           channel: 'WECHAT',
           transaction_id: param.transaction_id,
@@ -243,13 +243,13 @@ module.exports = {
       } catch(err){
         console.error(err);
       }
-      if( point.deployInfo.operatorWechatId ){
+      if( point.info.mgrWechatId ){
         try {
           await this.sendMessage({
             user: param.user,
             point: point,
             order: order,
-            openid: point.deployInfo.operatorWechatId,
+            openid: point.info.mgrWechatId,
             first: '您有新的订单，请尽快派送',
             remark: '感谢使用青橙服务！客户正等待您派送哦~',
           });
@@ -271,13 +271,13 @@ module.exports = {
       } catch(err){
         console.error(err);
       }
-      if( point.deployInfo.operatorWechatId ){
+      if( point.info.mgrWechatId ){
         try {
           await this.sendMessage({
             user: param.user,
             point: point,
             order: order,
-            openid: point.deployInfo.operatorWechatId,
+            openid: point.info.mgrWechatId,
             first: '您有新的订单，已自动派送',
             remark: '感谢使用青橙服务！机器已经自动派送哦~',
           });
@@ -322,7 +322,7 @@ module.exports = {
           value: new Date().toLocaleString(),
         },
         orderType: {
-          value: param.order.item,
+          value: param.order.item.name,
         },
         customerInfo: {
           value: param.user.wechatInfo.nickname,
@@ -331,7 +331,7 @@ module.exports = {
           value: '点位信息',
         },
         orderItemData: {
-          value: param.point.deployInfo.shop + '-' + param.point.deployInfo.name,
+          value: param.point.info.shop ? param.point.info.shop + '-' + param.point.name : param.point.name,
         },
         remark: {
           value: param.remark,
