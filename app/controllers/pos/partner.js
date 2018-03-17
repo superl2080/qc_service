@@ -1,0 +1,39 @@
+
+
+module.exports = {
+
+  login: async function (req, res, next) {
+    console.log(__filename + '\n[CALL] login, query:');
+    console.log(req.query);
+    try {
+      if( !req.query.logid
+        || !req.query.password ){
+        throw new Error('logid/password is empty');
+      }
+
+      const partner = await this.models.dbs.partner.getByPasswordLogin(req.query);
+      const partnerCharacter = await this.models.dbs.config.getPartnerCharacterById({ partnerCharacterId: partner.characterId });
+
+      return res.send({
+        code: 0,
+        data: {
+          token: partner._id.toString(),
+          character: partnerCharacter.name,
+        },
+      });
+
+    } catch(err) {
+      console.error(__filename + '[CALL] login, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
+      return res.send({
+        code: 22000,
+        data: {
+          token: undefined,
+          character: 'GUEST',
+        },
+        message: err.message,
+      });
+    }
+  },
+
+};
+

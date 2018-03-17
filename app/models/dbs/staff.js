@@ -23,24 +23,6 @@ const staffModel = mongoose.model('staff', staffSchema);
 
 module.exports = {
 
-  checkPassword: async function (param) {
-    console.log(__filename + '\n[CALL] checkPassword, param:');
-    console.log(param);
-
-    const staff = await staffModel.findOne({ logid: param.logid }).exec();
-    let result = false;
-    if( staff ) {
-      result = await this.models.utils.crypt.passwordCompare({
-        passwordAuth: param.password,
-        passwordCrypt: staff.password,
-      });
-    }
-
-    console.log('[CALLBACK] checkPassword, result:');
-    console.log(result);
-    return result;
-  },
-
   update: async function (param) {
     console.log(__filename + '\n[CALL] update, param:');
     console.log(param);

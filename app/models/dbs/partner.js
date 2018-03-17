@@ -54,22 +54,21 @@ module.exports = {
     return partner;
   },
 
-  checkPassword: async function (param) {
-    console.log(__filename + '\n[CALL] checkPassword, param:');
+  getByPasswordLogin: async function (param) {
+    console.log(__filename + '\n[CALL] getByPasswordLogin, param:');
     console.log(param);
 
-    const partner = await partnerModel.findOne({ logid: param.logid }).exec();
-    let result = false;
+    let partner = await partnerModel.findOne({ logid: param.logid }).exec();
     if( partner ) {
-      result = await this.models.utils.crypt.passwordCompare({
+      partner = await this.models.utils.crypt.passwordCompare({
         passwordAuth: param.password,
         passwordCrypt: partner.password,
-      });
+      }) ? partner : undefined;
     }
 
-    console.log('[CALLBACK] checkPassword, result:');
-    console.log(result);
-    return result;
+    console.log('[CALLBACK] getByPasswordLogin, partner:');
+    console.log(partner);
+    return partner;
   },
 
   incomeBalance: async function (param) {

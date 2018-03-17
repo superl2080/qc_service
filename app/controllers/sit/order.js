@@ -36,7 +36,7 @@ module.exports = {
     } catch(err) {
       console.error(__filename + '[CALL] pre, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
       return res.send({
-        code: 20100,
+        code: 21000,
         data: {
           res: 'FAIL',
         },
@@ -75,7 +75,7 @@ module.exports = {
     } catch(err) {
       console.error(__filename + '[CALL] get, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
       return res.send({
-        code: 20101,
+        code: 21001,
         data: {
           res: 'FAIL',
         },
@@ -127,7 +127,7 @@ module.exports = {
     } catch(err) {
       console.error(__filename + '[CALL] wechatPrepay, req.body:' + JSON.stringify(req.body) + ', err:' + err.message);
       return res.send({
-        code: 20102,
+        code: 21002,
         data: {
           res: 'FAIL',
         },
