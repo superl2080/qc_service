@@ -38,13 +38,22 @@ const pointModel = mongoose.model('point', pointSchema);;
 
 module.exports = {
 
+  getList: async function (param) {
+    console.log(__filename + '\n[CALL] getList, param:');
+    console.log(param);
+
+    let points = await pointModel.find({ }).exec();
+
+    console.log('[CALLBACK] getList, result:');
+    console.log(points);
+    return points;
+  },
+
   getById: async function (param) {
     console.log(__filename + '\n[CALL] getById, param:');
     console.log(param);
 
     let point = await pointModel.findById(param.pointId).exec();
-    const item = await this.models.dbs.config.getItemById({ itemId: point.item.itemId });
-    point.item.name = item.name;
 
     console.log('[CALLBACK] getById, result:');
     console.log(point);
@@ -72,6 +81,7 @@ module.exports = {
         item: {
           itemId: item._id,
           price: item.price,
+          name: item.name,
         },
       });
     } else {

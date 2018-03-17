@@ -48,8 +48,6 @@ module.exports = {
     console.log(param);
 
     let order = await orderModel.findById(param.orderId).exec();
-    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
-    order.item.name = item.name;
 
     console.log('[CALLBACK] getById, result:');
     console.log(order);
@@ -65,8 +63,6 @@ module.exports = {
       'adInfo.appid': param.appid,
       state: 'OPEN',
     }).exec();
-    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
-    order.item.name = item.name;
 
     console.log('[CALLBACK] getByUserAppid, result:');
     console.log(order);
@@ -98,6 +94,7 @@ module.exports = {
       throw new Error('Point is not ok');
     }
 
+    const item = await this.models.dbs.config.getItemById({ itemId: param.point.item.itemId });
     let order = await orderModel.create({ 
       createDate: new Date(),
       userId: param.user._id,
@@ -106,10 +103,9 @@ module.exports = {
       item: {
         itemId: param.point.item.itemId,
         price: param.point.item.price,
+        name: item.name,
       },
     });
-    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
-    order.item.name = item.name;
 
     console.log('[CALLBACK] create, result:');
     console.log(order);
@@ -142,8 +138,6 @@ module.exports = {
       if( param.payInfo.transaction_id ) order.payInfo.transaction_id = param.payInfo.transaction_id;
     }
     await order.save();
-    const item = await this.models.dbs.config.getItemById({ itemId: order.item.itemId });
-    order.item.name = item.name;
 
     console.log('[CALLBACK] update, result:');
     console.log(order);

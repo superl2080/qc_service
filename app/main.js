@@ -55,6 +55,8 @@ module.exports = {
     app.get('/pos/ad/wechatAuth',                         this.controllers.pos.ad.wechatAuth.bind(this.controllers.pos.ad));
     app.get('/pos/ad/wechatAuthCbk',                      this.controllers.pos.ad.wechatAuthCbk.bind(this.controllers.pos.ad));
     app.post('/pos/partner/login',                        this.controllers.pos.partner.login.bind(this.controllers.pos.partner));
+    app.get('/pos/point/getList',                         this.controllers.pos.point.getList.bind(this.controllers.pos.point));
+
   },
 
   loadModules: async function (path, objs) {
