@@ -23,8 +23,8 @@ module.exports = {
       if (params.text) {
         dataSource = dataSource.filter(data => {
           return data.name.indexOf(params.text) >= 0
-            || data.info.shop.indexOf(params.text) >= 0
-            || data.partner.name.indexOf(params.text) >= 0;
+            || ( data.info.shop && data.info.shop.indexOf(params.text) >= 0 )
+            || ( data.partner && data.partner.name.indexOf(params.text) >= 0 );
         });
       }
 
@@ -56,6 +56,10 @@ module.exports = {
       console.error(__filename + '[CALL] getList, req.query:' + JSON.stringify(req.query) + ', err:' + err.message);
       return res.send({
         code: 22001,
+        data: {
+          list: [],
+          pagination: {},
+        },
         message: err.message,
       });
     }
