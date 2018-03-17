@@ -8,50 +8,38 @@ module.exports = {
   BCRYPT_SALT_ROUNDS: 10,
 
   passwordCrypt: async function (param) {
-    console.log(__filename + '\n[CALL] passwordCrypt');
 
     const result = await bcrypt.hash(param.password, this.BCRYPT_SALT_ROUNDS);
-
-    console.log('[CALLBACK] passwordCrypt');
     return result;
   },
 
   passwordCompare: async function (param) {
-    console.log(__filename + '\n[CALL] passwordCompare, param:');
-    console.log(param);
 
     const result = await bcrypt.compare(param.passwordAuth, param.passwordCrypt);
 
-    console.log('[CALLBACK] passwordCompare');
     return result;
   },
 
   encodeUnicode: async function (param) {
-    console.log(__filename + '\n[CALL] encodeUnicode, param:');
-    console.log(param);
 
     let result = [];
     for ( let i=0; i < param.str.length; i++ ) {
       result[i] = ( '00' + param.str.charCodeAt(i).toString(16) ).slice(-4);
     }
     result = '\\u' + result.join('\\u');
-    console.log('[CALLBACK] encodeUnicode');
+
     return result;
   },
 
   decodeUnicode: async function (param) {
-    console.log(__filename + '\n[CALL] decodeUnicode');
 
     let result = param.str.replace(/\\/g, "%");
     result = unescape(result);
 
-    console.log('[CALLBACK] decodeUnicode, result:');
-    console.log(result);
     return result;
   },
 
   decryptWechatMsg: async function (param) {
-    console.log(__filename + '\n[CALL] decryptWechatMsg');
 
     const json = await this.models.utils.request.getJsonFromXml({ xml: param.msg });
     const decryptData = await this.decryptWechatAes256({
@@ -60,14 +48,10 @@ module.exports = {
     });
     const result = await this.models.utils.request.getJsonFromXml({ xml: decryptData });
 
-    console.log('[CALLBACK] decryptWechatMsg, result:');
-    console.log(result);
     return result;
   },
 
   encryptWechatMsg: async function (param) {
-    console.log(__filename + '\n[CALL] encryptWechatMsg, param:');
-    console.log(param);
 
     const xml = await this.models.utils.request.getXmlFromJsonForceCData({ json: param.msg });
     const encryptData = await this.encryptWechatAes256({
@@ -89,7 +73,6 @@ module.exports = {
     };
     const msgEncryptXml = await this.models.utils.request.getXmlFromJsonForceCData({ json: msgEncryptJson });
 
-    console.log('[CALLBACK] encryptWechatMsg');
     return msgEncryptXml;
   },
 
@@ -130,33 +113,26 @@ module.exports = {
   },
 
   encryptString: async function (param) {
-    console.log(__filename + '\n[CALL] encryptString, param:');
-    console.log(param);
 
     let strEncrypt = new Buffer(param.str);
     strEncrypt = strEncrypt.toString('base64');
     strEncrypt = strEncrypt.replace('/\+/g', '-');
     strEncrypt = strEncrypt.replace('/\//g', '_');
 
-    console.log('[CALLBACK] encryptString');
     return strEncrypt;
   },
 
   decryptString: async function (param) {
-    console.log(__filename + '\n[CALL] decryptString');
 
     let strDecrypt = param.str.replace('/\-/g', '+');
     strDecrypt = strDecrypt.replace('/\_/g', '/');
     strDecrypt = new Buffer(strDecrypt, 'base64');
     strDecrypt = strDecrypt.toString('utf-8');
 
-    console.log('[CALLBACK] decryptString, result:');
-    console.log(strDecrypt);
     return strDecrypt;
   },
 
   encodePKCS7: async function (param) {
-    console.log(__filename + '\n[CALL] encodePKCS7');
 
     const blockSize = 32;
     const strSize = param.data.length;
@@ -165,12 +141,10 @@ module.exports = {
     pad.fill(String.fromCharCode(amountToPad));
     const result = Buffer.concat([param.data, pad]);
 
-    console.log('[CALLBACK] encodePKCS7');
     return result;
   },
 
   decodePKCS7: async function (param) {
-    console.log(__filename + '\n[CALL] decodePKCS7');
 
     let pad = param.data[param.data.length - 1];
     if (pad < 1 || pad > 32) {
@@ -178,34 +152,27 @@ module.exports = {
     }
     const result = param.data.slice(0, param.data.length - pad);
 
-    console.log('[CALLBACK] decodePKCS7');
     return result;
   },
 
   encodeSha1: async function (param) {
-    console.log(__filename + '\n[CALL] encodeSha1');
 
     const result = crypto.createHash('sha1').update(param.data).digest('hex');
 
-    console.log('[CALLBACK] encodeSha1');
     return result;
   },
 
   encodeMd5: async function (param) {
-    console.log(__filename + '\n[CALL] encodeMd5');
 
     const result = crypto.createHash('md5').update(param.data).digest('hex').toUpperCase();
 
-    console.log('[CALLBACK] encodeMd5');
     return result;
   },
 
   randomHex: async function (param) {
-    console.log(__filename + '\n[CALL] randomHex');
 
     const result = crypto.pseudoRandomBytes(param.byte).toString('hex');
 
-    console.log('[CALLBACK] randomHex');
     return result;
   },
 

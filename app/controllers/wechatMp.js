@@ -9,8 +9,6 @@ module.exports = {
   WECHAT_OPEN_MESSAGE_TOKEN: process.env.WECHAT_OPEN_MESSAGE_TOKEN,
 
   notice: async function (req, res, next) {
-    console.log(__filename + '\n[CALL] notice');
-
     try {
       const decryptMsg = await this.models.utils.crypt.decryptWechatMsg({
         msg: req.body,
@@ -19,6 +17,8 @@ module.exports = {
 
       if( decryptMsg.MsgType === 'event'
         && decryptMsg.Event === 'subscribe' ) {
+        console.log(__filename + '\n[CALL] notice');
+        console.log(decryptMsg);
 
         const openid = decryptMsg.FromUserName;
         const appid = req.params.appid;
