@@ -163,8 +163,6 @@ module.exports = {
       await order.save();
     }
 
-    console.log('[CALLBACK] cancel, result:');
-    console.log(orders);
     return orders;
   },
 
