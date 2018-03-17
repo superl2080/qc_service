@@ -151,9 +151,6 @@ module.exports = {
   },
 
   cancel: async function (param) {
-    console.log(__filename + '\n[CALL] cancel, param:');
-    console.log(param);
-
     let orders;
     if( param.user ){
       orders = await orderModel.find({

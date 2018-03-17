@@ -124,9 +124,6 @@ module.exports = {
   },
 
   cancel: async function (param) {
-    console.log(__filename + '\n[CALL] cancel, param:');
-    console.log(param);
-
     const orders = await this.models.dbs.order.cancel(param);
 
     for( let order of orders ){
