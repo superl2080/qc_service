@@ -42,7 +42,7 @@ module.exports = {
     console.log(__filename + '\n[CALL] getList, param:');
     console.log(param);
 
-    let points = await pointModel.find({ }).exec();
+    let points = await pointModel.find({ partnerId: param.partnerId }).exec();
 
     console.log('[CALLBACK] getList, result:');
     console.log(points);

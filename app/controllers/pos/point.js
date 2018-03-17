@@ -6,9 +6,18 @@ module.exports = {
     console.log(__filename + '\n[CALL] getList, query:');
     console.log(req.query);
     try {
-      const params = req.query;
+      const partner = await this.models.dbs.partner.getById({ partnerId: req.query.token });
+      if (!partner) {
+        return res.status(401).send({
+          code: 0,
+          data: result,
+        });
+      }
 
-      let dataSource = await this.models.dbs.point.getList();
+      let dataSource = await this.models.dbs.point.getList({ partnerId: partner._id });
+      if (partner.info.children) partner.info.children.map( p => dataSource.join(await this.models.dbs.point.getList({ partnerId: p._id })) );
+
+      const params = req.query;
 
       if (params.sorter) {
         const s = params.sorter.split('_');
