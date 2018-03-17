@@ -46,8 +46,9 @@ module.exports = {
         },
       };
 
+      console.log(result);
       return res.send({
-        code: 22001,
+        code: 0,
         data: result,
       });
       
