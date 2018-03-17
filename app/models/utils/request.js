@@ -22,31 +22,25 @@ const xml2jsBuilderForceCData = new myXml2js.Builder({
 module.exports = {
 
   getJsonFromXml: async function (param) {
-    console.log(__filename + '\n[CALL] getJsonFromXml');
 
     const result = await this.xml2jsParserString({
       xml: param.xml,
     });
 
-    console.log('[CALLBACK] getJsonFromXml');
     return result.xml;
   },
 
   getXmlFromJson: async function (param) {
-    console.log(__filename + '\n[CALL] getXmlFromJson');
 
     const result = await xml2jsBuilder.buildObject(param.json);
 
-    console.log('[CALLBACK] getXmlFromJson');
     return result;
   },
 
   getXmlFromJsonForceCData: async function (param) {
-    console.log(__filename + '\n[CALL] getXmlFromJsonForceCData');
 
     const result = await xml2jsBuilderForceCData.buildObject(param.json);
 
-    console.log('[CALLBACK] getXmlFromJsonForceCData');
     return result;
   },
 
