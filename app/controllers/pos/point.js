@@ -17,7 +17,7 @@ module.exports = {
       let dataSource = await this.models.dbs.point.getList({ partnerId: partner._id });
       if (partner.info.children) {
         await Promise.all(partner.info.children.map(async partnerId => { 
-          dataSource.concat(await this.models.dbs.point.getList({ partnerId: partnerId }));
+          dataSource = dataSource.concat(await this.models.dbs.point.getList({ partnerId: partnerId }));
         }));
       }
 
