@@ -136,8 +136,6 @@ module.exports = {
       }
     }
 
-    console.log('[CALLBACK] cancel, result:');
-    console.log(orders);
     return orders;
   },
 
